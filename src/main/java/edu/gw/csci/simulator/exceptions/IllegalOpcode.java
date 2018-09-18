@@ -25,7 +25,7 @@ REVISION HISTORY
 
 package edu.gw.csci.simulator.exceptions;
 
-public class IllegalOpcode extends RuntimeException {
+public class IllegalOpcode extends SimulatorException {
 
     public IllegalOpcode(String message) {
         super(message);

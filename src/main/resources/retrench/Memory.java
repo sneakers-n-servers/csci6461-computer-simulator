@@ -1,4 +1,4 @@
-package edu.gw.csci.simulator;/*
+package crap;/*
 Project 1 - Memory
 
 %%%%%    %%%%%%%%%%    %%%%%%%%%%    %%%%%
@@ -60,8 +60,7 @@ public class Memory {
     }
 
     // get values from the memory
-    public void getWords(short[] destination, int first_index, int number_of_words)
-            throws MemoryOutOfBounds {
+    public void getWords(short[] destination, int first_index, int number_of_words) throws MemoryOutOfBounds {
         //VARIABLES
         int error = 0;
         String exception_string = "No exception information.";

@@ -1,4 +1,4 @@
-package edu.gw.csci.simulator;/*
+package crap;/*
 Project 1 - Main entry
 
 %%%%%    %%%%%%%%%%    %%%%%%%%%%    %%%%%
@@ -25,8 +25,6 @@ REVISION HISTORY
 //IMPORT
 
 import edu.gw.csci.simulator.exceptions.MemoryOutOfBounds;
-
-import java.util.Arrays;
 
 
 //BEGIN

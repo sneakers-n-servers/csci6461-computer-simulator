@@ -21,7 +21,7 @@ REVISION HISTORY
 
 %%%%%%%%%%
 */
-package edu.gw.csci.simulator;
+package crap;
 
 
 //IMPORT

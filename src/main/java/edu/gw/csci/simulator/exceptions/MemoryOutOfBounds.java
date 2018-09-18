@@ -25,7 +25,7 @@ REVISION HISTORY
 //PACKAGE MEMBERSHIP
 package edu.gw.csci.simulator.exceptions;
 
-public class MemoryOutOfBounds extends Exception {
+public class MemoryOutOfBounds extends SimulatorException {
 
     public MemoryOutOfBounds(String message) {
         super(message);

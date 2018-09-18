@@ -1,4 +1,4 @@
-package edu.gw.csci.simulator;/*
+package crap;/*
 Project 1 - Processor
 
 %%%%%    %%%%%%%%%%    %%%%%%%%%%    %%%%%
