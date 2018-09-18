@@ -1,5 +1,5 @@
 /*
-Project 1 - CPU Registers
+Project 1 - CPU RegistersController
 
 %%%%%    %%%%%%%%%%    %%%%%%%%%%    %%%%%
 %%%%%    Revision:    20180916
@@ -44,9 +44,9 @@ public class Registers {
     private long clock_value;
     // Logic Result Register
     private int LRR;
-    // General Purpose Registers (16 bits)
+    // General Purpose RegistersController (16 bits)
     private short[] R;
-    // Index Registers (IX) (16 bits)
+    // Index RegistersController (IX) (16 bits)
     private int[] X;
     // Program Counter (12 bits)
     private int PC;
@@ -77,7 +77,7 @@ public class Registers {
         MSR = 0;
         MFR = 0;
         if (MODULE_DEBUG_FLAG == 1) {
-            System.out.println("Registers cleared.");
+            System.out.println("RegistersController cleared.");
         }
     }
 

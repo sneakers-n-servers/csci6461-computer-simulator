@@ -16,16 +16,16 @@ public enum RegisterType {
     X2("Index Register 2", 16),
     X3("Index Register 3", 16);
 
-    private final String longName;
+    private final String description;
     private final int size;
 
-    RegisterType(String longName, int size){
-        this.longName = longName;
+    RegisterType(String description, int size){
+        this.description = description;
         this.size = size;
     }
 
-    public String getLongName() {
-        return this.longName;
+    public String getDescription() {
+        return this.description;
     }
 
     public int getSize() {

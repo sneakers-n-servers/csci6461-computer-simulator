@@ -5,11 +5,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class RegisterController {
+public class AllRegisters {
 
     private HashMap<RegisterType, Register> registerMap;
 
-    public RegisterController() {
+    public AllRegisters() {
         registerMap = new LinkedHashMap<>();
         for(RegisterType registerType : RegisterType.values()){
             registerMap.put(registerType, new Register(registerType));

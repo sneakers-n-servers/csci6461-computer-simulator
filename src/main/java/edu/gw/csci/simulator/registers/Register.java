@@ -8,6 +8,9 @@ public class Register {
     private BitSet data;
 
     public Register(RegisterType registerType){
+        if(registerType.getSize() > 64){
+            throw new IllegalArgumentException("Can't instantiate size larger than 64 bits");
+        }
         this.registerType = registerType;
     }
 
@@ -22,4 +25,25 @@ public class Register {
     public BitSet getData() {
         return data;
     }
+
+    public int getSize(){
+        return registerType.getSize();
+    }
+
+    public String getName(){
+        return registerType.toString();
+    }
+
+    public String getDescription(){
+        return registerType.getDescription();
+    }
+
+
+
+//    public void setData(long l){
+//        String binary = Long.toBinaryString(l);
+//        for(char c : binary.toCharArray()){
+//            data.se
+//        }
+//    }
 }
