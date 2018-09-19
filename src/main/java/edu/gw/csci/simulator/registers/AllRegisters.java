@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+//We will most likely cache this object in the processor, and add an observable list method
 public class AllRegisters {
 
     private HashMap<RegisterType, Register> registerMap;
@@ -21,7 +22,7 @@ public class AllRegisters {
             register.initialize();
         }
     }
-
+    
     public Set<Map.Entry<RegisterType, Register>> getRegisters(){
         return registerMap.entrySet();
     }

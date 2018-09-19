@@ -32,5 +32,3 @@ public enum RegisterType {
         return this.size;
     }
 }
-
-
