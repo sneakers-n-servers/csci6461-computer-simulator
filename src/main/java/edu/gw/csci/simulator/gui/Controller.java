@@ -1,18 +1,24 @@
 package edu.gw.csci.simulator.gui;
 
-import edu.gw.csci.simulator.registers.AllRegisters;
-import edu.gw.csci.simulator.registers.Register;
-import edu.gw.csci.simulator.registers.RegisterDecorator;
-import edu.gw.csci.simulator.registers.RegisterType;
+import edu.gw.csci.simulator.Bits;
+import edu.gw.csci.simulator.isa.Execute;
+import edu.gw.csci.simulator.memory.Memory;
+import edu.gw.csci.simulator.memory.MemoryDecorator;
+import edu.gw.csci.simulator.registers.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.BitSet;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class Controller {
 
@@ -30,34 +36,91 @@ public class Controller {
     @FXML
     private TableColumn<Register, String> decimalColumn;
 
-    //private AllRegisters allRegisters;
-    private  ObservableList<Register> registerList;
+    @FXML
+    private Button Store;
+
+    @FXML
+    private Button Excute;
+
+    @FXML
+    private TextField IRinput;
+
+    @FXML
+    private TextField memoryADDR;
+
+    @FXML
+    private TextField memoryVALUE;
+
+    private AllRegisters allRegisters;
+    private Memory memory;
 
     @FXML
     protected void runIPL() {
         logger.info("Initializing machine");
-        for(Register r : registerList){
-            r.initialize();
-        }
-        registerTable.setItems(registerList);
+        allRegisters.initializeRegisters();
+        allRegisters.setRegister(RegisterType.IR, 7);
+    }
+
+    public Controller(){
+        this.allRegisters = new AllRegisters();
+        this.memory = new Memory();
     }
 
     @FXML
     private void initialize(){
         initializeRegisters();
+        initializeMemory();
     }
 
     private void initializeRegisters(){
-        AllRegisters allRegisters = new AllRegisters();
         registerNameColumn.setCellValueFactory(cellData -> new RegisterDecorator(cellData.getValue()).getRegisterName());
         binaryColumn.setCellValueFactory(cellData -> new RegisterDecorator(cellData.getValue()).toBinaryObservableString());
         decimalColumn.setCellValueFactory(cellData -> new RegisterDecorator(cellData.getValue()).toLongObservableString());
+
         ObservableList<Register> registerList = FXCollections.observableArrayList();
         for(Map.Entry<RegisterType, Register> registerEntry: allRegisters.getRegisters()){
             registerList.add(registerEntry.getValue());
         }
         registerTable.setItems(registerList);
-        this.registerList = registerList;
+        allRegisters.bindTableView(registerTable);
+    }
 
+    private void initializeMemory() {
+        memory.initialize();
+        MemoryDecorator memoryDecorator = new MemoryDecorator(memory, allRegisters);
+        memoryDecorator.store(9, 7);
+        memoryDecorator.store(10, 8);
+        memoryDecorator.store(8, 31);
+        memoryDecorator.store(7, 33);
+        memoryDecorator.store(4, 23);
+        memoryDecorator.store(65535, 2047);
+    }
+
+    @FXML
+    void excute(ActionEvent event) {
+        if (IRinput.getText().length() == 16) {
+            String IRinputS = IRinput.getText().toString();
+            Register IR = allRegisters.getRegister(RegisterType.IR);
+            if (isBinary(IRinputS)) {
+                int IRinputI = Integer.parseInt(IRinputS, 2);
+                BitSet bs = Bits.convert(IRinputI);
+                IR.setData(bs);
+                Execute.excute_IR(allRegisters, memory);
+                registerTable.refresh();
+            }
+        }
+    }
+
+    @FXML
+    void MemoryStore(ActionEvent event) {
+        int memoryADDRS = Integer.parseInt(memoryADDR.getText());
+        int memoryVALUES =Integer.parseInt(memoryVALUE.getText());
+        MemoryDecorator memoryDecorator = new MemoryDecorator(memory, allRegisters);
+        memoryDecorator.store(memoryVALUES, memoryADDRS);
+    }
+
+    public static boolean isBinary(String str){
+        Pattern pattern = Pattern.compile("[0-1]*");
+        return pattern.matcher(str).matches();
     }
 }

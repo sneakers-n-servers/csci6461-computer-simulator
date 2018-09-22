@@ -26,4 +26,16 @@ public class Memory {
             this.memory[i] = new BitSet(this.wordSize);
         }
     }
+
+    public BitSet get(int index){
+        return this.memory[index];
+    }
+
+    public void set(int index, BitSet bitSet){
+        this.memory[index] = bitSet;
+    }
+
+    public int getWordSize(){
+        return wordSize;
+    }
 }

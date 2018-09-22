@@ -1,12 +1,18 @@
 package edu.gw.csci.simulator.registers;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
 
-//We will most likely cache this object in the processor, and add an observable list method
+import edu.gw.csci.simulator.gui.Controller;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.TableView;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.*;
+
 public class AllRegisters {
+
+    private static final Logger logger = LogManager.getLogger(AllRegisters.class);
 
     private HashMap<RegisterType, Register> registerMap;
 
@@ -22,8 +28,46 @@ public class AllRegisters {
             register.initialize();
         }
     }
+
+    public void bindTableView(TableView tableView){
+        for(Register register: registerMap.values()){
+            register.getBitSetProperty().addListener(new ChangeListener<BitSet>() {
+                @Override
+                public void changed(ObservableValue<? extends BitSet> observable, BitSet oldValue, BitSet newValue) {
+                    tableView.refresh();
+                }
+            });
+        }
+    }
     
     public Set<Map.Entry<RegisterType, Register>> getRegisters(){
         return registerMap.entrySet();
+    }
+
+    public List<Register> getRegisterList(){
+        Collection<Register> registerCollection = registerMap.values();
+        return new ArrayList<>(registerCollection);
+    }
+
+    public void setRegister(RegisterType registerType, int value){
+        Register register = registerMap.get(registerType);
+        RegisterDecorator rd = new RegisterDecorator(register);
+        rd.setRegister(value);
+    }
+
+    public void setRegister(RegisterType registerType, BitSet bitSet){
+        Register register = registerMap.get(registerType);
+        register.setData(bitSet);
+    }
+
+    public Register getRegister(RegisterType registerType){
+        return registerMap.get(registerType);
+    }
+
+    public void logRegisters(){
+        for(Register register : registerMap.values()) {
+            RegisterDecorator rd = new RegisterDecorator(register);
+            logger.info(register+"\t"+"Name:"+register.getName()+"\t"+"Data:"+register.getData()+"\t"+"IntData:"+rd.toInt());
+        }
     }
 }
