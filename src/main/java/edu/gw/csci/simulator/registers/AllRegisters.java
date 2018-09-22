@@ -67,7 +67,8 @@ public class AllRegisters {
     public void logRegisters(){
         for(Register register : registerMap.values()) {
             RegisterDecorator rd = new RegisterDecorator(register);
-            logger.info(register+"\t"+"Name:"+register.getName()+"\t"+"Data:"+register.getData()+"\t"+"IntData:"+rd.toInt());
+            String mess = String.format("%s: %d", register.getName(), rd.toInt());
+            logger.info(mess);
         }
     }
 }

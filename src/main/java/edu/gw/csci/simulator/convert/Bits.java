@@ -41,8 +41,7 @@ public class Bits {
      * @param bits The BitSet to conver
      * @return The binary string representation
      */
-    public static String toBinaryString(BitSet bits) {
-        int numberOfBits = bits.size();
+    public static String toBinaryString(BitSet bits, int numberOfBits) {
         if(bits.isEmpty()){
             char[] empties = new char[numberOfBits];
             return new String(empties).replace("\0", "0");

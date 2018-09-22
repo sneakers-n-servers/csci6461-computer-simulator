@@ -3,10 +3,14 @@ package edu.gw.csci.simulator.memory;
 import edu.gw.csci.simulator.convert.Bits;
 import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.RegisterType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.BitSet;
 
 public class MemoryDecorator {
+
+    private static final Logger logger = LogManager.getLogger(MemoryDecorator.class);
 
     private final Memory memory;
     private final AllRegisters allRegisters;
@@ -30,6 +34,8 @@ public class MemoryDecorator {
             /**
              * 0-5 memory is Reserved for other use;
              */
+            String mess = String.format("Stroing %d to memory index %d", value, index);
+            logger.info(mess);
             String BinaryValue = Integer.toBinaryString(value);
             //word is over 16 bits
             if (BinaryValue.length()>16) {
@@ -37,7 +43,6 @@ public class MemoryDecorator {
             }
             BitSet store = new BitSet(memory.getWordSize());
             for(int i = 0; i < BinaryValue.length() ; i++) {
-                //System.out.println(BinaryValue.charAt(i));
                 if(BinaryValue.charAt(i) == word_truth) {
                     store.set(BinaryValue.length()-i-1);
                 }
@@ -58,7 +63,6 @@ public class MemoryDecorator {
             return memory.get(index);
         }
         else {
-            //fault
             return this.memory.get(0);
         }
     }

@@ -29,12 +29,12 @@ public class RegisterDecorator {
 
     public String toBinaryString(){
         BitSet data = register.getData();
-        return Bits.toBinaryString(data);
+        return Bits.toBinaryString(data, register.getSize());
     }
 
     public SimpleStringProperty toBinaryObservableString(){
         BitSet bitSet = register.getData();
-        String str = (bitSet == null) ? NULL_STRING : Bits.toBinaryString(bitSet);
+        String str = (bitSet == null) ? NULL_STRING : Bits.toBinaryString(bitSet, register.getSize());
         return new SimpleStringProperty(str);
     }
 

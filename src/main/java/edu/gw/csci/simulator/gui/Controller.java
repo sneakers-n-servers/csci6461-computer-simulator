@@ -58,7 +58,6 @@ public class Controller {
     protected void runIPL() {
         logger.info("Initializing machine");
         allRegisters.initializeRegisters();
-        allRegisters.setRegister(RegisterType.IR, 7);
     }
 
     public Controller(){
@@ -87,13 +86,6 @@ public class Controller {
 
     private void initializeMemory() {
         memory.initialize();
-        MemoryDecorator memoryDecorator = new MemoryDecorator(memory, allRegisters);
-        memoryDecorator.store(9, 7);
-        memoryDecorator.store(10, 8);
-        memoryDecorator.store(8, 31);
-        memoryDecorator.store(7, 33);
-        memoryDecorator.store(4, 23);
-        memoryDecorator.store(65535, 2047);
     }
 
     @FXML
