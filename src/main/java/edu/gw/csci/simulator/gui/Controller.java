@@ -9,10 +9,14 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
 public class Controller {
+
+    private static final Logger logger = LogManager.getLogger(Controller.class);
 
     @FXML
     private TableView<Register> registerTable;
@@ -26,9 +30,16 @@ public class Controller {
     @FXML
     private TableColumn<Register, String> decimalColumn;
 
+    //private AllRegisters allRegisters;
+    private  ObservableList<Register> registerList;
+
     @FXML
     protected void runIPL() {
-        System.out.println("Initializing machine...");
+        logger.info("Initializing machine");
+        for(Register r : registerList){
+            r.initialize();
+        }
+        registerTable.setItems(registerList);
     }
 
     @FXML
@@ -38,9 +49,6 @@ public class Controller {
 
     private void initializeRegisters(){
         AllRegisters allRegisters = new AllRegisters();
-        //If we modify the getValue on the decorator, we can set the value to null, then initialize registers on IPL
-        allRegisters.initializeRegisters();
-
         registerNameColumn.setCellValueFactory(cellData -> new RegisterDecorator(cellData.getValue()).getRegisterName());
         binaryColumn.setCellValueFactory(cellData -> new RegisterDecorator(cellData.getValue()).toBinaryObservableString());
         decimalColumn.setCellValueFactory(cellData -> new RegisterDecorator(cellData.getValue()).toLongObservableString());
@@ -49,5 +57,7 @@ public class Controller {
             registerList.add(registerEntry.getValue());
         }
         registerTable.setItems(registerList);
+        this.registerList = registerList;
+
     }
 }

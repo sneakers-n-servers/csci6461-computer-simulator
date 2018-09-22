@@ -41,12 +41,13 @@ public class RegisterDecorator {
     }
 
     public SimpleStringProperty toBinaryObservableString(){
-        return new SimpleStringProperty(toBinaryString());
+        String str = (register.getData() == null) ? "null" : toBinaryString();
+        return new SimpleStringProperty(str);
     }
 
     public SimpleStringProperty toLongObservableString(){
-        String string = Long.toString(toLong());
-        return new SimpleStringProperty(string);
+        String str = (register.getData() == null) ? "null" : Long.toString(toLong());
+        return new SimpleStringProperty(str);
     }
 
     public SimpleStringProperty getRegisterName(){
