@@ -23,17 +23,18 @@ REVISION HISTORY
 */
 
 //IMPORT
-import edu.gw.csci.simulator.exceptions.MemoryOutOfBounds;
+//import edu.gw.csci.simulator.exceptions.MemoryOutOfBounds;
+import projectexceptions.*;
 import java.util.Arrays;
 
 //BEGIN
 public class Main {
   //CONSTANTS
   // TBD - change to 2048
-  private static final int MEMORY_SIZE = 32;
+  private static final int MEMORY_SIZE = 64;
   // debug constants
   private static final int MODULE_DEBUG_FLAG = 1;
-  private static final int CLOCK_STEPS = 28;
+  private static final int CLOCK_STEPS = 64;
 
 
   // professor's program

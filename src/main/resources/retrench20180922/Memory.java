@@ -27,7 +27,8 @@ REVISION HISTORY
 */
 
 //IMPORT
-import edu.gw.csci.simulator.exceptions.*;
+//import edu.gw.csci.simulator.exceptions.*;
+import projectexceptions.*;
 import java.util.Arrays;
 
 //BEGIN

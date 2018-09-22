@@ -26,11 +26,10 @@ REVISION HISTORY
 %%%%%%%%%%
 */
 
-package crap;
-
 
 //IMPORT
-import edu.gw.csci.simulator.exceptions.*;
+//import edu.gw.csci.simulator.exceptions.*;
+import projectexceptions.*;
 
 
 //BEGIN

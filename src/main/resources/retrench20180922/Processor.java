@@ -27,7 +27,8 @@ REVISION HISTORY
 */
 
 //IMPORT
-import edu.gw.csci.simulator.exceptions.*;
+//import edu.gw.csci.simulator.exceptions.*;
+import projectexceptions.*;
 import java.util.Arrays;
 
 //BEGIN
@@ -115,6 +116,15 @@ public class Processor {
     if (MODULE_DEBUG_FLAG == 1) {
       System.out.println("\nvvvvv     vvvvv     vvvvv     vvvvv     vvvvv");
       System.out.println("Starting a clock cycle.");
+      if ((instruction_register_fields != null) && (instruction_register_fields.length > 0)) {
+        if ((decoded_IR_valid_flag == 1) || (remaining_ticks > 0)) {
+          System.out.println("Executing on opcode = " + instruction_register_fields[0] + ".");
+          System.out.println("Last IR decoded = " + registers.getIR() + ".");
+        } else {
+          System.out.println("Last IR loaded = " + registers.getIR() + ".");
+          System.out.println("Wasted clock cycle?");
+        }
+      }
     }
     // exectue instruction
     if ((instruction_register_fields != null) && (instruction_register_fields.length > 0) 
@@ -240,7 +250,8 @@ public class Processor {
           if (remaining_ticks == 0) {
             // TBD kluge cycle adjustment
             allow_IR_set_flag--;
-            registers.incrementPC();
+            allow_IR_set_flag--;
+            //registers.incrementPC();
           }
           break;
         case 2: case 34:
@@ -349,7 +360,7 @@ public class Processor {
           remaining_ticks_return--;
         } else if (remaining_ticks_return == 1) {
           // MBR --> R
-          memory_words[0] = registers.getLRR();
+          memory_words[0] = next_MBR;
           if (instruction_fields[0] == 1) {
             //OPCODE_LDR = 1;
             try {
@@ -378,32 +389,11 @@ public class Processor {
           }
         }
         break;
-      case 3:
+      case 1:
         // no indirection; yes indexing
-        if (remaining_ticks_return > 7) {
+        if (remaining_ticks_return > 4) {
           // IR(addy) --> LRR
           registers.setLRR(instruction_fields[4]);
-          remaining_ticks_return--;
-        } else if (remaining_ticks_return == 7) {
-          // LRR --> MAR
-          if (MODULE_DEBUG_FLAG == 1) {
-            System.out.println("(LRR = " + registers.getLRR() + ") --> MAR.");
-            System.out.println("MAR was " + registers.getMAR() 
-              + ", with MBR of " + registers.getMBR() + ".");
-          }
-          next_MAR = registers.getLRR();
-          set_memory = 0;
-          remaining_ticks_return--;
-        } else if (remaining_ticks_return == 6) {
-          // MAR |--> MBR
-          memory_words[0] = next_MBR;
-          registers.setLRR(memory_words[0]);
-          set_memory = 0;
-          remaining_ticks_return--;
-        } else if (remaining_ticks_return == 5) {
-          // MBR --> LRR
-          // this really just marks the extra clock time
-          registers.setLRR(registers.getLRR());
           remaining_ticks_return--;
         } else if (remaining_ticks_return == 4) {
           // LRR --> LRR + idx
@@ -435,14 +425,190 @@ public class Processor {
           remaining_ticks_return--;
         } else if (remaining_ticks_return == 2) {
           // MAR |--> MBR
-          memory_words[0] = next_MBR;
-          registers.setLRR(memory_words[0]);
+          // this takes an extra clock
           set_memory = 0;
           remaining_ticks_return--;
         } else if (remaining_ticks_return == 1) {
           // MBR --> R
-          // TBD!! for some reason had to give it another clock
           memory_words[0] = next_MBR;
+          if (instruction_fields[0] == 1) {
+            //OPCODE_LDR = 1;
+            try {
+              registers.setR(memory_words, instruction_fields[1]);
+            } catch(projectexceptions.MemoryOutOfBounds bound_error) {
+              if (MODULE_DEBUG_FLAG == 1) {
+                System.out.println("LDR had problem accessing R[" + instruction_fields[1] + "].");
+                bound_error.printStackTrace();
+              }
+            } finally {
+              remaining_ticks_return--;
+            }
+          } else if (instruction_fields[0] == 33) {
+            //OPCODE_LDX = 33;
+            try {
+              registers.setX(memory_words[0], instruction_fields[2]);
+            } catch(projectexceptions.MemoryOutOfBounds bound_error) {
+              if (MODULE_DEBUG_FLAG == 1) {
+                System.out.println("LDX had problem accessing X[" + instruction_fields[2] + "].");
+                bound_error.printStackTrace();
+              }
+            } finally {
+              remaining_ticks_return--;
+            }
+          // see 'finally' for corresponding: remaining_ticks_return--;
+          }
+        }
+        break;
+      case 2:
+        // yes indirection; no indexing
+        if (remaining_ticks_return > 6) {
+          // IR(addy) --> LRR
+          registers.setLRR(instruction_fields[4]);
+          remaining_ticks_return--;
+        } else if (remaining_ticks_return == 6) {
+          // LRR --> MAR
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("(LRR = " + registers.getLRR() + ") --> MAR.");
+            System.out.println("MAR was " + registers.getMAR() 
+              + ", with MBR of " + registers.getMBR() + ".");
+          }
+          next_MAR = registers.getLRR();
+          set_memory = 0;
+          remaining_ticks_return--;
+        } else if (remaining_ticks_return == 5) {
+          // MAR |--> MBR
+          registers.setLRR(next_MBR);
+          set_memory = 0;
+          remaining_ticks_return--;
+        } else if (remaining_ticks_return == 4) {
+          // MBR --> LRR
+          // this really just marks the extra clock time
+          registers.setLRR(next_MBR);
+          remaining_ticks_return--;
+        } else if (remaining_ticks_return == 3) {
+          // LRR --> MAR
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("(LRR = " + registers.getLRR() + ") --> MAR.");
+            System.out.println("MAR was " + registers.getMAR() 
+              + ", with MBR of " + registers.getMBR() + ".");
+          }
+          next_MAR = registers.getLRR();
+          set_memory = 0;
+          remaining_ticks_return--;
+        } else if (remaining_ticks_return == 2) {
+          // MAR |--> MBR
+          memory_words[0] = next_MBR;
+          set_memory = 0;
+          remaining_ticks_return--;
+        } else if (remaining_ticks_return == 1) {
+          // MBR --> R
+          memory_words[0] = next_MBR;
+          if (instruction_fields[0] == 1) {
+            //OPCODE_LDR = 1;
+            try {
+              registers.setR(memory_words, instruction_fields[1]);
+            } catch(projectexceptions.MemoryOutOfBounds bound_error) {
+              if (MODULE_DEBUG_FLAG == 1) {
+                System.out.println("LDR had problem accessing R[" + instruction_fields[1] + "].");
+                bound_error.printStackTrace();
+              }
+            } finally {
+              remaining_ticks_return--;
+            }
+          } else if (instruction_fields[0] == 33) {
+            //OPCODE_LDX = 33;
+            try {
+              registers.setX(memory_words[0], instruction_fields[2]);
+            } catch(projectexceptions.MemoryOutOfBounds bound_error) {
+              if (MODULE_DEBUG_FLAG == 1) {
+                System.out.println("LDX had problem accessing X[" + instruction_fields[2] + "].");
+                bound_error.printStackTrace();
+              }
+            } finally {
+              remaining_ticks_return--;
+            }
+          // see 'finally' for corresponding: remaining_ticks_return--;
+          }
+        }
+        break;
+      case 3:
+        // yes indirection; yes indexing
+        if (remaining_ticks_return > 7) {
+          // IR(addy) --> LRR
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Set LRR <-- (address = " + instruction_fields[4] + ").");
+          }
+          registers.setLRR(instruction_fields[4]);
+          remaining_ticks_return--;
+        } else if (remaining_ticks_return == 7) {
+          // LRR --> MAR
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("(LRR = " + registers.getLRR() + ") --> MAR.");
+            System.out.println("MAR was " + registers.getMAR() 
+              + ", with MBR of " + registers.getMBR() + ".");
+          }
+          next_MAR = registers.getLRR();
+          set_memory = 0;
+          remaining_ticks_return--;
+        } else if (remaining_ticks_return == 6) {
+          // MAR |--> MBR
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Wait one cycle for Mem Ctrl Unit.");
+          }
+          registers.setLRR(next_MBR);
+          set_memory = 0;
+          remaining_ticks_return--;
+        } else if (remaining_ticks_return == 5) {
+          // MBR --> LRR
+          // this really just marks the extra clock time
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Set LRR <-- (MBR = " + next_MBR + ").");
+          }
+          registers.setLRR(next_MBR);
+          remaining_ticks_return--;
+        } else if (remaining_ticks_return == 4) {
+          // LRR --> LRR + idx
+          try {
+            memory_words[0] = registers.getX(instruction_fields[2]);
+          } catch(projectexceptions.MemoryOutOfBounds bound_error) {
+            if (MODULE_DEBUG_FLAG == 1) {
+              System.out.println("LDR/X had problem accessing X[" + instruction_fields[2] + "].");
+              bound_error.printStackTrace();
+            }
+          } finally {
+            remaining_ticks_return--;
+          }
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Memory address will be ( X[" + instruction_fields[2] + "] = " 
+              + memory_words[0] + " ) + " + registers.getLRR() + ".");
+          }
+          // add the index to the address already on the register
+          registers.setLRR(memory_words[0] + registers.getLRR());
+        } else if (remaining_ticks_return == 3) {
+          // LRR + idx --> MAR
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("(LRR+idx = " + registers.getLRR() + ") --> MAR.");
+            System.out.println("MAR was " + registers.getMAR() 
+              + ", with MBR of " + registers.getMBR() + ".");
+          }
+          next_MAR = registers.getLRR();
+          set_memory = 0;
+          remaining_ticks_return--;
+        } else if (remaining_ticks_return == 2) {
+          // MAR |--> MBR
+          // TBD!! for some reason had to give it another clock
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Wait one cycle for Mem Ctrl Unit.");
+          }
+          memory_words[0] = next_MBR;
+          set_memory = 0;
+          remaining_ticks_return--;
+        } else if (remaining_ticks_return == 1) {
+          // MBR --> R
+          memory_words[0] = next_MBR;
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Set R|X[] <-- (MBR = " + next_MBR + ").");
+          }
           if (instruction_fields[0] == 1) {
             //OPCODE_LDR = 1;
             try {
@@ -641,6 +807,9 @@ public class Processor {
         // yes indirection; no indexing
         if (remaining_ticks_return > 5) {
           // IR(addy) --> LRR
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Set LRR <-- (address = " + instruction_fields[4] + ").");
+          }
           registers.setLRR(instruction_fields[4]);
           remaining_ticks_return--;
         } else if (remaining_ticks_return == 5) {
@@ -655,6 +824,9 @@ public class Processor {
           remaining_ticks_return--;
         } else if (remaining_ticks_return == 4) {
           // MAR |--> MBR
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Wait one cycle for Mem Ctrl Unit.");
+          }
           memory_words[0] = next_MBR;
           registers.setLRR(memory_words[0]);
           set_memory = 0;
@@ -662,7 +834,11 @@ public class Processor {
         } else if (remaining_ticks_return == 3) {
           // MBR --> LRR
           // this really just marks the extra clock time
-          registers.setLRR(registers.getLRR());
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Set LRR <-- (MBR = " + next_MBR + ").");
+          }
+          registers.setLRR(next_MBR);
+          //TBD prior - registers.setLRR(registers.getLRR());
           remaining_ticks_return--;
         } else if (remaining_ticks_return == 2) {
           // LRR --> MAR
@@ -703,6 +879,9 @@ public class Processor {
           }
           next_MBR = memory_words[0];
           set_memory = 1;
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Set MBR <-- (R|X[] = " + next_MBR + ").");
+          }
           // see 'finally' for corresponding: remaining_ticks_return--;
         }
         break;
@@ -710,6 +889,9 @@ public class Processor {
         // yes indirection; yes indexing
         if (remaining_ticks_return > 6) {
           // IR(addy) --> LRR
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Set LRR <-- (address = " + instruction_fields[4] + ").");
+          }
           registers.setLRR(instruction_fields[4]);
           remaining_ticks_return--;
         } else if (remaining_ticks_return == 6) {
@@ -724,18 +906,21 @@ public class Processor {
           remaining_ticks_return--;
         } else if (remaining_ticks_return == 5) {
           // MAR |--> MBR
-          memory_words[0] = next_MBR;
           if (MODULE_DEBUG_FLAG == 1) {
-            System.out.println("MBR = " + next_MBR + ".");
-            System.out.println("memory_words[0] = " + memory_words[0] + ".");
+            System.out.println("Wait one cycle for Mem Ctrl Unit.");
           }
+          memory_words[0] = next_MBR;
           registers.setLRR(memory_words[0]);
           set_memory = 0;
           remaining_ticks_return--;
         } else if (remaining_ticks_return == 4) {
           // MBR --> LRR
           // this really just marks the extra clock time
-          registers.setLRR(registers.getLRR());
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Set LRR <-- (MBR = " + next_MBR + ").");
+          }
+          registers.setLRR(next_MBR);
+          // TBD prior - registers.setLRR(registers.getLRR());
           remaining_ticks_return--;
         } else if (remaining_ticks_return == 3) {
           // LRR --> LRR + idx
@@ -794,6 +979,9 @@ public class Processor {
           }
           next_MBR = memory_words[0];
           set_memory = 1;
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Set MBR <-- (R|X[] = " + next_MBR + ").");
+          }
           // see 'finally' for corresponding: remaining_ticks_return--;
         }
         break;
