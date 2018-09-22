@@ -1,6 +1,6 @@
 package edu.gw.csci.simulator.memory;
 
-import edu.gw.csci.simulator.Bits;
+import edu.gw.csci.simulator.convert.Bits;
 import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.RegisterType;
 
@@ -16,14 +16,15 @@ public class MemoryDecorator {
         this.allRegisters = allRegisters;
     }
 
-    /**
-     * set memory[Addr] = Value
-     * for example
-     * Value = 8, BinaryValue = 1000, memory[Addr] = {3}
-     * Value = 5, BinaryValue = 101,  memory[Addr] = {0, 2}
-     * it shows which bit is '1'
-     */
+
     public void store(int value, int index){
+        /**
+         * set memory[Addr] = Value
+         * for example
+         * Value = 8, BinaryValue = 1000, memory[Addr] = {3}
+         * Value = 5, BinaryValue = 101,  memory[Addr] = {0, 2}
+         * it shows which bit is '1'
+         */
         char word_truth = '1';
         if(index >= 6 && index <= 2047){
             /**

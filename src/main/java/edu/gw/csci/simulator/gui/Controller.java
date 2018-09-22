@@ -1,6 +1,6 @@
 package edu.gw.csci.simulator.gui;
 
-import edu.gw.csci.simulator.Bits;
+import edu.gw.csci.simulator.convert.Bits;
 import edu.gw.csci.simulator.isa.Execute;
 import edu.gw.csci.simulator.memory.Memory;
 import edu.gw.csci.simulator.memory.MemoryDecorator;

@@ -1,7 +1,7 @@
 package edu.gw.csci.simulator.isa;
 
 
-import edu.gw.csci.simulator.Bits;
+import edu.gw.csci.simulator.convert.Bits;
 import edu.gw.csci.simulator.memory.Memory;
 import edu.gw.csci.simulator.memory.MemoryDecorator;
 import edu.gw.csci.simulator.registers.AllRegisters;
@@ -10,10 +10,11 @@ import edu.gw.csci.simulator.registers.RegisterDecorator;
 import edu.gw.csci.simulator.registers.RegisterType;
 
 public class Execute {
-	/**
-	 * to excute the instructions in IR
-	 */
+
 	public static void excute_IR(AllRegisters allregisters, Memory memory) {
+        /**
+         * to excute the instructions in IR
+         */
 	    Register IR = allregisters.getRegister(RegisterType.IR);
 	    RegisterDecorator irRegisterDecorator = new RegisterDecorator(IR);
 	    String instruction = irRegisterDecorator.toBinaryString();
