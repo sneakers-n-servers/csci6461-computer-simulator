@@ -2,13 +2,18 @@
 Project 1 - Processor
 
 %%%%%    %%%%%%%%%%    %%%%%%%%%%    %%%%%
-%%%%%    Revision:    20180921
+%%%%%    Revision:    20180922
 %%%%%    %%%%%%%%%%    %%%%%%%%%%    %%%%%
 */
 
 /*
 %%%%%%%%%%
 REVISION HISTORY
+
+%%%     20180922
+        Modified:   
+    -Completed all cases for all five instructions;
+    -however, still need to separate ST/LD into different methods
 
 %%%     20180921
         Modified:   
@@ -641,7 +646,270 @@ public class Processor {
         remaining_ticks = 0;
         set_memory = 0;
         if (MODULE_DEBUG_FLAG == 1) {
-          System.out.println("STR/X of type " + branch_id + " is not valid.");
+          System.out.println("LDR/X of type " + branch_id + " is not valid.");
+        }
+        break;
+    // end branch switch
+    }
+    return remaining_ticks_return;
+  }
+
+  private int executeLDA(int[] instruction_fields, int remaining_ticks, int new_instruction_flag) {
+    // temporary store for values to/fro memory
+    int[] memory_words = new int[1];
+    // initialize
+    int remaining_ticks_return = remaining_ticks;
+    // compute number of clock cycles required to complete the operation
+    if (new_instruction_flag > 0) {
+      //first pass
+      // compute the total clock cycles
+      if (instruction_fields[3] == 0) {
+        // direct addressing
+        if (instruction_fields[2] == 0) {
+          // no indirection; no indexing
+          // R --> R
+          remaining_ticks_return = 1;
+          branch_id = 0;
+        } else {
+          // no indirection; yes indexing
+          // R --> LRR --> LRR + idx --> R
+          remaining_ticks_return = 3;
+          branch_id = 1;
+        }
+      } else {
+        // indirect addressing
+        if (instruction_fields[2] == 0) {
+          // yes indirection; no indexing
+          // R --> LRR --> MAR |--> MBR --> R
+          remaining_ticks_return = 4;
+          branch_id = 2;
+        } else {
+          // yes indirection; yes indexing
+          // R --> LRR --> MAR |--> MBR --> LRR --> LRR + idx --> MAR |--> MBR --> R
+          remaining_ticks_return = 8;
+          branch_id = 3;
+        }
+      }
+    //endif for new instruction flag
+    }
+    // now actually do stuff
+    switch (branch_id) {
+      case 0:
+        // no indirection; no indexing
+        if (remaining_ticks_return > 0) {
+          // IR(addy) --> R
+          memory_words[0] = instruction_fields[4];
+          try {
+            registers.setR(memory_words, instruction_fields[1]);
+          } catch(projectexceptions.MemoryOutOfBounds bound_error) {
+            if (MODULE_DEBUG_FLAG == 1) {
+              System.out.println("LDR had problem accessing R[" + instruction_fields[1] + "].");
+              bound_error.printStackTrace();
+            }
+          } finally {
+            remaining_ticks_return--;
+          }
+        }
+        break;
+      case 1:
+        // no indirection; yes indexing
+        if (remaining_ticks_return > 2) {
+          // IR(addy) --> LRR
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Set LRR <-- (address = " + instruction_fields[4] + ").");
+          }
+          registers.setLRR(instruction_fields[4]);
+          remaining_ticks_return--;
+        } else if (remaining_ticks_return == 2) {
+          // LRR --> LRR + idx
+          try {
+            memory_words[0] = registers.getX(instruction_fields[2]);
+          } catch(projectexceptions.MemoryOutOfBounds bound_error) {
+            if (MODULE_DEBUG_FLAG == 1) {
+              System.out.println("LDR/X had problem accessing X[" + instruction_fields[2] + "].");
+              bound_error.printStackTrace();
+            }
+          } finally {
+            remaining_ticks_return--;
+          }
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Memory address will be ( X[" + instruction_fields[2] + "] = " 
+              + memory_words[0] + " ) + " + registers.getLRR() + ".");
+          }
+          // add the index to the address already on the register
+          registers.setLRR(memory_words[0] + registers.getLRR());
+        } else if (remaining_ticks_return == 1) {
+          // LRR + idx --> R
+          memory_words[0] = instruction_fields[4];
+          try {
+            registers.setR(memory_words, instruction_fields[1]);
+          } catch(projectexceptions.MemoryOutOfBounds bound_error) {
+            if (MODULE_DEBUG_FLAG == 1) {
+              System.out.println("LDR had problem accessing R[" + instruction_fields[1] + "].");
+              bound_error.printStackTrace();
+            }
+          } finally {
+            remaining_ticks_return--;
+          }
+        }
+        break;
+      case 2:
+        // yes indirection; no indexing
+        if (remaining_ticks_return > 3) {
+          // IR(addy) --> LRR
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Set LRR <-- (address = " + instruction_fields[4] + ").");
+          }
+          registers.setLRR(instruction_fields[4]);
+          remaining_ticks_return--;
+        } else if (remaining_ticks_return == 3) {
+          // LRR --> MAR
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("(LRR = " + registers.getLRR() + ") --> MAR.");
+            System.out.println("MAR was " + registers.getMAR() 
+              + ", with MBR of " + registers.getMBR() + ".");
+          }
+          next_MAR = registers.getLRR();
+          set_memory = 0;
+          remaining_ticks_return--;
+        } else if (remaining_ticks_return == 2) {
+          // MAR |--> MBR
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Wait one cycle for Mem Ctrl Unit.");
+          }
+          registers.setLRR(next_MBR);
+          set_memory = 0;
+          remaining_ticks_return--;
+        } else if (remaining_ticks_return == 1) {
+          // MBR --> R
+          memory_words[0] = next_MBR;
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Set R|X[] <-- (MBR = " + next_MBR + ").");
+          }
+          try {
+            registers.setR(memory_words, instruction_fields[1]);
+          } catch(projectexceptions.MemoryOutOfBounds bound_error) {
+            if (MODULE_DEBUG_FLAG == 1) {
+              System.out.println("LDR had problem accessing R[" + instruction_fields[1] + "].");
+              bound_error.printStackTrace();
+            }
+          } finally {
+            remaining_ticks_return--;
+          }
+          // see 'finally' for corresponding: remaining_ticks_return--;
+        }
+        break;
+      case 3:
+        // yes indirection; yes indexing
+        if (remaining_ticks_return > 7) {
+          // IR(addy) --> LRR
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Set LRR <-- (address = " + instruction_fields[4] + ").");
+          }
+          registers.setLRR(instruction_fields[4]);
+          remaining_ticks_return--;
+        } else if (remaining_ticks_return == 7) {
+          // LRR --> MAR
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("(LRR = " + registers.getLRR() + ") --> MAR.");
+            System.out.println("MAR was " + registers.getMAR() 
+              + ", with MBR of " + registers.getMBR() + ".");
+          }
+          next_MAR = registers.getLRR();
+          set_memory = 0;
+          remaining_ticks_return--;
+        } else if (remaining_ticks_return == 6) {
+          // MAR |--> MBR
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Wait one cycle for Mem Ctrl Unit.");
+          }
+          registers.setLRR(next_MBR);
+          set_memory = 0;
+          remaining_ticks_return--;
+        } else if (remaining_ticks_return == 5) {
+          // MBR --> LRR
+          // this really just marks the extra clock time
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Set LRR <-- (MBR = " + next_MBR + ").");
+          }
+          registers.setLRR(next_MBR);
+          remaining_ticks_return--;
+        } else if (remaining_ticks_return == 4) {
+          // LRR --> LRR + idx
+          try {
+            memory_words[0] = registers.getX(instruction_fields[2]);
+          } catch(projectexceptions.MemoryOutOfBounds bound_error) {
+            if (MODULE_DEBUG_FLAG == 1) {
+              System.out.println("LDR/X had problem accessing X[" + instruction_fields[2] + "].");
+              bound_error.printStackTrace();
+            }
+          } finally {
+            remaining_ticks_return--;
+          }
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Memory address will be ( X[" + instruction_fields[2] + "] = " 
+              + memory_words[0] + " ) + " + registers.getLRR() + ".");
+          }
+          // add the index to the address already on the register
+          registers.setLRR(memory_words[0] + registers.getLRR());
+        } else if (remaining_ticks_return == 3) {
+          // LRR + idx --> MAR
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("(LRR+idx = " + registers.getLRR() + ") --> MAR.");
+            System.out.println("MAR was " + registers.getMAR() 
+              + ", with MBR of " + registers.getMBR() + ".");
+          }
+          next_MAR = registers.getLRR();
+          set_memory = 0;
+          remaining_ticks_return--;
+        } else if (remaining_ticks_return == 2) {
+          // MAR |--> MBR
+          // TBD!! for some reason had to give it another clock
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Wait one cycle for Mem Ctrl Unit.");
+          }
+          memory_words[0] = next_MBR;
+          set_memory = 0;
+          remaining_ticks_return--;
+        } else if (remaining_ticks_return == 1) {
+          // MBR --> R
+          memory_words[0] = next_MBR;
+          if (MODULE_DEBUG_FLAG == 1) {
+            System.out.println("Set R|X[] <-- (MBR = " + next_MBR + ").");
+          }
+          if (instruction_fields[0] == 1) {
+            //OPCODE_LDR = 1;
+            try {
+              registers.setR(memory_words, instruction_fields[1]);
+            } catch(projectexceptions.MemoryOutOfBounds bound_error) {
+              if (MODULE_DEBUG_FLAG == 1) {
+                System.out.println("LDR had problem accessing R[" + instruction_fields[1] + "].");
+                bound_error.printStackTrace();
+              }
+            } finally {
+              remaining_ticks_return--;
+            }
+          } else if (instruction_fields[0] == 33) {
+            //OPCODE_LDX = 33;
+            try {
+              registers.setX(memory_words[0], instruction_fields[2]);
+            } catch(projectexceptions.MemoryOutOfBounds bound_error) {
+              if (MODULE_DEBUG_FLAG == 1) {
+                System.out.println("LDX had problem accessing X[" + instruction_fields[2] + "].");
+                bound_error.printStackTrace();
+              }
+            } finally {
+              remaining_ticks_return--;
+            }
+          // see 'finally' for corresponding: remaining_ticks_return--;
+          }
+        }
+        break;
+      default:
+        remaining_ticks = 0;
+        set_memory = 0;
+        if (MODULE_DEBUG_FLAG == 1) {
+          System.out.println("LDA of type " + branch_id + " is not valid.");
         }
         break;
     // end branch switch
@@ -1095,4 +1363,3 @@ public class Processor {
     }
   }
 }
-

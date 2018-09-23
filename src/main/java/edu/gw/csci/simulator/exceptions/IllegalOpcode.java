@@ -27,6 +27,11 @@ package edu.gw.csci.simulator.exceptions;
 
 public class IllegalOpcode extends SimulatorException {
 
+    /**
+     * Emulation of the error when an illegal opcode is encountered.
+     * @param message A string that will be appended to the default backtrace.
+     * @version 20180916
+     */
     public IllegalOpcode(String message) {
         super(message);
     }
