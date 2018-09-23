@@ -9,6 +9,12 @@ import edu.gw.csci.simulator.registers.Register;
 import edu.gw.csci.simulator.registers.RegisterDecorator;
 import edu.gw.csci.simulator.registers.RegisterType;
 
+    /**
+     * Primary representation of the simulated computer's control elements.
+     * 
+     *
+     * @version 20180920
+     */
 public class Execute {
 
 	public static void excute_IR(AllRegisters allregisters, Memory memory) {

@@ -11,6 +11,11 @@ import java.util.stream.IntStream;
 
 import static java.lang.Math.toIntExact;
 
+  /**
+   * Provides abstraction of support operations for interaction between the simulated registers and the GUI framework.
+   *
+   * @version 20180918
+   */
 public class RegisterDecorator {
 
     private final Register register;

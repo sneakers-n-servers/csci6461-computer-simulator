@@ -2,6 +2,11 @@ package edu.gw.csci.simulator.memory;
 
 import java.util.BitSet;
 
+    /**
+     * Simulates the computer's external (volatile) memory.
+     *
+     * @version 20180918
+     */
 public class Memory {
 
     private static final int DEFAULT_MEMORY_SIZE = 2048,

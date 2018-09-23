@@ -5,6 +5,9 @@ import javafx.application.Application;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+    /**
+     * Main entry into computer simulator.
+     */
 public class App {
 
     private static final Logger logger = LogManager.getLogger(App.class);

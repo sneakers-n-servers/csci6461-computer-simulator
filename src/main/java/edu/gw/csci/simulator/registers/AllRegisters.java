@@ -10,6 +10,11 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
+    /**
+     * Collects all registers to define the processor's full internal memory - except for the future caches.
+     *
+     * @version 20180918
+     */
 public class AllRegisters {
 
     private static final Logger logger = LogManager.getLogger(AllRegisters.class);

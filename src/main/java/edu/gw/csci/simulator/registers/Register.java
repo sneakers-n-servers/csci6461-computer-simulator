@@ -5,6 +5,11 @@ import javafx.beans.property.SimpleObjectProperty;
 
 import java.util.BitSet;
 
+    /**
+     * Leverages the defined register type to extend properties to other registers.
+     *
+     * @version 20180918
+     */
 public class Register {
 
     private final RegisterType registerType;

@@ -8,6 +8,11 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.BitSet;
 
+  /**
+   * Provides abstraction of support operations for interaction between the simulated memory and the GUI framework.
+   *
+   * @version 20180918
+   */
 public class MemoryDecorator {
 
     private static final Logger logger = LogManager.getLogger(MemoryDecorator.class);

@@ -9,6 +9,12 @@ import edu.gw.csci.simulator.registers.Register;
 import edu.gw.csci.simulator.registers.RegisterDecorator;
 import edu.gw.csci.simulator.registers.RegisterType;
 
+    /**
+     * Provides decoding support to the instruction set.
+     * 
+     *
+     * @version 20180920
+     */
 public class Decode {
 
 	public static String opcode_decode(String Opcode) {

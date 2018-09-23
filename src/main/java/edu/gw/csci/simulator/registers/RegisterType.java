@@ -1,5 +1,10 @@
 package edu.gw.csci.simulator.registers;
 
+    /**
+     * This framework defines the properties for all registers.
+     *
+     * @version 20180916
+     */
 public enum RegisterType {
 
     PC("Program Counter", 12, ""),
