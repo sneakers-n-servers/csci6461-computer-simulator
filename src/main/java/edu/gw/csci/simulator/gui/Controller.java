@@ -1,18 +1,16 @@
 package edu.gw.csci.simulator.gui;
 
-import edu.gw.csci.simulator.convert.Bits;
+import edu.gw.csci.simulator.utils.Bits;
 import edu.gw.csci.simulator.isa.Execute;
 import edu.gw.csci.simulator.memory.Memory;
 import edu.gw.csci.simulator.memory.MemoryDecorator;
 import edu.gw.csci.simulator.registers.*;
+import edu.gw.csci.simulator.utils.ConsoleAppender;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,7 +26,7 @@ import java.util.regex.Pattern;
      */
 public class Controller {
 
-    private static final Logger logger = LogManager.getLogger(Controller.class);
+    private static final Logger LOGGER = LogManager.getLogger(Controller.class);
 
     @FXML
     private TableView<Register> registerTable;
@@ -43,10 +41,10 @@ public class Controller {
     private TableColumn<Register, String> decimalColumn;
 
     @FXML
-    private Button Store;
+    private Button store;
 
     @FXML
-    private Button Excute;
+    private Button execute;
 
     @FXML
     private TextField IRinput;
@@ -57,12 +55,15 @@ public class Controller {
     @FXML
     private TextField memoryVALUE;
 
+    @FXML
+    private TextArea developerLog;
+
     private AllRegisters allRegisters;
     private Memory memory;
 
     @FXML
     protected void runIPL() {
-        logger.info("Initializing machine");
+        LOGGER.info("Initializing machine");
         allRegisters.initializeRegisters();
     }
 
@@ -75,6 +76,7 @@ public class Controller {
     private void initialize(){
         initializeRegisters();
         initializeMemory();
+        ConsoleAppender.setTextArea(developerLog);
     }
 
     private void initializeRegisters(){
@@ -95,7 +97,7 @@ public class Controller {
     }
 
     @FXML
-    void excute(ActionEvent event) {
+    void execute(ActionEvent event) {
         if (IRinput.getText().length() == 16) {
             String IRinputS = IRinput.getText().toString();
             Register IR = allRegisters.getRegister(RegisterType.IR);

@@ -1,7 +1,7 @@
 package edu.gw.csci.simulator.isa;
 
 
-import edu.gw.csci.simulator.convert.Bits;
+import edu.gw.csci.simulator.utils.Bits;
 import edu.gw.csci.simulator.memory.Memory;
 import edu.gw.csci.simulator.memory.MemoryDecorator;
 import edu.gw.csci.simulator.registers.AllRegisters;

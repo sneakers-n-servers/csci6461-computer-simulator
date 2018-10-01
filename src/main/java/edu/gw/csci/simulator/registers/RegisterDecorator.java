@@ -1,17 +1,13 @@
 package edu.gw.csci.simulator.registers;
 
-import edu.gw.csci.simulator.App;
-import edu.gw.csci.simulator.convert.Bits;
+import edu.gw.csci.simulator.utils.Bits;
 import javafx.beans.property.SimpleStringProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.BitSet;
-import java.util.stream.IntStream;
 
-import static java.lang.Math.toIntExact;
-
-  /**
+/**
    * Provides abstraction of support operations for interaction between the simulated registers and the GUI framework.
    *
    * @version 20180918

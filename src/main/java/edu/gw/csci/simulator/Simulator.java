@@ -1,20 +1,23 @@
-package edu.gw.csci.simulator.gui;
+package edu.gw.csci.simulator;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-    /**
-     * Instantiate the main GUI screen and serve as parent target for user events.
-     *
-     * @version 20180918
-     */
+
+/**
+ * Instantiate the main GUI screen and serve as parent target for user events.
+ * @version 20180918
+ */
 public class Simulator extends Application {
 
     private static final int APP_WIDTH = 1000, APP_HEIGHT = 750;
-    private final String TITLE = "CSCI 6461 Simulator";
+    private static final String TITLE = "CSCI 6461 Simulator";
+    private static final Logger LOGGER = LogManager.getLogger(Simulator.class);
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -24,5 +27,10 @@ public class Simulator extends Application {
         primaryStage.setTitle(TITLE);
         primaryStage.setScene(new Scene(root, APP_WIDTH, APP_HEIGHT));
         primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        LOGGER.info("Starting application...");
+        launch(args);
     }
 }

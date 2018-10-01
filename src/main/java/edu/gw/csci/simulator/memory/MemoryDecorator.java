@@ -1,6 +1,6 @@
 package edu.gw.csci.simulator.memory;
 
-import edu.gw.csci.simulator.convert.Bits;
+import edu.gw.csci.simulator.utils.Bits;
 import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.RegisterType;
 import org.apache.logging.log4j.LogManager;

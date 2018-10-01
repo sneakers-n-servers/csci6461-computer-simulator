@@ -1,7 +1,7 @@
 package edu.gw.csci.simulator.isa;
 
 
-import edu.gw.csci.simulator.convert.Bits;
+import edu.gw.csci.simulator.utils.Bits;
 import edu.gw.csci.simulator.memory.Memory;
 import edu.gw.csci.simulator.memory.MemoryDecorator;
 import edu.gw.csci.simulator.registers.AllRegisters;
@@ -63,7 +63,7 @@ public class Decode {
 				//System.out.println(Integer.parseInt(Address_code,2));
 				return Integer.parseInt(Address_code, 2);
 			} else {
-				//System.out.println(Bits.convert(m.fetch(Integer.parseInt(Address_code, 2))));
+				//System.out.println(Bits.utils(m.fetch(Integer.parseInt(Address_code, 2))));
 				MemoryDecorator md = new MemoryDecorator(memory, allRegisters);
 				return Bits.convert(md.fetch(Integer.parseInt(Address_code, 2)));
 			}
