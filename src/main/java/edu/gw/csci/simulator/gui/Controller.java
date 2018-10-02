@@ -1,15 +1,17 @@
 package edu.gw.csci.simulator.gui;
 
-import edu.gw.csci.simulator.utils.Bits;
 import edu.gw.csci.simulator.isa.Execute;
 import edu.gw.csci.simulator.memory.Memory;
 import edu.gw.csci.simulator.memory.MemoryDecorator;
-import edu.gw.csci.simulator.registers.*;
+import edu.gw.csci.simulator.registers.AllRegisters;
+import edu.gw.csci.simulator.registers.Register;
+import edu.gw.csci.simulator.registers.RegisterDecorator;
+import edu.gw.csci.simulator.registers.RegisterType;
+import edu.gw.csci.simulator.utils.Bits;
 import edu.gw.csci.simulator.utils.ConsoleAppender;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.apache.logging.log4j.Level;
@@ -22,12 +24,12 @@ import java.util.BitSet;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-    /**
-     * This class "connects" the GUI to the simulated computer.
-     * It translates user events to machine operations and vice-versa.
-     *
-     * @version 20180918
-     */
+/**
+ * This class "connects" the GUI to the simulated computer.
+ * It translates user events to machine operations and vice-versa.
+ *
+ * @version 20180918
+ */
 public class Controller {
 
     private static final Logger LOGGER = LogManager.getLogger(Controller.class);
