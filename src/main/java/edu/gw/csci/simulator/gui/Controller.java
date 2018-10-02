@@ -9,11 +9,15 @@ import edu.gw.csci.simulator.utils.ConsoleAppender;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -58,6 +62,9 @@ public class Controller {
     @FXML
     private TextArea developerLog;
 
+    @FXML
+    private ComboBox<String> logLevels = new ComboBox<>();
+
     private AllRegisters allRegisters;
     private Memory memory;
 
@@ -76,7 +83,7 @@ public class Controller {
     private void initialize(){
         initializeRegisters();
         initializeMemory();
-        ConsoleAppender.setTextArea(developerLog);
+        handleLogs(Level.INFO);
     }
 
     private void initializeRegisters(){
@@ -94,6 +101,23 @@ public class Controller {
 
     private void initializeMemory() {
         memory.initialize();
+    }
+
+    private void handleLogs(Level level){
+        //Set the default list of log levels
+        String[] logValues = Arrays.stream(Level.values())
+                .map(Level::name)
+                .toArray(String[]::new);
+        Arrays.sort(logValues);
+        logLevels.getItems().addAll(logValues);
+        logLevels.setOnAction(event -> {
+            Level currentLevel = Level.valueOf(logLevels.getValue());
+            Configurator.setRootLevel(currentLevel);
+        });
+        logLevels.setValue(level.toString());
+
+        //Set the text field to append to
+        ConsoleAppender.setTextArea(developerLog);
     }
 
     @FXML

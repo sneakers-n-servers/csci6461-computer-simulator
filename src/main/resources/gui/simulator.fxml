@@ -36,4 +36,5 @@
     <TextField fx:id="memoryVALUE" prefHeight="59.0" prefWidth="70.0" text="VALUE" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
     <Button fx:id="store" mnemonicParsing="false" onAction="#MemoryStore" text="Store" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
     <TextArea fx:id="developerLog" layoutX="61.0" prefHeight="200.0" prefWidth="200.0" wrapText="true" editable="false" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+    <ComboBox fx:id="logLevels" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
 </GridPane>
