@@ -34,7 +34,6 @@ public class MemoryDecorator {
          * Value = 5, BinaryValue = 101,  memory[Addr] = {0, 2}
          * it shows which bit is '1'
          */
-        char word_truth = '1';
         if(index >= 6 && index <= 2047){
             /**
              * 0-5 memory is Reserved for other use;
@@ -44,16 +43,17 @@ public class MemoryDecorator {
             String BinaryValue = Integer.toBinaryString(value);
             //word is over 16 bits
             if (BinaryValue.length()>16) {
+                mess = "Word is over 16 bits";
+                logger.info(mess);
                 return;
             }
-            BitSet store = new BitSet(memory.getWordSize());
-            for(int i = 0; i < BinaryValue.length() ; i++) {
-                if(BinaryValue.charAt(i) == word_truth) {
-                    store.set(BinaryValue.length()-i-1);
-                }
-            }
+            BitSet store = Bits.convert(value);
             memory.set(index, store);
             allRegisters.setRegister(RegisterType.MBR, store);
+        }
+        else{
+            String mess = "Wrong index";
+            logger.info(mess);
         }
     }
 
