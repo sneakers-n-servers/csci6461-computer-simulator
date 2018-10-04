@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  */
 public class Controller {
 
-    private static final Logger LOGGER = LogManager.getLogger(Controller.class);
+    private static final Logger logger = LogManager.getLogger(Controller.class);
 
     @FXML
     private TableView<Register> registerTable;
@@ -72,7 +72,7 @@ public class Controller {
 
     @FXML
     protected void runIPL() {
-        LOGGER.info("Initializing machine");
+        logger.info("Initializing machine");
         allRegisters.initializeRegisters();
     }
 
@@ -125,28 +125,42 @@ public class Controller {
     @FXML
     void execute(ActionEvent event) {
         if (IRinput.getText().length() == 16) {
-            String IRinputS = IRinput.getText().toString();
+            String IRinputS = IRinput.getText();
             Register IR = allRegisters.getRegister(RegisterType.IR);
             if (isBinary(IRinputS)) {
                 int IRinputI = Integer.parseInt(IRinputS, 2);
                 BitSet bs = Bits.convert(IRinputI);
                 IR.setData(bs);
-                Execute.excute_IR(allRegisters, memory);
+                Execute.execute_IR(allRegisters, memory);
                 registerTable.refresh();
             }
+            logger.info("Wrong instruction.");
+        }
+        else{
+            logger.info("Instruction should be 16 bits.");
         }
     }
 
     @FXML
     void MemoryStore(ActionEvent event) {
-        int memoryADDRS = Integer.parseInt(memoryADDR.getText());
-        int memoryVALUES =Integer.parseInt(memoryVALUE.getText());
-        MemoryDecorator memoryDecorator = new MemoryDecorator(memory, allRegisters);
-        memoryDecorator.store(memoryVALUES, memoryADDRS);
+        if(isNumeric(memoryVALUE.getText()) && isNumeric(memoryADDR.getText())){
+            int memoryADDRS = Integer.parseInt(memoryADDR.getText());
+            int memoryVALUES = Integer.parseInt(memoryVALUE.getText());
+            MemoryDecorator memoryDecorator = new MemoryDecorator(memory, allRegisters);
+            memoryDecorator.store(memoryVALUES, memoryADDRS);
+        }
+        else{
+            logger.info("Wrong address or value.");
+        }
     }
 
-    public static boolean isBinary(String str){
+    private static boolean isBinary(String str){
         Pattern pattern = Pattern.compile("[0-1]*");
+        return pattern.matcher(str).matches();
+    }
+    private static boolean isNumeric(String str)
+    {
+        Pattern pattern = Pattern.compile("[0-9]*");
         return pattern.matcher(str).matches();
     }
 }

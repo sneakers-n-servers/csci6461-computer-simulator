@@ -27,23 +27,14 @@ public class MemoryDecorator {
 
 
     public void store(int value, int index){
-        /**
-         * set memory[Addr] = Value
-         * for example
-         * Value = 8, BinaryValue = 1000, memory[Addr] = {3}
-         * Value = 5, BinaryValue = 101,  memory[Addr] = {0, 2}
-         * it shows which bit is '1'
-         */
         if(index >= 6 && index <= 2047){
-            /**
-             * 0-5 memory is Reserved for other use;
-             */
+             // 0-5 memory is Reserved for other use;
             String mess = String.format("Stroing %d to memory index %d", value, index);
             logger.info(mess);
             String BinaryValue = Integer.toBinaryString(value);
             //word is over 16 bits
             if (BinaryValue.length()>16) {
-                mess = "Word is over 16 bits";
+                mess = "Word is over 16 bits.";
                 logger.info(mess);
                 return;
             }
@@ -52,22 +43,22 @@ public class MemoryDecorator {
             allRegisters.setRegister(RegisterType.MBR, store);
         }
         else{
-            String mess = "Wrong index";
+            String mess = "Wrong index.";
             logger.info(mess);
         }
     }
 
     public BitSet fetch(int index) {
-        /**
-         * get memory with address
-         * set MAR and MBR in every fetch
-         */
+
+         //get memory with address
+         //set MAR and MBR in every fetch
         if(index >= 0 && index <= 2047) {
             allRegisters.setRegister(RegisterType.MAR, Bits.convert(index));
             allRegisters.setRegister(RegisterType.MBR, memory.get(index));
             return memory.get(index);
         }
         else {
+            logger.info("Fetch failed.");
             return this.memory.get(0);
         }
     }

@@ -17,10 +17,8 @@ import edu.gw.csci.simulator.registers.RegisterType;
      */
 public class Execute {
 
-	public static void excute_IR(AllRegisters allregisters, Memory memory) {
-        /**
-         * to excute the instructions in IR
-         */
+	public static void execute_IR(AllRegisters allregisters, Memory memory) {
+        //to execute the instructions in IR
 	    Register IR = allregisters.getRegister(RegisterType.IR);
 	    RegisterDecorator irRegisterDecorator = new RegisterDecorator(IR);
 	    String instruction = irRegisterDecorator.toBinaryString();
@@ -30,7 +28,7 @@ public class Execute {
 		String IX_code = instruction.substring(8,10);
 		String I_code = instruction.substring(10,11);
 		String Address_code = instruction.substring(11,16);
-		int EA = 0;
+		int EA;
 		boolean status = true;
 		EA = Decode.EA (Opcode, IX_code,I_code,Address_code,memory,allregisters);
 
