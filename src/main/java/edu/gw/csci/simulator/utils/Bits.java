@@ -43,7 +43,7 @@ public class Bits {
      * The size of the string returned varies on the size of the BitSet, therefore
      * a bit set with the value of 7, and a max of 4 bits will return "0111".
      *
-     * @param bits The BitSet to conver
+     * @param bits The BitSet to convert
      * @return The binary string representation
      */
     public static String toBinaryString(BitSet bits, int numberOfBits) {

@@ -61,11 +61,6 @@ public class Controller {
     @FXML
     private TextField memoryVALUE;
 
-    @FXML
-    private TextArea developerLog;
-
-    @FXML
-    private ComboBox<String> logLevels = new ComboBox<>();
 
     private AllRegisters allRegisters;
     private Memory memory;
@@ -85,7 +80,6 @@ public class Controller {
     private void initialize(){
         initializeRegisters();
         initializeMemory();
-        handleLogs(Level.INFO);
     }
 
     private void initializeRegisters(){
@@ -105,22 +99,6 @@ public class Controller {
         memory.initialize();
     }
 
-    private void handleLogs(Level level){
-        //Set the default list of log levels
-        String[] logValues = Arrays.stream(Level.values())
-                .map(Level::name)
-                .toArray(String[]::new);
-        Arrays.sort(logValues);
-        logLevels.getItems().addAll(logValues);
-        logLevels.setOnAction(event -> {
-            Level currentLevel = Level.valueOf(logLevels.getValue());
-            Configurator.setRootLevel(currentLevel);
-        });
-        logLevels.setValue(level.toString());
-
-        //Set the text field to append to
-        ConsoleAppender.setTextArea(developerLog);
-    }
 
     @FXML
     void execute(ActionEvent event) {
@@ -150,7 +128,7 @@ public class Controller {
             memoryDecorator.store(memoryVALUES, memoryADDRS);
         }
         else{
-            logger.info("Wrong address or value.");
+            logger.error("Wrong address or value.");
         }
     }
 
