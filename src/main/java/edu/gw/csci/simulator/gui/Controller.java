@@ -1,23 +1,21 @@
 package edu.gw.csci.simulator.gui;
 
-import edu.gw.csci.simulator.isa.Execute;
 import edu.gw.csci.simulator.memory.Memory;
-import edu.gw.csci.simulator.memory.MemoryDecorator;
+import edu.gw.csci.simulator.memory.MemoryChunk;
+import edu.gw.csci.simulator.memory.MemoryChunkDecorator;
 import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.Register;
 import edu.gw.csci.simulator.registers.RegisterDecorator;
 import edu.gw.csci.simulator.registers.RegisterType;
-import edu.gw.csci.simulator.utils.Bits;
-import edu.gw.csci.simulator.utils.ConsoleAppender;
+import edu.gw.csci.simulator.utils.BitConversion;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import org.apache.logging.log4j.Level;
+import javafx.scene.layout.BorderPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configurator;
 
 import java.util.Arrays;
 import java.util.BitSet;
@@ -32,7 +30,7 @@ import java.util.regex.Pattern;
  */
 public class Controller {
 
-    private static final Logger logger = LogManager.getLogger(Controller.class);
+    private static final Logger LOGGER = LogManager.getLogger(Controller.class);
 
     @FXML
     private TableView<Register> registerTable;
@@ -41,10 +39,25 @@ public class Controller {
     private TableColumn<Register, String> registerNameColumn;
 
     @FXML
-    private TableColumn<Register, String> binaryColumn;
+    private TableColumn<Register, String> registerBinaryColumn;
 
     @FXML
-    private TableColumn<Register, String> decimalColumn;
+    private TableColumn<Register, String> registerDecimalColumn;
+
+    @FXML
+    private Pagination memoryPagination;
+
+    @FXML
+    private TableView<MemoryChunk> memoryTable;
+
+    @FXML
+    private TableColumn<MemoryChunk, String> memoryIndexColumn;
+
+    @FXML
+    private TableColumn<MemoryChunk, String> memoryBinaryColumn;
+
+    @FXML
+    private TableColumn<MemoryChunk, String> memoryDecimalColumn;
 
     @FXML
     private Button store;
@@ -67,8 +80,9 @@ public class Controller {
 
     @FXML
     protected void runIPL() {
-        logger.info("Initializing machine");
+        LOGGER.info("Initializing machine");
         allRegisters.initializeRegisters();
+        memory.initialize();
     }
 
     public Controller(){
@@ -82,10 +96,16 @@ public class Controller {
         initializeMemory();
     }
 
+    /**
+     * This function performs the proper binding of the registers to the GUI. Each register column is set with a value
+     * factory that converts the {@link Register} to a desired format. The initial list of registers used to populate the
+     * table is generated and set. Finally, each register value is bound to refresh the table when modified.
+     * This provides convenience throughout the simulators operation.
+     */
     private void initializeRegisters(){
         registerNameColumn.setCellValueFactory(cellData -> new RegisterDecorator(cellData.getValue()).getRegisterName());
-        binaryColumn.setCellValueFactory(cellData -> new RegisterDecorator(cellData.getValue()).toBinaryObservableString());
-        decimalColumn.setCellValueFactory(cellData -> new RegisterDecorator(cellData.getValue()).toLongObservableString());
+        registerBinaryColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toBinaryObservableString());
+        registerDecimalColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toLongObservableString());
 
         ObservableList<Register> registerList = FXCollections.observableArrayList();
         for(Map.Entry<RegisterType, Register> registerEntry: allRegisters.getRegisters()){
@@ -95,10 +115,29 @@ public class Controller {
         allRegisters.bindTableView(registerTable);
     }
 
+    /**
+     * This function performs the proper binding of the memory to the GUI. Each memory column is set with a value
+     * factory that converts the {@link MemoryChunk} to a desired format. The initial list of memory locations used
+     * to populate the table is generated and set. Finally each memmory location is bound to refresh the table when modified.
+     * This provides convenience throughout the simulator's operation.
+     */
     private void initializeMemory() {
-        memory.initialize();
+        memoryIndexColumn.setCellValueFactory(cellData -> new MemoryChunkDecorator(cellData.getValue()).getIndex());
+        memoryBinaryColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toBinaryObservableString());
+        memoryDecimalColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toLongObservableString());
+        ObservableList<MemoryChunk> memoryList = FXCollections.observableArrayList();
+        memoryList.addAll(Arrays.asList(memory.getMemory()));
+        memoryTable.setItems(memoryList);
+        memory.bindTableView(memoryTable);
+        memoryPagination.setPageFactory(pageIndex -> {
+            int fromIndex = pageIndex * 32;
+            int toIndex = Math.min(fromIndex + 32, memory.getSize());
+            memoryTable.setItems(FXCollections.observableList(memoryList.subList(fromIndex, toIndex)));
+            return new BorderPane(memoryTable);
+        });
+        int maxPages = (int) Math.ceil((double) memory.getSize() / 32);
+        memoryPagination.setPageCount(maxPages);
     }
-
 
     @FXML
     void execute(ActionEvent event) {
@@ -107,28 +146,15 @@ public class Controller {
             Register IR = allRegisters.getRegister(RegisterType.IR);
             if (isBinary(IRinputS)) {
                 int IRinputI = Integer.parseInt(IRinputS, 2);
-                BitSet bs = Bits.convert(IRinputI);
+                BitSet bs = BitConversion.convert(IRinputI);
                 IR.setData(bs);
-                Execute.execute_IR(allRegisters, memory);
+                //Execute.execute_IR(allRegisters, memory);
                 registerTable.refresh();
             }
-            logger.info("Wrong instruction.");
+            LOGGER.info("Wrong instruction.");
         }
         else{
-            logger.info("Instruction should be 16 bits.");
-        }
-    }
-
-    @FXML
-    void MemoryStore(ActionEvent event) {
-        if(isNumeric(memoryVALUE.getText()) && isNumeric(memoryADDR.getText())){
-            int memoryADDRS = Integer.parseInt(memoryADDR.getText());
-            int memoryVALUES = Integer.parseInt(memoryVALUE.getText());
-            MemoryDecorator memoryDecorator = new MemoryDecorator(memory, allRegisters);
-            memoryDecorator.store(memoryVALUES, memoryADDRS);
-        }
-        else{
-            logger.error("Wrong address or value.");
+            LOGGER.info("Instruction should be 16 bits.");
         }
     }
 

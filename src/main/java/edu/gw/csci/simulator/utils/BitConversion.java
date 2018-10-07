@@ -9,7 +9,7 @@ import static java.lang.Math.toIntExact;
      *
      * @version 20180918
      */
-public class Bits {
+public class BitConversion {
 
     /**
      * Convert an integer to a BitSet

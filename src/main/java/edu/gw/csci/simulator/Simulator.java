@@ -26,7 +26,7 @@ public class Simulator extends Application {
         Parent root = loader.load();
         primaryStage.setTitle(TITLE);
         Scene scene = new Scene(root, APP_WIDTH, APP_HEIGHT);
-        scene.getStylesheets().add(getClass().getResource("/gui/application.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/gui/simulator.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
     }

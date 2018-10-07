@@ -1,26 +1,26 @@
 package edu.gw.csci.simulator.isa;
 
 
-import edu.gw.csci.simulator.utils.Bits;
+import edu.gw.csci.simulator.gui.BitDecorator;
+import edu.gw.csci.simulator.utils.BitConversion;
 import edu.gw.csci.simulator.memory.Memory;
-import edu.gw.csci.simulator.memory.MemoryDecorator;
+import edu.gw.csci.simulator.memory.AllMemory;
 import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.Register;
 import edu.gw.csci.simulator.registers.RegisterDecorator;
 import edu.gw.csci.simulator.registers.RegisterType;
 
-    /**
-     * Primary representation of the simulated computer's control elements.
-     * 
-     *
-     * @version 20180920
-     */
+/**
+ * Primary representation of the simulated computer's control elements.
+ *
+ * @version 20180920
+ */
 public class Execute {
 
 	public static void execute_IR(AllRegisters allregisters, Memory memory) {
         //to execute the instructions in IR
 	    Register IR = allregisters.getRegister(RegisterType.IR);
-	    RegisterDecorator irRegisterDecorator = new RegisterDecorator(IR);
+        RegisterDecorator irRegisterDecorator = new RegisterDecorator(IR);
 	    String instruction = irRegisterDecorator.toBinaryString();
 
 		String Opcode = instruction.substring(0,6);
@@ -36,7 +36,7 @@ public class Execute {
 		Register R = allregisters.getRegister(Decode.R_code_decode(R_code));
 		Register X = allregisters.getRegister(Decode.IX_code_decode(IX_code));
 
-        MemoryDecorator memoryDecorator = new MemoryDecorator(memory, allregisters);
+        AllMemory memoryDecorator = new AllMemory(memory, allregisters);
         RegisterDecorator rRegisterDecorator = new RegisterDecorator(R);
         RegisterDecorator xRegisterDecorator = new RegisterDecorator(X);
 
@@ -62,8 +62,7 @@ public class Execute {
         }
 		if(status) {
 			RegisterDecorator pcDecorator = new RegisterDecorator(PC);
-			PC.setData(Bits.convert(pcDecorator.toInt()+1)); //PC+1
+			PC.setData(BitConversion.convert(pcDecorator.toInt()+1)); //PC+1
 		}
-		allregisters.logRegisters();
 	}
 }

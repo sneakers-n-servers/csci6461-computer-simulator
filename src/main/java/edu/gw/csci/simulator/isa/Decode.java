@@ -1,9 +1,9 @@
 package edu.gw.csci.simulator.isa;
 
 
-import edu.gw.csci.simulator.utils.Bits;
+import edu.gw.csci.simulator.utils.BitConversion;
 import edu.gw.csci.simulator.memory.Memory;
-import edu.gw.csci.simulator.memory.MemoryDecorator;
+import edu.gw.csci.simulator.memory.AllMemory;
 import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.Register;
 import edu.gw.csci.simulator.registers.RegisterDecorator;
@@ -63,9 +63,9 @@ public class Decode {
 				//System.out.println(Integer.parseInt(Address_code,2));
 				return Integer.parseInt(Address_code, 2);
 			} else {
-				//System.out.println(Bits.utils(m.fetch(Integer.parseInt(Address_code, 2))));
-				MemoryDecorator md = new MemoryDecorator(memory, allRegisters);
-				return Bits.convert(md.fetch(Integer.parseInt(Address_code, 2)));
+				//System.out.println(BitConversion.utils(m.fetch(Integer.parseInt(Address_code, 2))));
+				AllMemory md = new AllMemory(memory, allRegisters);
+				return BitConversion.convert(md.fetch(Integer.parseInt(Address_code, 2)));
 			}
 		}
 		if (I_code.equals("0")) {
@@ -78,9 +78,9 @@ public class Decode {
                 return rd.toInt() + Integer.parseInt(Address_code, 2);
 			}
 		} else {
-            MemoryDecorator md = new MemoryDecorator(memory, allRegisters);
+            AllMemory md = new AllMemory(memory, allRegisters);
 			if (IX_code.equals("00")) {
-				return Bits.convert(md.fetch(Integer.parseInt(Address_code, 2)));
+				return BitConversion.convert(md.fetch(Integer.parseInt(Address_code, 2)));
 			} else {
                 RegisterType registerType = Decode.IX_code_decode(IX_code);
                 Register register = allRegisters.getRegister(registerType);
@@ -88,7 +88,7 @@ public class Decode {
 
                 int index = rd.toInt() +Integer.parseInt(Address_code,2);
 
-                return Bits.convert(md.fetch(index));
+                return BitConversion.convert(md.fetch(index));
 			}
 		}
 	}
