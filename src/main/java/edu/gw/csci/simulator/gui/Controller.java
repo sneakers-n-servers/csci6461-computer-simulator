@@ -85,13 +85,13 @@ public class Controller {
         memory.initialize();
     }
 
-    public Controller(){
+    public Controller() {
         this.allRegisters = new AllRegisters();
         this.memory = new Memory();
     }
 
     @FXML
-    private void initialize(){
+    private void initialize() {
         initializeRegisters();
         initializeMemory();
     }
@@ -102,13 +102,13 @@ public class Controller {
      * table is generated and set. Finally, each register value is bound to refresh the table when modified.
      * This provides convenience throughout the simulators operation.
      */
-    private void initializeRegisters(){
+    private void initializeRegisters() {
         registerNameColumn.setCellValueFactory(cellData -> new RegisterDecorator(cellData.getValue()).getRegisterName());
         registerBinaryColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toBinaryObservableString());
         registerDecimalColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toLongObservableString());
 
         ObservableList<Register> registerList = FXCollections.observableArrayList();
-        for(Map.Entry<RegisterType, Register> registerEntry: allRegisters.getRegisters()){
+        for (Map.Entry<RegisterType, Register> registerEntry : allRegisters.getRegisters()) {
             registerList.add(registerEntry.getValue());
         }
         registerTable.setItems(registerList);
@@ -152,18 +152,17 @@ public class Controller {
                 registerTable.refresh();
             }
             LOGGER.info("Wrong instruction.");
-        }
-        else{
+        } else {
             LOGGER.info("Instruction should be 16 bits.");
         }
     }
 
-    private static boolean isBinary(String str){
+    private static boolean isBinary(String str) {
         Pattern pattern = Pattern.compile("[0-1]*");
         return pattern.matcher(str).matches();
     }
-    private static boolean isNumeric(String str)
-    {
+
+    private static boolean isNumeric(String str) {
         Pattern pattern = Pattern.compile("[0-9]*");
         return pattern.matcher(str).matches();
     }

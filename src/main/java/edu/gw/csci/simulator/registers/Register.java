@@ -16,8 +16,8 @@ public class Register extends Bits {
     private final RegisterType registerType;
     private ObjectProperty<BitSet> data;
 
-    public Register(RegisterType registerType){
-        if(registerType.getSize() > 64){
+    public Register(RegisterType registerType) {
+        if (registerType.getSize() > 64) {
             throw new IllegalArgumentException("Can't instantiate register size larger than 64 bits");
         }
         this.registerType = registerType;
@@ -25,7 +25,7 @@ public class Register extends Bits {
     }
 
     @Override
-    public void initialize(){
+    public void initialize() {
         BitSet bitSet = new BitSet(registerType.getSize());
         data.set(bitSet);
     }
@@ -36,11 +36,11 @@ public class Register extends Bits {
     }
 
     @Override
-    public int getSize(){
+    public int getSize() {
         return registerType.getSize();
     }
 
-    public String getName(){
+    public String getName() {
         return registerType.toString();
     }
 
@@ -48,7 +48,7 @@ public class Register extends Bits {
         this.data.setValue(data);
     }
 
-    public ObjectProperty<BitSet> getBitSetProperty(){
+    public ObjectProperty<BitSet> getBitSetProperty() {
         return data;
     }
 }

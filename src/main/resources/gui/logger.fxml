@@ -21,6 +21,7 @@
         </HBox>
     </top>
     <center>
-        <TextArea fx:id="developerLog" layoutX="61.0" prefHeight="200.0" prefWidth="200.0" wrapText="true" editable="false"/>
+        <TextArea fx:id="developerLog" layoutX="61.0" prefHeight="200.0" prefWidth="200.0" wrapText="true"
+                  editable="false"/>
     </center>
 </BorderPane>

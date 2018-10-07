@@ -26,10 +26,10 @@ REVISION HISTORY
 package projectexceptions;
 
 public class MemoryOutOfBounds extends Exception {
-  //CONSTRUCTORS
-  public MemoryOutOfBounds(String exception_string) {
-    // Call constructor of parent Exception
-    super(exception_string);
-  }
+    //CONSTRUCTORS
+    public MemoryOutOfBounds(String exception_string) {
+        // Call constructor of parent Exception
+        super(exception_string);
+    }
 }
 

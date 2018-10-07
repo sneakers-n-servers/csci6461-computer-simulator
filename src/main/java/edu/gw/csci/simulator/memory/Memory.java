@@ -17,51 +17,51 @@ public class Memory {
     private final int size, wordSize;
     private MemoryChunk[] memory;
 
-    public Memory(int size, int wordSize){
+    public Memory(int size, int wordSize) {
         this.size = size;
         this.wordSize = wordSize;
         this.memory = new MemoryChunk[size];
-        for(int i =0; i < this.size; i++){
+        for (int i = 0; i < this.size; i++) {
             this.memory[i] = new MemoryChunk(wordSize, i);
         }
     }
 
-    public Memory(){
+    public Memory() {
         this.size = DEFAULT_MEMORY_SIZE;
         this.wordSize = DEFAULT_WORD_SIZE;
         this.memory = new MemoryChunk[this.size];
-        for(int i =0; i < this.size; i++){
+        for (int i = 0; i < this.size; i++) {
             this.memory[i] = new MemoryChunk(this.wordSize, i);
         }
     }
 
-    public void initialize(){
-        for(int i =0; i < this.size; i++){
+    public void initialize() {
+        for (int i = 0; i < this.size; i++) {
             this.memory[i].initialize();
         }
     }
 
-    public BitSet get(int index){
+    public BitSet get(int index) {
         MemoryChunk chunk = this.memory[index];
         return chunk.getData();
     }
 
-    public void set(int index, BitSet bitSet){
+    public void set(int index, BitSet bitSet) {
         MemoryChunk memoryChunk = this.memory[index];
         memoryChunk.setData(bitSet);
     }
 
-    public void bindTableView(TableView tableView){
-        for(MemoryChunk memoryChunk: memory){
+    public void bindTableView(TableView tableView) {
+        for (MemoryChunk memoryChunk : memory) {
             memoryChunk.getBitSetProperty().addListener((observable, oldValue, newValue) -> tableView.refresh());
         }
     }
 
-    public MemoryChunk[] getMemory(){
+    public MemoryChunk[] getMemory() {
         return memory;
     }
 
-    public int getSize(){
+    public int getSize() {
         return size;
     }
 }

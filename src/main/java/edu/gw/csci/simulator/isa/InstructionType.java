@@ -14,9 +14,10 @@ public enum InstructionType {
 
     private final String OpCode;
 
-    InstructionType(String OpCode){
+    InstructionType(String OpCode) {
         this.OpCode = OpCode;
     }
+
     public String getOpCode() {
         return this.OpCode;
     }

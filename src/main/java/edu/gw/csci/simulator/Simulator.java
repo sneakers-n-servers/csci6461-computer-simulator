@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Instantiate the main GUI screen and serve as parent target for user events.
+ *
  * @version 20180918
  */
 public class Simulator extends Application {

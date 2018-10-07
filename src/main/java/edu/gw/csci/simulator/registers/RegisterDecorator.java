@@ -1,6 +1,5 @@
 package edu.gw.csci.simulator.registers;
 
-import edu.gw.csci.simulator.Bits;
 import edu.gw.csci.simulator.gui.BitDecorator;
 import edu.gw.csci.simulator.utils.BitConversion;
 import javafx.beans.property.SimpleStringProperty;
@@ -15,26 +14,26 @@ import java.util.BitSet;
 public class RegisterDecorator extends BitDecorator<Register> {
 
 
-    public RegisterDecorator(Register register){
+    public RegisterDecorator(Register register) {
         super(register);
     }
 
-    public int toInt(){
+    public int toInt() {
         BitSet data = super.getBitType().getData();
         return BitConversion.convert(data);
     }
 
-    public SimpleStringProperty getRegisterName(){
+    public SimpleStringProperty getRegisterName() {
         Register register = super.getBitType();
         return new SimpleStringProperty(register.getName());
     }
 
-    public void setRegister(int i){
+    public void setRegister(int i) {
         BitSet bitSet = BitConversion.convert(i);
         super.getBitType().setData(bitSet);
     }
 
-    public String toBinaryString(){
+    public String toBinaryString() {
         Register register = super.getBitType();
         BitSet data = register.getData();
         return BitConversion.toBinaryString(data, register.getSize());

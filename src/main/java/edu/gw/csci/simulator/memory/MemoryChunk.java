@@ -11,20 +11,20 @@ public class MemoryChunk extends Bits {
     private ObjectProperty<BitSet> data;
     private final int wordSize, index;
 
-    public MemoryChunk(int wordsize, int index){
+    public MemoryChunk(int wordsize, int index) {
         this.wordSize = wordsize;
         this.index = index;
         this.data = new SimpleObjectProperty<>();
     }
 
     @Override
-    public void initialize(){
+    public void initialize() {
         BitSet bitSet = new BitSet(wordSize);
         data.set(bitSet);
     }
 
     @Override
-    public void setData(BitSet bitSet){
+    public void setData(BitSet bitSet) {
         data.setValue(bitSet);
     }
 
@@ -34,15 +34,15 @@ public class MemoryChunk extends Bits {
     }
 
     @Override
-    public BitSet getData(){
+    public BitSet getData() {
         return data.getValue();
     }
 
-    public ObjectProperty<BitSet> getBitSetProperty(){
+    public ObjectProperty<BitSet> getBitSetProperty() {
         return data;
     }
 
-    public int getIndex(){
+    public int getIndex() {
         return this.index;
     }
 }

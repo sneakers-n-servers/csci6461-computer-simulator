@@ -20,35 +20,35 @@ public class AllRegisters {
 
     public AllRegisters() {
         registerMap = new LinkedHashMap<>();
-        for(RegisterType registerType : RegisterType.values()){
+        for (RegisterType registerType : RegisterType.values()) {
             registerMap.put(registerType, new Register(registerType));
         }
     }
 
-    public void initializeRegisters(){
-        for(Register register: registerMap.values()){
+    public void initializeRegisters() {
+        for (Register register : registerMap.values()) {
             LOGGER.debug(String.format("Initialing register %s", register.getName()));
             register.initialize();
         }
     }
 
-    public void bindTableView(TableView tableView){
-        for(Register register: registerMap.values()){
+    public void bindTableView(TableView tableView) {
+        for (Register register : registerMap.values()) {
             register.getBitSetProperty().addListener((observable, oldValue, newValue) -> tableView.refresh());
         }
     }
-    
-    public Set<Map.Entry<RegisterType, Register>> getRegisters(){
+
+    public Set<Map.Entry<RegisterType, Register>> getRegisters() {
         return registerMap.entrySet();
     }
 
 
-    public void setRegister(RegisterType registerType, BitSet bitSet){
+    public void setRegister(RegisterType registerType, BitSet bitSet) {
         Register register = registerMap.get(registerType);
         register.setData(bitSet);
     }
 
-    public Register getRegister(RegisterType registerType){
+    public Register getRegister(RegisterType registerType) {
         return registerMap.get(registerType);
     }
 }

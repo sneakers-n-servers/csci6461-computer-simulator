@@ -25,16 +25,17 @@ REVISION HISTORY
 
 package edu.gw.csci.simulator.exceptions;
 
-    /**
-     * Emulation of the error when an illegal opcode is encountered.
-     * The idea is that, if caught, the response would set MFR or equivalent.
-     *
-     * @version 20180916
-     */
+/**
+ * Emulation of the error when an illegal opcode is encountered.
+ * The idea is that, if caught, the response would set MFR or equivalent.
+ *
+ * @version 20180916
+ */
 public class IllegalOpcode extends SimulatorException {
 
     /**
      * Instantiate an error for illegal opcode.
+     *
      * @param message A string that will be appended to the default backtrace.
      */
     public IllegalOpcode(String message) {

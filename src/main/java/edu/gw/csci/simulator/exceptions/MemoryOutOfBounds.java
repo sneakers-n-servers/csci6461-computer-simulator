@@ -25,18 +25,20 @@ REVISION HISTORY
 //PACKAGE MEMBERSHIP
 package edu.gw.csci.simulator.exceptions;
 
-    /**
-     * Emulation of the error when non-existent memory is addressed.
-     * The idea is that, if caught, the response would set MFR or equivalent.
-     *
-     * @version 20180916
-     */
+/**
+ * Emulation of the error when non-existent memory is addressed.
+ * The idea is that, if caught, the response would set MFR or equivalent.
+ *
+ * @version 20180916
+ */
 public class MemoryOutOfBounds extends SimulatorException {
 
-    /**
+    /**
      * Instantiate an error for memory out of bounds.
+     *
      * @param message A string that will be appended to the default backtrace.
-     */
+     */
+
     public MemoryOutOfBounds(String message) {
         super(message);
     }

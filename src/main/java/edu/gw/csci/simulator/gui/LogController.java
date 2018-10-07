@@ -18,7 +18,7 @@ public class LogController {
     private TextArea developerLog;
 
     @FXML
-    private void initialize(){
+    private void initialize() {
         initializeLogs(Level.INFO);
     }
 
@@ -30,7 +30,7 @@ public class LogController {
      *
      * @param level The desired logging level
      */
-    private void initializeLogs(Level level){
+    private void initializeLogs(Level level) {
         //Set the default list of log levels
         String[] logValues = Arrays.stream(Level.values())
                 .map(Level::name)

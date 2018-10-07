@@ -1,14 +1,13 @@
 package edu.gw.csci.simulator.isa;
 
 
-import edu.gw.csci.simulator.gui.BitDecorator;
-import edu.gw.csci.simulator.utils.BitConversion;
-import edu.gw.csci.simulator.memory.Memory;
 import edu.gw.csci.simulator.memory.AllMemory;
+import edu.gw.csci.simulator.memory.Memory;
 import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.Register;
 import edu.gw.csci.simulator.registers.RegisterDecorator;
 import edu.gw.csci.simulator.registers.RegisterType;
+import edu.gw.csci.simulator.utils.BitConversion;
 
 /**
  * Primary representation of the simulated computer's control elements.
@@ -17,24 +16,24 @@ import edu.gw.csci.simulator.registers.RegisterType;
  */
 public class Execute {
 
-	public static void execute_IR(AllRegisters allregisters, Memory memory) {
+    public static void execute_IR(AllRegisters allregisters, Memory memory) {
         //to execute the instructions in IR
-	    Register IR = allregisters.getRegister(RegisterType.IR);
+        Register IR = allregisters.getRegister(RegisterType.IR);
         RegisterDecorator irRegisterDecorator = new RegisterDecorator(IR);
-	    String instruction = irRegisterDecorator.toBinaryString();
+        String instruction = irRegisterDecorator.toBinaryString();
 
-		String Opcode = instruction.substring(0,6);
-		String R_code = instruction.substring(6,8);
-		String IX_code = instruction.substring(8,10);
-		String I_code = instruction.substring(10,11);
-		String Address_code = instruction.substring(11,16);
-		int EA;
-		boolean status = true;
-		EA = Decode.EA (Opcode, IX_code,I_code,Address_code,memory,allregisters);
+        String Opcode = instruction.substring(0, 6);
+        String R_code = instruction.substring(6, 8);
+        String IX_code = instruction.substring(8, 10);
+        String I_code = instruction.substring(10, 11);
+        String Address_code = instruction.substring(11, 16);
+        int EA;
+        boolean status = true;
+        EA = Decode.EA(Opcode, IX_code, I_code, Address_code, memory, allregisters);
 
-		Register PC = allregisters.getRegister(RegisterType.PC);
-		Register R = allregisters.getRegister(Decode.R_code_decode(R_code));
-		Register X = allregisters.getRegister(Decode.IX_code_decode(IX_code));
+        Register PC = allregisters.getRegister(RegisterType.PC);
+        Register R = allregisters.getRegister(Decode.R_code_decode(R_code));
+        Register X = allregisters.getRegister(Decode.IX_code_decode(IX_code));
 
         AllMemory memoryDecorator = new AllMemory(memory, allregisters);
         RegisterDecorator rRegisterDecorator = new RegisterDecorator(R);
@@ -60,9 +59,9 @@ public class Execute {
                 status = false;
                 break;
         }
-		if(status) {
-			RegisterDecorator pcDecorator = new RegisterDecorator(PC);
-			PC.setData(BitConversion.convert(pcDecorator.toInt()+1)); //PC+1
-		}
-	}
+        if (status) {
+            RegisterDecorator pcDecorator = new RegisterDecorator(PC);
+            PC.setData(BitConversion.convert(pcDecorator.toInt() + 1)); //PC+1
+        }
+    }
 }

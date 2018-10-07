@@ -20,7 +20,7 @@ public class BitDecorator<B extends Bits> {
     private B bitType;
     private final static String NULL_STRING = "NULL";
 
-    public BitDecorator(B bitType){
+    public BitDecorator(B bitType) {
         this.bitType = bitType;
     }
 
@@ -30,7 +30,7 @@ public class BitDecorator<B extends Bits> {
      *
      * @return The Binary String
      */
-    public SimpleStringProperty toBinaryObservableString(){
+    public SimpleStringProperty toBinaryObservableString() {
         BitSet bitSet = bitType.getData();
         String str = (bitSet == null) ? NULL_STRING : BitConversion.toBinaryString(bitSet, bitType.getSize());
         return new SimpleStringProperty(str);
@@ -43,7 +43,7 @@ public class BitDecorator<B extends Bits> {
      *
      * @return The Long String
      */
-    public SimpleStringProperty toLongObservableString(){
+    public SimpleStringProperty toLongObservableString() {
         BitSet bitSet = bitType.getData();
         String str = (bitSet == null) ? NULL_STRING : Integer.toString(BitConversion.convert(bitSet));
         return new SimpleStringProperty(str);
@@ -54,7 +54,7 @@ public class BitDecorator<B extends Bits> {
      *
      * @return The decorated object.
      */
-    public B getBitType(){
+    public B getBitType() {
         return bitType;
     }
 }
