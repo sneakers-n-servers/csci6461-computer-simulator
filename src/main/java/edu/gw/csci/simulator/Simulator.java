@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class Simulator extends Application {
 
-    private static final int APP_WIDTH = 1000, APP_HEIGHT = 750;
+    private static final int APP_WIDTH = 1500, APP_HEIGHT = 1000;
     private static final String TITLE = "CSCI 6461 Simulator";
     private static final Logger LOGGER = LogManager.getLogger(Simulator.class);
 

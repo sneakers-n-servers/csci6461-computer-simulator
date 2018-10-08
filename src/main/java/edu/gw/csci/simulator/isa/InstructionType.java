@@ -1,24 +1,88 @@
 package edu.gw.csci.simulator.isa;
 
+import java.util.HashMap;
+
 /**
  * This framework defines the properties for all instructions in the set.
  *
  * @version 20180916
  */
 public enum InstructionType {
-    LDR("000001"),
-    STR("000010"),
-    LDA("000011"),
-    LDX("101001"),
-    STX("101010");
+    //Miscellaneous
+    HLT(0),
+    TRAP(36),
 
-    private final String OpCode;
+    //Load Store instructions
+    LDR(1),
+    STR(2),
+    LDA(3),
+    LDX(41),
+    STX(42),
 
-    InstructionType(String OpCode) {
-        this.OpCode = OpCode;
+    //Transfer instructions
+    JZ(10),
+    JNE(11),
+    JCC(12),
+    JMA(13),
+    JSR(14),
+    RFS(15),
+    SOB(16),
+    JGE(17),
+
+    //Arithmetic and logic instructions
+    AMR(4),
+    SMR(5),
+    AIR(6),
+    SIR(7),
+    MLT(20),
+    DVD(21),
+    TRR(22),
+    AND(23),
+    ORR(24),
+    NOT(25),
+    SRC(31),
+    RRC(32),
+
+    //IO instructions
+    IN(61),
+    OUT(62),
+    CHK(63);
+
+    private final int opCode;
+    private final String binary;
+
+    private static HashMap<String, InstructionType> instructionMap = new HashMap<>();
+
+    static {
+        for(InstructionType it : InstructionType.values()){
+            instructionMap.put(it.binary, it);
+        }
     }
 
-    public String getOpCode() {
-        return this.OpCode;
+    InstructionType(int opCode) {
+        this.opCode = opCode;
+        this.binary = toPadded(opCode);
+    }
+
+    private static String toPadded(int opCode){
+        String binary = Integer.toBinaryString(opCode);
+        StringBuilder sb = new StringBuilder(binary);
+        sb.reverse();
+        while(sb.length() != 6){
+            sb.append("0");
+        }
+        return sb.reverse().toString();
+    }
+
+    public static InstructionType getInstructionType(String binary){
+        return instructionMap.get(binary);
+    }
+
+    public int getOpCode() {
+        return this.opCode;
+    }
+
+    public String getBinary() {
+        return binary;
     }
 }

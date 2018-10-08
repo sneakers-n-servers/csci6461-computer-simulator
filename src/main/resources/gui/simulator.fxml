@@ -4,48 +4,123 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <GridPane fx:controller="edu.gw.csci.simulator.gui.Controller"
-          xmlns:fx="http://javafx.com/fxml" hgap="10" vgap="10">
+          xmlns:fx="http://javafx.com/fxml"
+          hgap="10"
+          vgap="10">
     <padding>
         <Insets top="25" right="25" bottom="10" left="25"/>
     </padding>
-    <HBox GridPane.columnIndex="0" GridPane.rowIndex="0">
-        <Button id="ipl-button" text="IPL" onAction="#runIPL"/>
-    </HBox>
-    <TableView fx:id="registerTable" GridPane.columnIndex="0" GridPane.rowIndex="1">
-        <columns>
-            <TableColumn fx:id="registerNameColumn" prefWidth="144.0" text="Register Name"/>
-            <TableColumn fx:id="registerBinaryColumn" prefWidth="204.0" text="Binary"/>
-            <TableColumn fx:id="registerDecimalColumn" editable="false" prefWidth="201.0" sortable="false"
-                         text="Decimal"/>
-        </columns>
-        <columnResizePolicy>
-            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-        </columnResizePolicy>
-    </TableView>
-    <Pagination fx:id="memoryPagination" GridPane.columnIndex="0" GridPane.rowIndex="2" prefHeight="384.0"
-                prefWidth="531.0">
-        <fx:define>
-            <BorderPane>
-                <TableView fx:id="memoryTable">
-                    <columns>
-                        <TableColumn fx:id="memoryIndexColumn" prefWidth="144.0" text="Index"/>
-                        <TableColumn fx:id="memoryBinaryColumn" prefWidth="204.0" sortable="false" text="Binary"/>
-                        <TableColumn fx:id="memoryDecimalColumn" prefWidth="204.0" sortable="false" text="Decimal"/>
-                    </columns>
-                </TableView>
-            </BorderPane>
-        </fx:define>
-    </Pagination>
+    <columnConstraints>
+        <ColumnConstraints percentWidth="60"/>
+        <ColumnConstraints percentWidth="40"/>
+    </columnConstraints>
 
+    <!--Top Header, for IPL, etc-->
+    <BorderPane styleClass="pane" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" prefHeight="50">
+        <center>
+            <HBox>
+                <Label styleClass="pane-header" alignment="TOP_LEFT">
+                    Initialize
+                </Label>
+                <Button id="ipl-button" text="IPL" onAction="#runIPL"/>
+            </HBox>
+        </center>
+    </BorderPane>
+
+    <!-- Registers Pane -->
+    <BorderPane styleClass="pane" GridPane.columnIndex="0" GridPane.rowIndex="1">
+        <top>
+            <HBox>
+                <Label styleClass="pane-header" alignment="TOP_LEFT">
+                    Registers
+                </Label>
+                <BorderPane.margin>
+                    <Insets bottom="10"/>
+                </BorderPane.margin>
+            </HBox>
+        </top>
+        <center>
+            <TableView fx:id="registerTable">
+                <columns>
+                    <TableColumn fx:id="registerNameColumn" prefWidth="144.0" text="Register Name"/>
+                    <TableColumn fx:id="registerBinaryColumn" prefWidth="204.0" text="Binary"/>
+                    <TableColumn fx:id="registerDecimalColumn" editable="false" prefWidth="201.0" sortable="false"
+                                 text="Decimal"/>
+                </columns>
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                </columnResizePolicy>
+            </TableView>
+        </center>
+    </BorderPane>
+
+    <!-- Memory Pane -->
+    <BorderPane styleClass="pane" GridPane.columnIndex="0" GridPane.rowIndex="2">
+        <top>
+            <HBox>
+                <Label styleClass="pane-header" alignment="TOP_LEFT">
+                    Memory
+                </Label>
+                <BorderPane.margin>
+                    <Insets bottom="10"/>
+                </BorderPane.margin>
+            </HBox>
+        </top>
+        <center>
+            <Pagination fx:id="memoryPagination" prefHeight="384.0"
+                        prefWidth="531.0">
+                <fx:define>
+                    <BorderPane>
+                        <TableView fx:id="memoryTable">
+                            <columns>
+                                <TableColumn fx:id="memoryIndexColumn" prefWidth="144.0" text="Index"/>
+                                <TableColumn fx:id="memoryBinaryColumn" prefWidth="204.0" sortable="false" text="Binary"/>
+                                <TableColumn fx:id="memoryDecimalColumn" prefWidth="204.0" sortable="false" text="Decimal"/>
+                            </columns>
+                            <columnResizePolicy>
+                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                            </columnResizePolicy>
+                        </TableView>
+                    </BorderPane>
+                </fx:define>
+            </Pagination>
+        </center>
+    </BorderPane>
 
     <!--Exececute Instruction-->
-    <TextField fx:id="IRinput" layoutX="734.0" layoutY="155.0" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-    <Button fx:id="execute" layoutX="734.0" layoutY="214.0" mnemonicParsing="false" onAction="#execute" text="Execute"
-            GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+    <!--<TextField fx:id="IRinput" layoutX="734.0" layoutY="155.0" GridPane.columnIndex="1" GridPane.rowIndex="0"/>-->
+    <!--<Button fx:id="execute" layoutX="734.0" layoutY="214.0" mnemonicParsing="false" onAction="#execute" text="Execute"-->
+            <!--GridPane.columnIndex="2" GridPane.rowIndex="0"/>-->
 
     <!--<Label text="Memory" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
     <TextField fx:id="memoryADDR" prefHeight="59.0" prefWidth="100.0" text="ADDR" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
     <TextField fx:id="memoryVALUE" prefHeight="59.0" prefWidth="70.0" text="VALUE" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
     <Button fx:id="store" mnemonicParsing="false" onAction="#MemoryStore" text="Store" GridPane.columnIndex="2" GridPane.rowIndex="2"/>-->
-    <fx:include source="logger.fxml" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+
+    <!-- Program Runner-->
+    <BorderPane styleClass="pane" GridPane.columnIndex="1" GridPane.rowIndex="1">
+        <top>
+            <HBox>
+                <Label styleClass="pane-header" alignment="TOP_LEFT">
+                    Program Execution
+                </Label>
+                <!--The region acts as a spacer for left alight, right align-->
+                <Region HBox.hgrow="ALWAYS"/>
+                <ComboBox/>
+                <Button id="run-button" text="Run"/>
+                <BorderPane.margin>
+                    <Insets bottom="10"/>
+                </BorderPane.margin>
+            </HBox>
+        </top>
+        <center>
+            <HBox>
+                <TextArea/>
+                <TextArea/>
+            </HBox>
+        </center>
+    </BorderPane>
+
+    <!-- Developer Pane-->
+    <fx:include source="logger.fxml" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 </GridPane>

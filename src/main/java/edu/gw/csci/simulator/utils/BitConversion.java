@@ -19,8 +19,7 @@ public class BitConversion {
      * @return The converted bitset
      */
     public static BitSet convert(int value) {
-        BitSet bitSet = BitSet.valueOf(new long[]{value});
-        return bitSet;
+        return BitSet.valueOf(new long[]{value});
     }
 
 
