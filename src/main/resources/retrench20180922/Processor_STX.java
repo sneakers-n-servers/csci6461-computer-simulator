@@ -59,7 +59,7 @@ public class Processor_STX {
     }
     // now actually do stuff
     switch (branch_id) {
-      case 0:
+      case 1:
         // no indirection; no indexing
         // R --> LRR --> MAR |--> MBR
         if (remaining_ticks_return <= 0) {
@@ -97,7 +97,7 @@ public class Processor_STX {
           // see 'finally' for corresponding: remaining_ticks_return--;
         }
         break;
-      case 1:
+      case 0:
         // no indirection; yes indexing
         // R --> LRR --> LRR + idx --> MAR |--> MBR
         if (MODULE_DEBUG_FLAG == 1) {
@@ -109,7 +109,7 @@ public class Processor_STX {
         }
         remaining_ticks_return--;
         break;
-      case 2:
+      case 3:
         // yes indirection; no indexing
         // R --> LRR --> MAR |--> MBR --> LRR --> MAR |--> MBR
         if (remaining_ticks_return <= 0) {
@@ -175,12 +175,12 @@ public class Processor_STX {
           processor.next_MBR = memory_words[0];
           processor.set_memory = 1;
           if (MODULE_DEBUG_FLAG == 1) {
-            System.out.println("Set MBR <-- (R|X[] = " + processor.next_MBR + ").");
+            System.out.println("Set MBR <-- (X[" + instruction_fields[2] + "] = " + processor.next_MBR + ").");
           }
           // see 'finally' for corresponding: remaining_ticks_return--;
         }
         break;
-      case 3:
+      case 2:
         // yes indirection; yes indexing
         // R --> LRR --> MAR |--> MBR --> LRR --> LRR + idx --> MAR |--> MBR
         if (MODULE_DEBUG_FLAG == 1) {

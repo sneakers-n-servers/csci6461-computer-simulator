@@ -262,19 +262,23 @@ public class Processor {
         // LDR
         if (MODULE_DEBUG_FLAG == 1) {
           System.out.println("Executing LDR: R[" + instruction_fields[1]
-                  + "] <-- MEM[" + address_field + "].");
+                  + "] <-- MEM[~" + address_field + "].");
         }
-        pipeline_MAR_available = 0;
-        increment_PC_flag = 0;
         remaining_ticks = Processor_LDR.executeLDR(instruction_fields, remaining_ticks, this);
-        if (remaining_ticks <= 1) {
-          // rewind the PC by two positions to account for the pipeline
-          // i.e., by the time this instruction started, PC was two ahead of IR
+        if (remaining_ticks > 1) {
+          pipeline_MAR_available = 0;
+          increment_PC_flag = 0;
+          flushPipeline_IR_valid_flag();
+        } else if (remaining_ticks == 1) {
+          // rewind the PC to account for the pipeline
+          // i.e., by the time this instruction started, PC was ahead of IR
           // PC --> MAR |--(-2)--> MBR --(-1)--> IR (now)
+          registers.decrementPC();
           registers.decrementPC();
           registers.decrementPC();
           // signal to the pipeline that MAR is usable to PC
           pipeline_MAR_available = 1;
+          increment_PC_flag = 1;
         }
         if (MODULE_DEBUG_FLAG == 1) {
           System.out.println("Ticks remaining = " + remaining_ticks + ".");
@@ -283,20 +287,24 @@ public class Processor {
       case 33:
         // LDX
         if (MODULE_DEBUG_FLAG == 1) {
-          System.out.println("Executing LDX: X[" + instruction_fields[1]
-                  + "] <-- MEM[" + address_field + "].");
+          System.out.println("Executing LDX: X[" + instruction_fields[2]
+                  + "] <-- MEM[~" + address_field + "].");
         }
-        pipeline_MAR_available = 0;
-        increment_PC_flag = 0;
         remaining_ticks = Processor_LDX.executeLDX(instruction_fields, remaining_ticks, this);
-        if (remaining_ticks <= 1) {
-          // rewind the PC by two positions to account for the pipeline
-          // i.e., by the time this instruction started, PC was two ahead of IR
+        if (remaining_ticks > 1) {
+          pipeline_MAR_available = 0;
+          increment_PC_flag = 0;
+          flushPipeline_IR_valid_flag();
+        } else if (remaining_ticks == 1) {
+          // rewind the PC to account for the pipeline
+          // i.e., by the time this instruction started, PC was ahead of IR
           // PC --> MAR |--(-2)--> MBR --(-1)--> IR (now)
+          registers.decrementPC();
           registers.decrementPC();
           registers.decrementPC();
           // signal to the pipeline that MAR is usable to PC
           pipeline_MAR_available = 1;
+          increment_PC_flag = 1;
         }
         if (MODULE_DEBUG_FLAG == 1) {
           System.out.println("Ticks remaining = " + remaining_ticks + ".");
@@ -306,19 +314,23 @@ public class Processor {
         // STR
         if (MODULE_DEBUG_FLAG == 1) {
           System.out.println("Executing STR: R[" + general_purpose_register
-                  + "] --> MEM[" + address_field + "].");
+                  + "] --> MEM[~" + address_field + "].");
         }
-        pipeline_MAR_available = 0;
-        increment_PC_flag = 0;
         remaining_ticks = Processor_STR.executeSTR(instruction_fields, remaining_ticks, this);
-        if (remaining_ticks <= 0) {
-          // rewind the PC by two positions to account for the pipeline
-          // i.e., by the time this instruction started, PC was two ahead of IR
+        if (remaining_ticks > 1) {
+          pipeline_MAR_available = 0;
+          increment_PC_flag = 0;
+          flushPipeline_IR_valid_flag();
+        } else if (remaining_ticks <= 0) {
+          // rewind the PC to account for the pipeline
+          // i.e., by the time this instruction started, PC was ahead of IR
           // PC --> MAR |--(-2)--> MBR --(-1)--> IR (now)
+          registers.decrementPC();
           registers.decrementPC();
           registers.decrementPC();
           // signal to the pipeline that MAR is usable to PC
           pipeline_MAR_available = 1;
+          increment_PC_flag = 1;
         }
         if (MODULE_DEBUG_FLAG == 1) {
           System.out.println("Ticks remaining = " + remaining_ticks + ".");
@@ -328,19 +340,23 @@ public class Processor {
         // STX
         if (MODULE_DEBUG_FLAG == 1) {
           System.out.println("Executing STX: X[" + general_purpose_register
-                  + "] --> MEM[" + address_field + "].");
+                  + "] --> MEM[~" + address_field + "].");
         }
-        pipeline_MAR_available = 0;
-        increment_PC_flag = 0;
         remaining_ticks = Processor_STX.executeSTX(instruction_fields, remaining_ticks, this);
-        if (remaining_ticks <= 0) {
-          // rewind the PC by two positions to account for the pipeline
-          // i.e., by the time this instruction started, PC was two ahead of IR
+        if (remaining_ticks > 1) {
+          pipeline_MAR_available = 0;
+          increment_PC_flag = 0;
+          flushPipeline_IR_valid_flag();
+        } else if (remaining_ticks <= 0) {
+          // rewind the PC to account for the pipeline
+          // i.e., by the time this instruction started, PC was ahead of IR
           // PC --> MAR |--(-2)--> MBR --(-1)--> IR (now)
+          registers.decrementPC();
           registers.decrementPC();
           registers.decrementPC();
           // signal to the pipeline that MAR is usable to PC
           pipeline_MAR_available = 1;
+          increment_PC_flag = 1;
         }
         if (MODULE_DEBUG_FLAG == 1) {
           System.out.println("Ticks remaining = " + remaining_ticks + ".");
@@ -404,6 +420,13 @@ public class Processor {
       }
     }
     return effective_address;
+  }
+
+  // manage pipeline_IR_valid_flag
+  public void flushPipeline_IR_valid_flag() {
+    for (int i = 0; i < pipeline_IR_valid_flag.length; i++){
+      pipeline_IR_valid_flag[i] = 0;
+    }
   }
 
   // memory control unit

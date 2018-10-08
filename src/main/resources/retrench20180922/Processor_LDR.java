@@ -266,7 +266,7 @@ public class Processor_LDR {
             memory_words[0] = processor.registers.getX(instruction_fields[2]);
           } catch(projectexceptions.MemoryOutOfBounds bound_error) {
             if (MODULE_DEBUG_FLAG == 1) {
-              System.out.println("LDR/X had problem accessing X[" + instruction_fields[2] + "].");
+              System.out.println("LDR had problem accessing X[" + instruction_fields[2] + "].");
               bound_error.printStackTrace();
             }
           } finally {
@@ -301,7 +301,7 @@ public class Processor_LDR {
           // MBR --> R
           memory_words[0] = processor.next_MBR;
           if (MODULE_DEBUG_FLAG == 1) {
-            System.out.println("Set R|X[] <-- (MBR = " + processor.next_MBR + ").");
+            System.out.println("Set R[] <-- (MBR = " + processor.next_MBR + ").");
           }
           try {
             processor.registers.setR(memory_words, instruction_fields[1]);

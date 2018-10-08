@@ -264,7 +264,7 @@ public class Processor_STR {
           processor.next_MBR = memory_words[0];
           processor.set_memory = 1;
           if (MODULE_DEBUG_FLAG == 1) {
-            System.out.println("Set MBR <-- (R|X[] = " + processor.next_MBR + ").");
+            System.out.println("Set MBR <-- (R[" + instruction_fields[1] + "] = " + processor.next_MBR + ").");
           }
           // see 'finally' for corresponding: remaining_ticks_return--;
         }
@@ -368,7 +368,7 @@ public class Processor_STR {
           processor.next_MBR = memory_words[0];
           processor.set_memory = 1;
           if (MODULE_DEBUG_FLAG == 1) {
-            System.out.println("Set MBR <-- (R|X[] = " + processor.next_MBR + ").");
+            System.out.println("Set MBR <-- (R[" + instruction_fields[1] + "] = " + processor.next_MBR + ").");
           }
           // see 'finally' for corresponding: remaining_ticks_return--;
         }

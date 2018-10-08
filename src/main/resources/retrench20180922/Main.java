@@ -34,7 +34,7 @@ public class Main {
   private static final int MEMORY_SIZE = 64;
   // debug constants
   private static final int MODULE_DEBUG_FLAG = 1;
-  private static final int CLOCK_STEPS = 12;
+  private static final int CLOCK_STEPS = 64;
 
 
   // professor's program
@@ -49,7 +49,7 @@ public class Main {
                                                               3869,
                                                               2902,
                                                               1588,
-                                                              2673,
+                                                              2681,
                                                               34932,
                                                               34885};
 
@@ -58,8 +58,21 @@ public class Main {
 
   //BEGIN
   public static void main(String[] args) {
+    // initialize run ticks; -1 == forever
+    int run_time_clock_ticks = CLOCK_STEPS;
+    // determine if finite number of clock ticks was specified
+    if ((args != null) && (args.length == 1)) {
+      try {
+        // from command line
+        run_time_clock_ticks = Integer.parseInt(args[0]);
+      } catch(NumberFormatException argument_error) {
+        argument_error.printStackTrace();
+      }
+    }
     // temporary storage to display memory
     int[] memory_display = new int[MEMORY_SIZE];
+
+    // go
     // create memory
     Memory memory = new Memory(MEMORY_SIZE);
     // prepare processor
@@ -79,7 +92,7 @@ public class Main {
     
     // demo
     sim_computer.registers.setPC(6);
-    for (int i = 0; i < CLOCK_STEPS; i++) {
+    for (int i = 0; i < run_time_clock_ticks; i++) {
       /*
       if (MODULE_DEBUG_FLAG == 1) {
         if (sim_computer.registers.getPC() == program_start_address) {
