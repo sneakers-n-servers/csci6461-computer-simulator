@@ -9,8 +9,8 @@ public class Decoder {
     private HashMap<InstructionType, InstructionFactory> instructions = new HashMap<>();
 
     public Decoder(){
-        instructions.put(InstructionType.HLT, new InstructionFactory<>(HLT.class));
-        instructions.put(InstructionType.TRAP, new InstructionFactory<>(TRAP.class));
+        instructions.put(InstructionType.HLT, new InstructionFactory<>(HLT::new));
+        instructions.put(InstructionType.TRAP, new InstructionFactory<>(TRAP::new));
     }
 
     public InstructionFactory getInstructionFactory(InstructionType instructionType){

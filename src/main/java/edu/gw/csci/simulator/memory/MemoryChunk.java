@@ -11,8 +11,8 @@ public class MemoryChunk implements Bits {
     private ObjectProperty<BitSet> data;
     private final int wordSize, index;
 
-    public MemoryChunk(int wordsize, int index) {
-        this.wordSize = wordsize;
+    public MemoryChunk(int wordSize, int index) {
+        this.wordSize = wordSize;
         this.index = index;
         this.data = new SimpleObjectProperty<>();
     }

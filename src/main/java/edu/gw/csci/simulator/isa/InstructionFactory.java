@@ -1,18 +1,18 @@
 package edu.gw.csci.simulator.isa;
 
-import java.lang.reflect.InvocationTargetException;
+import java.util.function.Supplier;
 
 public class InstructionFactory<I extends Instruction> {
 
-    private Class<I> clazz;
+    private Supplier<I> instruction;
 
-    public InstructionFactory(Class<I> clazz){
-        this.clazz = clazz;
+    public InstructionFactory(Supplier<I> instruction){
+        this.instruction = instruction;
     }
 
-    public I create(String data) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        I instance = clazz.getDeclaredConstructor().newInstance();
-        instance.setData(data);
-        return instance;
+    public I create(String data){
+        I i = instruction.get();
+        i.setData(data);
+        return i;
     }
 }
