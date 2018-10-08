@@ -241,7 +241,7 @@ public class Registers {
   }
   public void decrementPC() {
     //TBD implement a modulo here and probably bound-check
-    if (PC >=1 ) {
+    if (PC >= 1 ) {
       PC -= 1;
     }
     // apply mask

@@ -34,7 +34,7 @@ public class Main {
   private static final int MEMORY_SIZE = 64;
   // debug constants
   private static final int MODULE_DEBUG_FLAG = 1;
-  private static final int CLOCK_STEPS = 64;
+  private static final int CLOCK_STEPS = 12;
 
 
   // professor's program
