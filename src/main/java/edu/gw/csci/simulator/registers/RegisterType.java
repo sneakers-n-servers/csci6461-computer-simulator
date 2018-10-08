@@ -1,10 +1,10 @@
 package edu.gw.csci.simulator.registers;
 
-    /**
-     * This framework defines the properties for all registers.
-     *
-     * @version 20180916
-     */
+/**
+ * This framework defines the properties for all registers.
+ *
+ * @version 20180916
+ */
 public enum RegisterType {
 
     PC("Program Counter", 12, ""),
@@ -25,7 +25,7 @@ public enum RegisterType {
     private final int size;
     private final String binarycode;
 
-    RegisterType(String description, int size, String binarycode){
+    RegisterType(String description, int size, String binarycode) {
         this.description = description;
         this.size = size;
         this.binarycode = binarycode;

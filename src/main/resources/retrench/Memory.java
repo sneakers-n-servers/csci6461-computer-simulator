@@ -24,7 +24,7 @@ REVISION HISTORY
 
 //IMPORT
 
-import edu.gw.csci.simulator.exceptions.*;
+import edu.gw.csci.simulator.exceptions.MemoryOutOfBounds;
 
 //BEGIN
 public class Memory {

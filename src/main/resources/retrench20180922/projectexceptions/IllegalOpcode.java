@@ -26,10 +26,10 @@ REVISION HISTORY
 package projectexceptions;
 
 public class IllegalOpcode extends Exception {
-  //CONSTRUCTORS
-  public IllegalOpcode(String exception_string) {
-    // Call constructor of parent Exception
-    super(exception_string);
-  }
+    //CONSTRUCTORS
+    public IllegalOpcode(String exception_string) {
+        // Call constructor of parent Exception
+        super(exception_string);
+    }
 }
 
