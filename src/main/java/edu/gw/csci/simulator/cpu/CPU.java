@@ -29,16 +29,7 @@ public class CPU {
             InstructionType instructionType = InstructionType.getInstructionType(typeString);
             InstructionFactory instructionFactory = decoder.getInstructionFactory(instructionType);
 
-            Instruction instruction;
-            try {
-                instruction = instructionFactory.create(dataString);
-            } catch (Exception e) {
-                //At this point the only thing that can go wrong are reflection errors
-                //We should handle the exception here, but it programatic, and unrelated to
-                //the machine's state
-                e.printStackTrace();
-                return;
-            }
+            Instruction instruction = instructionFactory.create(dataString);
             instruction.execute(memory, registers);
         }
     }
