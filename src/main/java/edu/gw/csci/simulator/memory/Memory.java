@@ -29,15 +29,15 @@ public class Memory {
     public Memory() {
         this.size = DEFAULT_MEMORY_SIZE;
         this.wordSize = DEFAULT_WORD_SIZE;
-        this.memory = new MemoryChunk[this.size];
+        this.memory = new MemoryChunk[DEFAULT_MEMORY_SIZE];
         for (int i = 0; i < this.size; i++) {
-            this.memory[i] = new MemoryChunk(this.wordSize, i);
+            this.memory[i] = new MemoryChunk(DEFAULT_WORD_SIZE, i);
         }
     }
 
     public void initialize() {
-        for (int i = 0; i < this.size; i++) {
-            this.memory[i].initialize();
+        for(MemoryChunk memoryChunk : memory){
+            memoryChunk.initialize();
         }
     }
 
@@ -63,5 +63,9 @@ public class Memory {
 
     public int getSize() {
         return size;
+    }
+
+    public int getWordSize() {
+        return wordSize;
     }
 }
