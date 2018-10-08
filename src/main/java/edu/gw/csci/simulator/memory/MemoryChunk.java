@@ -6,7 +6,7 @@ import javafx.beans.property.SimpleObjectProperty;
 
 import java.util.BitSet;
 
-public class MemoryChunk extends Bits {
+public class MemoryChunk implements Bits {
 
     private ObjectProperty<BitSet> data;
     private final int wordSize, index;

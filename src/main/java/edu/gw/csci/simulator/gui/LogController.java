@@ -12,7 +12,7 @@ import java.util.Arrays;
 public class LogController {
 
     @FXML
-    private ComboBox<String> logLevels = new ComboBox<>();
+    private ComboBox<String> logLevels;
 
     @FXML
     private TextArea developerLog;

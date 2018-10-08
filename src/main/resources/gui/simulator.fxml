@@ -87,17 +87,7 @@
         </center>
     </BorderPane>
 
-    <!--Exececute Instruction-->
-    <!--<TextField fx:id="IRinput" layoutX="734.0" layoutY="155.0" GridPane.columnIndex="1" GridPane.rowIndex="0"/>-->
-    <!--<Button fx:id="execute" layoutX="734.0" layoutY="214.0" mnemonicParsing="false" onAction="#execute" text="Execute"-->
-            <!--GridPane.columnIndex="2" GridPane.rowIndex="0"/>-->
-
-    <!--<Label text="Memory" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-    <TextField fx:id="memoryADDR" prefHeight="59.0" prefWidth="100.0" text="ADDR" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-    <TextField fx:id="memoryVALUE" prefHeight="59.0" prefWidth="70.0" text="VALUE" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-    <Button fx:id="store" mnemonicParsing="false" onAction="#MemoryStore" text="Store" GridPane.columnIndex="2" GridPane.rowIndex="2"/>-->
-
-    <!-- Program Runner-->
+    <!-- Program Runner Pane-->
     <BorderPane styleClass="pane" GridPane.columnIndex="1" GridPane.rowIndex="1">
         <top>
             <HBox>
@@ -106,8 +96,9 @@
                 </Label>
                 <!--The region acts as a spacer for left alight, right align-->
                 <Region HBox.hgrow="ALWAYS"/>
-                <ComboBox/>
-                <Button id="run-button" text="Run"/>
+                <ComboBox fx:id="programNameSelector"/>
+                <Button id="save-button" text="Save" onAction="#saveProgram"/>
+                <Button id="run-button" text="Run" onAction="#runProgram"/>
                 <BorderPane.margin>
                     <Insets bottom="10"/>
                 </BorderPane.margin>
@@ -115,8 +106,8 @@
         </top>
         <center>
             <HBox>
-                <TextArea/>
-                <TextArea/>
+                <TextArea fx:id="programContents"/>
+                <TextArea fx:id="consoleInput"/>
             </HBox>
         </center>
     </BorderPane>

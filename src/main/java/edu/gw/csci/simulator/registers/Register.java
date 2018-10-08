@@ -11,7 +11,7 @@ import java.util.BitSet;
  *
  * @version 20180918
  */
-public class Register extends Bits {
+public class Register implements Bits {
 
     private final RegisterType registerType;
     private ObjectProperty<BitSet> data;

@@ -1,5 +1,7 @@
 package edu.gw.csci.simulator.gui;
 
+import edu.gw.csci.simulator.cpu.CPU;
+import edu.gw.csci.simulator.isa.Program;
 import edu.gw.csci.simulator.memory.Memory;
 import edu.gw.csci.simulator.memory.MemoryChunk;
 import edu.gw.csci.simulator.memory.MemoryChunkDecorator;
@@ -7,10 +9,8 @@ import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.Register;
 import edu.gw.csci.simulator.registers.RegisterDecorator;
 import edu.gw.csci.simulator.registers.RegisterType;
-import edu.gw.csci.simulator.utils.BitConversion;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -18,9 +18,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Arrays;
-import java.util.BitSet;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
+import java.util.Set;
 
 /**
  * This class "connects" the GUI to the simulated computer.
@@ -60,23 +60,18 @@ public class Controller {
     private TableColumn<MemoryChunk, String> memoryDecimalColumn;
 
     @FXML
-    private Button store;
+    private ComboBox<String> programNameSelector;
 
     @FXML
-    private Button execute;
+    private TextArea programContents;
 
     @FXML
-    private TextField IRinput;
-
-    @FXML
-    private TextField memoryADDR;
-
-    @FXML
-    private TextField memoryVALUE;
-
+    private TextArea consoleInput;
 
     private AllRegisters allRegisters;
     private Memory memory;
+    private HashMap<String, Program> programs;
+    private CPU cpu;
 
     @FXML
     protected void runIPL() {
@@ -88,12 +83,15 @@ public class Controller {
     public Controller() {
         this.allRegisters = new AllRegisters();
         this.memory = new Memory();
+        this.programs = new HashMap<>();
+        this.cpu = new CPU(memory, allRegisters);
     }
 
     @FXML
     private void initialize() {
         initializeRegisters();
         initializeMemory();
+        initializePrograms();
     }
 
     /**
@@ -139,31 +137,94 @@ public class Controller {
         memoryPagination.setPageCount(maxPages);
     }
 
-    @FXML
-    void execute(ActionEvent event) {
-        if (IRinput.getText().length() == 16) {
-            String IRinputS = IRinput.getText();
-            Register IR = allRegisters.getRegister(RegisterType.IR);
-            if (isBinary(IRinputS)) {
-                int IRinputI = Integer.parseInt(IRinputS, 2);
-                BitSet bs = BitConversion.convert(IRinputI);
-                IR.setData(bs);
-                //Execute.execute_IR(allRegisters, memory);
-                registerTable.refresh();
+    /**
+     * This function initializes {@link Program}s within the simulator. The default
+     * program is named FreeRun, which initializes empty, and left to the console
+     * user to define. Switching between programs clears the contents of the text area
+     * and loads the contents of newly selected program.
+     */
+    private void initializePrograms(){
+        //We need to pre-populate Program1, so this code will change
+        Program freeRun = new Program("FreeRun");
+        programs.put("FreeRun", freeRun);
+
+        Program program1 = new Program("Program1");
+        programs.put("Program1", program1);
+
+        //Set the ComboBox to all of our programs
+        Set<String> allPrograms = programs.keySet();
+        String[] programNames = new String[allPrograms.size()];
+        programNames = allPrograms.toArray(programNames);
+        Arrays.sort(programNames);
+        programNameSelector.getItems().addAll(programNames);
+
+        //Set the default program
+        programNameSelector.setValue(freeRun.getName());
+
+        //Handle switching programs
+        programNameSelector.setOnAction(event -> {
+            programContents.clear();
+            String programName = programNameSelector.getValue();
+            LOGGER.info(String.format("Loading program %s", programName));
+            Program selected = programs.get(programName);
+            for(String line : selected.getLines()){
+                programContents.appendText(line + "\n");
             }
-            LOGGER.info("Wrong instruction.");
-        } else {
-            LOGGER.info("Instruction should be 16 bits.");
+        });
+    }
+
+    @FXML
+    private void runProgram(){
+        String programName = programNameSelector.getValue();
+        Program program = programs.get(programName);
+        cpu.setProgram(program);
+        cpu.execute();
+    }
+
+    /**
+     * We define a save program routine to overcome the fact that JavaFX wants
+     * to execute a routine every time the program's contents are modified. Adding a timer
+     * would resolve this issue, but doing so adds a complication with little
+     * benefit. Having an explicit save function makes sense, and overcomes this hurdle.
+     */
+    @FXML
+    private void saveProgram(){
+        String name = programNameSelector.getValue();
+        LOGGER.info(String.format("Saving the contents of program %s", name));
+        String contents = programContents.textProperty().get();
+        Program program = programs.get(name);
+        program.clearContents();
+        String[] lines = contents.split("\n");
+        for(String line : lines){
+            program.appendLine(line);
         }
     }
 
-    private static boolean isBinary(String str) {
-        Pattern pattern = Pattern.compile("[0-1]*");
-        return pattern.matcher(str).matches();
-    }
+//    @FXML
+//    void execute(ActionEvent event) {
+//        if (IRinput.getText().length() == 16) {
+//            String IRinputS = IRinput.getText();
+//            Register IR = allRegisters.getRegister(RegisterType.IR);
+//            if (isBinary(IRinputS)) {
+//                int IRinputI = Integer.parseInt(IRinputS, 2);
+//                BitSet bs = BitConversion.convert(IRinputI);
+//                IR.setData(bs);
+//                //Execute.execute_IR(allRegisters, memory);
+//                registerTable.refresh();
+//            }
+//            LOGGER.info("Wrong instruction.");
+//        } else {
+//            LOGGER.info("Instruction should be 16 bits.");
+//        }
+//    }
 
-    private static boolean isNumeric(String str) {
-        Pattern pattern = Pattern.compile("[0-9]*");
-        return pattern.matcher(str).matches();
-    }
+//    private static boolean isBinary(String str) {
+//        Pattern pattern = Pattern.compile("[0-1]*");
+//        return pattern.matcher(str).matches();
+//    }
+//
+//    private static boolean isNumeric(String str) {
+//        Pattern pattern = Pattern.compile("[0-9]*");
+//        return pattern.matcher(str).matches();
+//    }
 }
