@@ -56,4 +56,9 @@ public class BitConversion {
         IntStream.range(0, numberOfBits).mapToObj(i -> bits.get(i) ? '1' : '0').forEach(builder::append);
         return builder.reverse().toString();
     }
+
+    public static String toBinaryString(int value, int numberOfBits){
+        BitSet bits = convert(value);
+        return toBinaryString(bits,numberOfBits);
+    }
 }
