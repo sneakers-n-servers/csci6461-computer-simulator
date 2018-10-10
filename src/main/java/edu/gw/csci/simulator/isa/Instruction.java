@@ -7,6 +7,7 @@ import edu.gw.csci.simulator.registers.AllRegisters;
 public interface Instruction {
 
     void execute(AllMemory memory, AllRegisters registers);
+
     void setData(String data);
 
 }
