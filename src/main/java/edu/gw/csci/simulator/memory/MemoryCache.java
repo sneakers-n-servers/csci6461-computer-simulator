@@ -47,4 +47,16 @@ public class MemoryCache {
     public long getSize(){
         return this.cache.size();
     }
+
+    public long getTotalRequests() {
+        return totalRequests;
+    }
+
+    public long getCacheMiss() {
+        return cacheMiss;
+    }
+
+    public long getCacheHit() {
+        return cacheHit;
+    }
 }

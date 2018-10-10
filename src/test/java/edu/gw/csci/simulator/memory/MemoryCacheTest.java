@@ -1,10 +1,9 @@
 package edu.gw.csci.simulator.memory;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.BitSet;
-
-import static org.junit.Assert.*;
 
 public class MemoryCacheTest {
 
@@ -12,10 +11,11 @@ public class MemoryCacheTest {
     public void test1(){
        MemoryCache cache = new MemoryCache(16);
        BitSet b = new BitSet(7);
-       for(int i = 0; i < 20; i++){
+       for(int i = 0; i < 16; i++){
            cache.put(i, b);
            cache.get(i);
        }
-        System.out.println(cache.getSize());
+       Assert.assertEquals(16, cache.getTotalRequests());
+       Assert.assertEquals(16, cache.getCacheHit());
     }
 }
