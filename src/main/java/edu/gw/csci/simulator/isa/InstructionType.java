@@ -67,15 +67,6 @@ public enum InstructionType {
     }
 
     private static String toPadded(int opCode) {
-        //why just use functions in BitConversion
-        /*String binary = Integer.toBinaryString(opCode);
-         StringBuilder sb = new StringBuilder(binary);
-         sb.reverse();
-         while(sb.length() != 6){
-         sb.append("0");
-         }
-         return sb.reverse().toString();
-         */
         return BitConversion.toBinaryString(opCode,6);
     }
 
