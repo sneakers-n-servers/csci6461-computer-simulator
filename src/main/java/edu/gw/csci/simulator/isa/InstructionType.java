@@ -1,5 +1,7 @@
 package edu.gw.csci.simulator.isa;
 
+import edu.gw.csci.simulator.utils.BitConversion;
+
 import java.util.HashMap;
 
 /**
@@ -8,45 +10,45 @@ import java.util.HashMap;
  * @version 20180916
  */
 public enum InstructionType {
-    //Miscellaneous
-    HLT(0),
-    TRAP(36),
-
-    //Load Store instructions
-    LDR(1),
-    STR(2),
-    LDA(3),
-    LDX(41),
-    STX(42),
-
-    //Transfer instructions
-    JZ(10),
-    JNE(11),
-    JCC(12),
-    JMA(13),
-    JSR(14),
-    RFS(15),
-    SOB(16),
-    JGE(17),
-
-    //Arithmetic and logic instructions
-    AMR(4),
-    SMR(5),
     AIR(6),
-    SIR(7),
-    MLT(20),
-    DVD(21),
-    TRR(22),
-    AND(23),
-    ORR(24),
-    NOT(25),
-    SRC(31),
-    RRC(32),
+    AMR(4)//Arithmetic and logic instructions
+    ,
 
-    //IO instructions
-    IN(61),
+    AND(23),
+    CHK(63),
+    DVD(21),
+    HLT(0)//Miscellaneous
+    ,
+    IN(61)//IO instructions
+    ,
+
+    JCC(12),
+    JGE(17),
+    JMA(13),
+    JNE(11),
+    JSR(14),
+    JZ(10)//Transfer instructions
+    ,
+    LDA(3),
+    LDR(1)//Load Store instructions
+    ,
+
+    LDX(41),
+    MLT(20),
+    NOT(25),
+    ORR(24),
     OUT(62),
-    CHK(63);
+    RFS(15),
+    RRC(32),
+    SIR(7),
+    SMR(5),
+    SOB(16),
+    SRC(31),
+    STR(2),
+
+    STX(42),
+    TRAP(36),
+    TRR(22);
 
     private final int opCode;
     private final String binary;
@@ -54,7 +56,7 @@ public enum InstructionType {
     private static HashMap<String, InstructionType> instructionMap = new HashMap<>();
 
     static {
-        for(InstructionType it : InstructionType.values()){
+        for (InstructionType it : InstructionType.values()) {
             instructionMap.put(it.binary, it);
         }
     }
@@ -64,17 +66,20 @@ public enum InstructionType {
         this.binary = toPadded(opCode);
     }
 
-    private static String toPadded(int opCode){
-        String binary = Integer.toBinaryString(opCode);
-        StringBuilder sb = new StringBuilder(binary);
-        sb.reverse();
-        while(sb.length() != 6){
-            sb.append("0");
-        }
-        return sb.reverse().toString();
+    private static String toPadded(int opCode) {
+        //why just use functions in BitConversion
+        /*String binary = Integer.toBinaryString(opCode);
+         StringBuilder sb = new StringBuilder(binary);
+         sb.reverse();
+         while(sb.length() != 6){
+         sb.append("0");
+         }
+         return sb.reverse().toString();
+         */
+        return BitConversion.toBinaryString(opCode,6);
     }
 
-    public static InstructionType getInstructionType(String binary){
+    public static InstructionType getInstructionType(String binary) {
         return instructionMap.get(binary);
     }
 
