@@ -19,12 +19,17 @@ public class MemoryCache {
 
     public void put(int memoryIndex, BitSet data){
         if(cache.size() == maxCacheSize){
+            //Pop the first off the queue
             cache.removeFirst();
+
+            //Remove the entry pointing to zero, and reduce downwards
             Integer removeIndex = null;
             for(Map.Entry<Integer, Integer> entry: lookup.entrySet()){
                 if(entry.getValue() == 0){
                     removeIndex = entry.getKey();
-                    break;
+                }else{
+                    Integer newValue = entry.getValue() - 1;
+                    lookup.put(entry.getKey(), newValue);
                 }
             }
             lookup.remove(removeIndex);
@@ -58,5 +63,11 @@ public class MemoryCache {
 
     public long getCacheHit() {
         return cacheHit;
+    }
+
+    public List<BitSet> getCacheData(){
+        List<BitSet> ret = new ArrayList<>();
+        ret.addAll(cache);
+        return ret;
     }
 }
