@@ -3,6 +3,7 @@ package edu.gw.csci.simulator.isa.instructions;
 import edu.gw.csci.simulator.isa.Decode;
 import edu.gw.csci.simulator.isa.Instruction;
 import edu.gw.csci.simulator.isa.InstructionType;
+import edu.gw.csci.simulator.isa.SetCC;
 import edu.gw.csci.simulator.memory.AllMemory;
 import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.Register;
@@ -34,7 +35,7 @@ public class ArithmeticLogic {
             int RxValue = rxDecorator.toInt();
             int MemoryValue = BitConversion.convert(memory.fetch(EA));
             if(ryDecorator.toInt() + MemoryValue>=Math.pow(2,16)){
-                //SetCC.OVERFLOW(registers);
+                SetCC.OVERFLOW(registers);
             }
             rxDecorator.setRegister(RxValue+MemoryValue);
 
