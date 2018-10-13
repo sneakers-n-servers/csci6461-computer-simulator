@@ -1,5 +1,7 @@
 package edu.gw.csci.simulator.registers;
 
+import edu.gw.csci.simulator.exceptions.SimulatorException;
+
 /**
  * This framework defines the properties for all registers.
  *
@@ -41,5 +43,24 @@ public enum RegisterType {
 
     public String getBinaryCode() {
         return this.binarycode;
+    }
+
+    public static RegisterType getGeneralPurpose(int i){
+        switch (i){
+            case 0: return R0;
+            case 1: return R1;
+            case 2: return R2;
+            case 3: return R3;
+            default: throw new SimulatorException("General purpose register out of bounds");
+        }
+    }
+
+    public static RegisterType getIndex(int i){
+        switch (i){
+            case 0: return X1;
+            case 1: return X2;
+            case 2: return X3;
+            default: throw new SimulatorException("General purpose register out of bounds");
+        }
     }
 }

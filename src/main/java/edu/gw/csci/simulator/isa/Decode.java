@@ -17,31 +17,6 @@ import java.util.Optional;
  */
 public class Decode {
 
-    public static Optional<RegisterType> R_code_decode(String R_code) {
-        for (RegisterType RCD : RegisterType.values()) {
-            /**
-             * Traversal enum RegisterType choose which General Purpose Register to use
-             */
-            if (R_code.equals(RCD.getBinaryCode()) && RCD.getDescription().equals("General Purpose Register")) {
-                return Optional.of(RCD);
-            }
-        }
-        return Optional.empty();
-    }
-
-    public static Optional<RegisterType> IX_code_decode(String IX_code) {
-        for (RegisterType IXC : RegisterType.values()) {
-            /**
-             * Traversal enum RegisterType choose which Index Register to use
-             */
-            if (IX_code.equals(IXC.getBinaryCode()) && IXC.getDescription().equals("Index Register")) {
-                return Optional.of(IXC);
-            }
-        }
-        return Optional.empty();
-    }
-
-
     public static int EA(AllMemory allMemory, AllRegisters allRegisters) {
         /**
          *
@@ -83,7 +58,8 @@ public class Decode {
                 EA = Integer.parseInt(Address_code, 2);
                 return EA;
             } else {
-                RegisterType registerType = Decode.IX_code_decode(IX_code).get();
+                int ixCode = BitConversion.fromBinaryString(IX_code);
+                RegisterType registerType = RegisterType.getIndex(ixCode);
                 Register register = allRegisters.getRegister(registerType);
                 RegisterDecorator rd = new RegisterDecorator(register);
                 EA = rd.toInt() + Integer.parseInt(Address_code, 2);
@@ -95,7 +71,8 @@ public class Decode {
                 EA = BitConversion.convert(allMemory.fetch(Integer.parseInt(Address_code, 2)));
                 return EA;
             } else {
-                RegisterType registerType = Decode.IX_code_decode(IX_code).get();
+                int ixCode = BitConversion.fromBinaryString(IX_code);
+                RegisterType registerType = RegisterType.getIndex(ixCode);
                 Register register = allRegisters.getRegister(registerType);
                 RegisterDecorator rd = new RegisterDecorator(register);
                 int index = rd.toInt() + Integer.parseInt(Address_code, 2);

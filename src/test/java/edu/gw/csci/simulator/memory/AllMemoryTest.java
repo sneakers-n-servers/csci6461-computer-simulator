@@ -59,4 +59,12 @@ public class AllMemoryTest {
         allMemory.fetch(7);
         Assert.assertEquals(1, memoryCache.getTotalRequests());
     }
+
+    @Test
+    public void testCache2(){
+        AllMemory allMemory = new AllMemory(memory, registers, memoryCache);
+        allMemory.store(7, new BitSet());
+        allMemory.fetch(7);
+        Assert.assertEquals(1, memoryCache.getCacheHit());
+    }
 }

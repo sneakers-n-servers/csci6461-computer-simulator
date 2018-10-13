@@ -74,4 +74,8 @@ public class BitConversion {
         int decimal = Integer.parseInt(binaryString, 2);
         return convert(decimal);
     }
+
+    public static int fromBinaryString(String s){
+        return Integer.parseInt(s, 2);
+    }
 }
