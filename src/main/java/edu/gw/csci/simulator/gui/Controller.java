@@ -84,7 +84,9 @@ public class Controller {
         this.allRegisters = new AllRegisters();
         this.memory = new Memory();
         this.programs = new HashMap<>();
-        this.cpu = new CPU(memory, allRegisters);
+        CPU cpu = new CPU(memory, allRegisters);
+        cpu.setTextArea(consoleInput);
+        this.cpu = cpu;
     }
 
     @FXML

@@ -10,45 +10,44 @@ import java.util.HashMap;
  * @version 20180916
  */
 public enum InstructionType {
-    AIR(6),
-    AMR(4)//Arithmetic and logic instructions
-    ,
-
-    AND(23),
-    CHK(63),
-    DVD(21),
-    HLT(0)//Miscellaneous
-    ,
-    IN(61)//IO instructions
-    ,
-
-    JCC(12),
-    JGE(17),
-    JMA(13),
-    JNE(11),
-    JSR(14),
-    JZ(10)//Transfer instructions
-    ,
-    LDA(3),
-    LDR(1)//Load Store instructions
-    ,
-
-    LDX(41),
-    MLT(20),
-    NOT(25),
-    ORR(24),
-    OUT(62),
-    RFS(15),
-    RRC(32),
-    SIR(7),
-    SMR(5),
-    SOB(16),
-    SRC(31),
-    STR(2),
-
-    STX(42),
+    //Miscellaneous
+    HLT(0),
     TRAP(36),
-    TRR(22);
+
+    //Load Store instructions
+    LDR(1),
+    STR(2),
+    LDA(3),
+    LDX(41),
+    STX(42),
+
+    //Transfer instructions
+    JZ(10),
+    JNE(11),
+    JCC(12),
+    JMA(13),
+    JSR(14),
+    RFS(15),
+    SOB(16),
+    JGE(17),
+
+    //Arithmetic and logic instructions
+    AMR(4),
+    SMR(5),
+    AIR(6),
+    SIR(7),
+    MLT(20),
+    DVD(21),
+    TRR(22),
+    AND(23),
+    ORR(24),
+    NOT(25),
+    SRC(31),
+    RRC(32),
+
+    //IO instructions
+    IN(61),
+    OUT(62);
 
     private final int opCode;
     private final String binary;
