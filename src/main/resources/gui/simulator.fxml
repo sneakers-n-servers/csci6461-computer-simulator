@@ -92,7 +92,7 @@
         </center>
     </BorderPane>
 
-    <!-- Program Runner Pane-->
+    <!-- Program Pane-->
     <BorderPane styleClass="pane" GridPane.columnIndex="1" GridPane.rowIndex="1">
         <top>
             <HBox>
@@ -107,11 +107,11 @@
                 <Region prefWidth="10"/>
 
                 <!--Saves the program text-->
-                <Button id="save-button" text="Save" onAction="#loadProgram"/>
+                <Button id="save-button" text="Save" onAction="#saveProgram"/>
                 <Region prefWidth="5"/>
 
                 <!--Loads the program into memory-->
-                <Button id="load-button" text="Load" onAction="#stepProgram"/>
+                <Button id="load-button" text="Load" onAction="#loadProgram"/>
                 <Region prefWidth="5"/>
 
                 <!--Runs the program-->

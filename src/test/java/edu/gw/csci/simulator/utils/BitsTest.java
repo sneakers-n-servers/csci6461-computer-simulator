@@ -38,4 +38,22 @@ public class BitsTest {
         String s = BitConversion.toBinaryString(bs, 3);
         Assert.assertEquals("111", s);
     }
+
+    @Test
+    public void testBinaryString3() {
+        int val = 7;
+        String s = BitConversion.toBinaryString(7, 6);
+        Assert.assertEquals("000111", s);
+    }
+
+    @Test
+    public void testConvertString(){
+        String binary = "111";
+        BitSet bitSet = BitConversion.convert(binary);
+        for(int i = 0; i < 3; i++){
+            Assert.assertTrue(bitSet.get(i));
+        }
+        int reconvert = BitConversion.convert(bitSet);
+        Assert.assertEquals(7, reconvert);
+    }
 }

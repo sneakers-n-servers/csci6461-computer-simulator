@@ -8,8 +8,15 @@ public class MemoryCache {
 
     private final HashMap<Integer, Integer> lookup;
 
+    private final static int DEFAULT_CACHE_SIZE = 16;
     private final int maxCacheSize;
     private long cacheHit = 0, cacheMiss =0, totalRequests = 0;
+
+    public MemoryCache(){
+        this.cache = new LinkedList<>();
+        this.lookup = new HashMap<>();
+        this.maxCacheSize = DEFAULT_CACHE_SIZE;
+    }
 
     public MemoryCache(int cacheSize){
         this.cache = new LinkedList<>();

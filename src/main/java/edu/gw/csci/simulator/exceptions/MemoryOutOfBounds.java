@@ -33,6 +33,7 @@ package edu.gw.csci.simulator.exceptions;
  */
 public class MemoryOutOfBounds extends SimulatorException {
 
+
     /**
      * Instantiate an error for memory out of bounds.
      *

@@ -2,6 +2,7 @@ package edu.gw.csci.simulator.gui;
 
 import edu.gw.csci.simulator.cpu.CPU;
 import edu.gw.csci.simulator.memory.Memory;
+import edu.gw.csci.simulator.memory.MemoryCache;
 import edu.gw.csci.simulator.memory.MemoryChunk;
 import edu.gw.csci.simulator.memory.MemoryChunkDecorator;
 import edu.gw.csci.simulator.registers.AllRegisters;
@@ -69,21 +70,26 @@ public class Controller {
 
     private AllRegisters allRegisters;
     private Memory memory;
+    private MemoryCache memoryCache;
     private HashMap<String, Program> programs;
     private CPU cpu;
+
+    private boolean initialized, loaded;
 
     @FXML
     protected void runIPL() {
         LOGGER.info("Initializing machine");
-        allRegisters.initializeRegisters();
+        allRegisters.initialize();
         memory.initialize();
+        initialized = true;
     }
 
     public Controller() {
         this.allRegisters = new AllRegisters();
         this.memory = new Memory();
+        this.memoryCache = new MemoryCache();
         this.programs = new HashMap<>();
-        CPU cpu = new CPU(memory, allRegisters);
+        CPU cpu = new CPU(memory, allRegisters, memoryCache);
         cpu.setTextArea(consoleInput);
         this.cpu = cpu;
     }
@@ -176,6 +182,15 @@ public class Controller {
 
     @FXML
     private void runProgram(){
+        if(! initialized){
+            LOGGER.error("Initialize the machine before running");
+            return;
+        }
+        if(! loaded){
+            LOGGER.error("Load program before stepping");
+            return;
+        }
+
         LOGGER.info("Running Program");
         String programName = programNameSelector.getValue();
         Program program = programs.get(programName);
@@ -185,12 +200,30 @@ public class Controller {
 
     @FXML
     private void stepProgram(){
+        if(! initialized){
+            LOGGER.error("Initialize the machine before stepping");
+            return;
+        }
+        if(! loaded){
+            LOGGER.error("Load program before stepping");
+            return;
+        }
         LOGGER.info("Stepping Program");
     }
 
     @FXML
     private void loadProgram(){
+        if(! initialized){
+            LOGGER.error("Please initialize the machine before loading");
+            return;
+        }
+
         LOGGER.info("Loading Program");
+        String programName = programNameSelector.getValue();
+        Program program = programs.get(programName);
+        cpu.setProgram(program);
+        cpu.loadProgram();
+        loaded = true;
     }
 
     /**

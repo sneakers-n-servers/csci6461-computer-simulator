@@ -57,8 +57,21 @@ public class BitConversion {
         return builder.reverse().toString();
     }
 
+    /**
+     * Converts and integer to a binary string, and 0 pads up to the number
+     * of bits. For instance, calling toBinaryString(3, 6) will return 000011.
+     *
+     * @param value
+     * @param numberOfBits
+     * @return The bidnary string representation
+     */
     public static String toBinaryString(int value, int numberOfBits){
         BitSet bits = convert(value);
         return toBinaryString(bits,numberOfBits);
+    }
+
+    public static BitSet convert(String binaryString){
+        int decimal = Integer.parseInt(binaryString, 2);
+        return convert(decimal);
     }
 }

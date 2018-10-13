@@ -25,7 +25,7 @@ public class AllRegisters {
         }
     }
 
-    public void initializeRegisters() {
+    public void initialize() {
         for (Register register : registerMap.values()) {
             LOGGER.debug(String.format("Initialing register %s", register.getName()));
             register.initialize();

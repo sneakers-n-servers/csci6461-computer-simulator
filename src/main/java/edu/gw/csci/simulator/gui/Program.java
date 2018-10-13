@@ -1,10 +1,12 @@
 package edu.gw.csci.simulator.gui;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Program {
 
-    private ArrayList<String> lines;
+    private List<String> lines;
     private final String name;
 
     public Program(String name){
@@ -24,7 +26,12 @@ public class Program {
         lines.clear();
     }
 
-    public ArrayList<String> getLines(){
-        return lines;
+    public List<String> getLines(){
+        List<String> copy = new ArrayList<>(lines);
+        return copy;
+    }
+
+    public int size(){
+        return lines.size();
     }
 }
