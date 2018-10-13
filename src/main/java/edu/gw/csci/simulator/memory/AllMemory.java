@@ -100,13 +100,13 @@ public class AllMemory {
      * @throws IllegalMemoryAccess When the memory index is reserved
      */
     private void checkIndex(int index, boolean throwReseve) throws MemoryOutOfBounds, IllegalMemoryAccess {
-        if(index <= highestReservedMemory){
-            String mess = String.format("Will not store data in reserved location %d", index);
+        if(index > maxMemory){
+            String mess = String.format("Will not store/fetch data in reserved location %d", index);
             LOGGER.error(mess);
             throw new MemoryOutOfBounds(mess);
         }
-        if(index > maxMemory && throwReseve){
-            String mess = String.format("Will not store index: %d higher than max: %d", index, maxMemory);
+        if(index <= highestReservedMemory && throwReseve){
+            String mess = String.format("Will not store/fetch index: %d higher than max: %d", index, maxMemory);
             LOGGER.error(mess);
             throw new IllegalMemoryAccess(mess);
         }
