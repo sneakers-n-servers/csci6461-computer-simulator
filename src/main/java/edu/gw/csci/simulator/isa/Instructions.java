@@ -25,6 +25,11 @@ public class Instructions {
         public void setData(String data) {
             this.data = data;
         }
+
+        @Override
+        public InstructionType getInstructionType() {
+            return instructionType;
+        }
     }
 
     public static class LDR implements Instruction{
@@ -42,6 +47,11 @@ public class Instructions {
         @Override
         public void setData(String data) {
             this.data = data;
+        }
+
+        @Override
+        public InstructionType getInstructionType() {
+            return instructionType;
         }
     }
 
@@ -61,6 +71,11 @@ public class Instructions {
         public void setData(String data) {
             this.data = data;
         }
+
+        @Override
+        public InstructionType getInstructionType() {
+            return instructionType;
+        }
     }
 
     public static class LDA implements Instruction{
@@ -78,6 +93,11 @@ public class Instructions {
         @Override
         public void setData(String data) {
             this.data = data;
+        }
+
+        @Override
+        public InstructionType getInstructionType() {
+            return instructionType;
         }
     }
 
@@ -97,6 +117,11 @@ public class Instructions {
         public void setData(String data) {
             this.data = data;
         }
+
+        @Override
+        public InstructionType getInstructionType() {
+            return instructionType;
+        }
     }
 
     public static class STX implements Instruction{
@@ -114,6 +139,11 @@ public class Instructions {
         @Override
         public void setData(String data) {
             this.data = data;
+        }
+
+        @Override
+        public InstructionType getInstructionType() {
+            return instructionType;
         }
     }
 }

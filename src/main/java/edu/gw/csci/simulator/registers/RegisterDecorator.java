@@ -18,10 +18,6 @@ public class RegisterDecorator extends BitDecorator<Register> {
         super(register);
     }
 
-    public int toInt() {
-        BitSet data = super.getBitType().getData();
-        return BitConversion.convert(data);
-    }
 
     public SimpleStringProperty getRegisterName() {
         Register register = super.getBitType();
@@ -38,4 +34,10 @@ public class RegisterDecorator extends BitDecorator<Register> {
         BitSet data = register.getData();
         return BitConversion.toBinaryString(data, register.getSize());
     }
+
+    public int toInt() {
+        BitSet data = super.getBitType().getData();
+        return BitConversion.convert(data);
+    }
+
 }

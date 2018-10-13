@@ -10,4 +10,5 @@ public interface Instruction {
 
     void setData(String data);
 
+    InstructionType getInstructionType();
 }
