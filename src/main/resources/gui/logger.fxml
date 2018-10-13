@@ -12,7 +12,7 @@
     <top>
         <HBox>
             <Label styleClass="pane-header" alignment="TOP_LEFT">
-                Developer's Console
+                Simulator Log
             </Label>
             <!--The region acts as a spacer for left alight, right align-->
             <Region HBox.hgrow="ALWAYS"/>

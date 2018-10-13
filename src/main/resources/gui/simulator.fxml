@@ -11,9 +11,14 @@
         <Insets top="25" right="25" bottom="10" left="25"/>
     </padding>
     <columnConstraints>
-        <ColumnConstraints percentWidth="60"/>
         <ColumnConstraints percentWidth="40"/>
+        <ColumnConstraints percentWidth="60"/>
     </columnConstraints>
+    <rowConstraints>
+        <RowConstraints percentHeight="5"/>
+        <RowConstraints percentHeight="35"/>
+        <RowConstraints percentHeight="60"/>
+    </rowConstraints>
 
     <!--Top Header, for IPL, etc-->
     <BorderPane styleClass="pane" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" prefHeight="50">
@@ -55,7 +60,7 @@
     </BorderPane>
 
     <!-- Memory Pane -->
-    <BorderPane styleClass="pane" GridPane.columnIndex="0" GridPane.rowIndex="2">
+    <BorderPane styleClass="pane" GridPane.columnIndex="0" GridPane.rowIndex="2" prefHeight="300">
         <top>
             <HBox>
                 <Label styleClass="pane-header" alignment="TOP_LEFT">
@@ -92,22 +97,45 @@
         <top>
             <HBox>
                 <Label styleClass="pane-header" alignment="TOP_LEFT">
-                    Program Execution
+                    Program Console
                 </Label>
                 <!--The region acts as a spacer for left alight, right align-->
                 <Region HBox.hgrow="ALWAYS"/>
+
+                <!--Sets the desired program to be saved, loaded, or run-->
                 <ComboBox fx:id="programNameSelector"/>
-                <Button id="save-button" text="Save" onAction="#saveProgram"/>
+                <Region prefWidth="10"/>
+
+                <!--Saves the program text-->
+                <Button id="save-button" text="Save" onAction="#loadProgram"/>
+                <Region prefWidth="5"/>
+
+                <!--Loads the program into memory-->
+                <Button id="load-button" text="Load" onAction="#stepProgram"/>
+                <Region prefWidth="5"/>
+
+                <!--Runs the program-->
                 <Button id="run-button" text="Run" onAction="#runProgram"/>
+                <Region prefWidth="5"/>
+
+                <!--Steps the program-->
+                <Button id="step-button" text="Step" onAction="#stepProgram"/>
+
                 <BorderPane.margin>
-                    <Insets bottom="10"/>
+                    <Insets bottom="15"/>
                 </BorderPane.margin>
             </HBox>
         </top>
         <center>
             <HBox>
-                <TextArea fx:id="programContents"/>
-                <TextArea fx:id="consoleInput"/>
+                <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                    <Label>Program Editor</Label>
+                    <TextArea fx:id="programContents" VBox.vgrow="ALWAYS"/>
+                </VBox>
+                <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                    <Label>Simulator Console</Label>
+                    <TextArea fx:id="consoleInput" VBox.vgrow="ALWAYS" editable="false"/>
+                </VBox>
             </HBox>
         </center>
     </BorderPane>

@@ -176,10 +176,21 @@ public class Controller {
 
     @FXML
     private void runProgram(){
+        LOGGER.info("Running Program");
         String programName = programNameSelector.getValue();
         Program program = programs.get(programName);
         cpu.setProgram(program);
         cpu.execute();
+    }
+
+    @FXML
+    private void stepProgram(){
+        LOGGER.info("Stepping Program");
+    }
+
+    @FXML
+    private void loadProgram(){
+        LOGGER.info("Loading Program");
     }
 
     /**
@@ -200,32 +211,4 @@ public class Controller {
             program.appendLine(line);
         }
     }
-
-//    @FXML
-//    void execute(ActionEvent event) {
-//        if (IRinput.getText().length() == 16) {
-//            String IRinputS = IRinput.getText();
-//            Register IR = allRegisters.getRegister(RegisterType.IR);
-//            if (isBinary(IRinputS)) {
-//                int IRinputI = Integer.parseInt(IRinputS, 2);
-//                BitSet bs = BitConversion.convert(IRinputI);
-//                IR.setData(bs);
-//                //Execute.execute_IR(allRegisters, memory);
-//                registerTable.refresh();
-//            }
-//            LOGGER.info("Wrong instruction.");
-//        } else {
-//            LOGGER.info("Instruction should be 16 bits.");
-//        }
-//    }
-
-//    private static boolean isBinary(String str) {
-//        Pattern pattern = Pattern.compile("[0-1]*");
-//        return pattern.matcher(str).matches();
-//    }
-//
-//    private static boolean isNumeric(String str) {
-//        Pattern pattern = Pattern.compile("[0-9]*");
-//        return pattern.matcher(str).matches();
-//    }
 }
