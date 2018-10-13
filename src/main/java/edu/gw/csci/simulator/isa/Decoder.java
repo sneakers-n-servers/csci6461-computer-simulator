@@ -10,7 +10,10 @@ public class Decoder {
 
     public Decoder(){
         instructions.put(InstructionType.HLT, new InstructionFactory<>(HLT::new));
-        instructions.put(InstructionType.TRAP, new InstructionFactory<>(TRAP::new));
+        instructions.put(InstructionType.LDR, new InstructionFactory<>(LDR::new));
+        instructions.put(InstructionType.STR, new InstructionFactory<>(STR::new));
+        instructions.put(InstructionType.LDX, new InstructionFactory<>(LDX::new));
+        instructions.put(InstructionType.STX, new InstructionFactory<>(STX::new));
     }
 
     public InstructionFactory getInstructionFactory(InstructionType instructionType){

@@ -11,6 +11,8 @@ public class Instructions {
 
     public static class HLT implements Instruction{
 
+        private InstructionType instructionType = InstructionType.HLT;
+
         private String data;
 
         @Override
@@ -25,13 +27,88 @@ public class Instructions {
         }
     }
 
-    public static class TRAP implements Instruction{
+    public static class LDR implements Instruction{
+
+        private InstructionType instructionType = InstructionType.LDR;
 
         private String data;
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers) {
-            LOGGER.info("Trap instruction got data " + data);
+            //Handle the dirty work
+            LOGGER.info("Halt instruction got data " + data);
+        }
+
+        @Override
+        public void setData(String data) {
+            this.data = data;
+        }
+    }
+
+    public static class STR implements Instruction{
+
+        private InstructionType instructionType = InstructionType.STR;
+
+        private String data;
+
+        @Override
+        public void execute(AllMemory memory, AllRegisters registers) {
+            //Handle the dirty work
+            LOGGER.info("Halt instruction got data " + data);
+        }
+
+        @Override
+        public void setData(String data) {
+            this.data = data;
+        }
+    }
+
+    public static class LDA implements Instruction{
+
+        private InstructionType instructionType = InstructionType.LDA;
+
+        private String data;
+
+        @Override
+        public void execute(AllMemory memory, AllRegisters registers) {
+            //Handle the dirty work
+            LOGGER.info("Halt instruction got data " + data);
+        }
+
+        @Override
+        public void setData(String data) {
+            this.data = data;
+        }
+    }
+
+    public static class LDX implements Instruction{
+
+        private InstructionType instructionType = InstructionType.LDX;
+
+        private String data;
+
+        @Override
+        public void execute(AllMemory memory, AllRegisters registers) {
+            //Handle the dirty work
+            LOGGER.info("Halt instruction got data " + data);
+        }
+
+        @Override
+        public void setData(String data) {
+            this.data = data;
+        }
+    }
+
+    public static class STX implements Instruction{
+
+        private InstructionType instructionType = InstructionType.STX;
+
+        private String data;
+
+        @Override
+        public void execute(AllMemory memory, AllRegisters registers) {
+            //Handle the dirty work
+            LOGGER.info("Halt instruction got data " + data);
         }
 
         @Override

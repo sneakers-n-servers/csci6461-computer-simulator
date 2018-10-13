@@ -1,7 +1,6 @@
 package edu.gw.csci.simulator.gui;
 
 import edu.gw.csci.simulator.cpu.CPU;
-import edu.gw.csci.simulator.isa.Program;
 import edu.gw.csci.simulator.memory.Memory;
 import edu.gw.csci.simulator.memory.MemoryChunk;
 import edu.gw.csci.simulator.memory.MemoryChunkDecorator;

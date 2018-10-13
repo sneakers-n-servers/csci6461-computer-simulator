@@ -80,7 +80,7 @@
                     <configuration>
                         <archive>
                             <manifest>
-                                <mainClass>edu.gw.csci.simulator.App</mainClass>
+                                <mainClass>edu.gw.csci.simulator.Simulator</mainClass>
                             </manifest>
                         </archive>
                     </configuration>
@@ -106,7 +106,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>edu.gw.csci.simulator.App</mainClass>
+                            <mainClass>edu.gw.csci.simulator.Simulator</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

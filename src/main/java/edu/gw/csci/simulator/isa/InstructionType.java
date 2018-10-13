@@ -12,7 +12,9 @@ import java.util.HashMap;
 public enum InstructionType {
     //Miscellaneous
     HLT(0),
-    TRAP(36),
+
+    //We don't have to implement the trap instruction until part 3
+    //TRAP(36),
 
     //Load Store instructions
     LDR(1),
@@ -61,8 +63,10 @@ public enum InstructionType {
     }
 
     InstructionType(int opCode) {
-        this.opCode = opCode;
-        this.binary = toPadded(opCode);
+        String octal = Integer.toOctalString(opCode);
+        int octalOpCode = Integer.valueOf(octal);
+        this.opCode =  octalOpCode;
+        this.binary = toPadded(octalOpCode);
     }
 
     private static String toPadded(int opCode) {

@@ -1,5 +1,6 @@
 package edu.gw.csci.simulator.cpu;
 
+import edu.gw.csci.simulator.gui.Program;
 import edu.gw.csci.simulator.isa.*;
 import edu.gw.csci.simulator.memory.AllMemory;
 import edu.gw.csci.simulator.memory.Memory;

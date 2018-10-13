@@ -1,4 +1,4 @@
-package edu.gw.csci.simulator.isa;
+package edu.gw.csci.simulator.gui;
 
 import java.util.ArrayList;
 
