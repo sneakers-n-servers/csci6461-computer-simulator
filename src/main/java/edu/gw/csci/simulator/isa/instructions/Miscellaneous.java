@@ -20,7 +20,7 @@ public class Miscellaneous {
         @Override
         public void execute(AllMemory memory, AllRegisters registers) {
             //Handle the dirty work
-            LOGGER.info("Halt instruction got data " + data);
+            LOGGER.info("Halt");
         }
 
         @Override

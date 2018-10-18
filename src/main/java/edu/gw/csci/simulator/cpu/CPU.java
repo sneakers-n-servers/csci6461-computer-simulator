@@ -58,13 +58,12 @@ public class CPU {
     public void execute(){
         RegisterDecorator pcDecorator = getPCDecorator();
         int pcIndex = pcDecorator.toInt();
-        Instruction instruction = getNextInstruction(pcDecorator);
-        while (instruction.getInstructionType() != InstructionType.HLT){
+        Instruction instruction = getNextInstruction(registers);
+        do {
             instruction.execute(memory, registers);
-            pcIndex++;
-            pcDecorator.setRegister(pcIndex);
-            instruction = getNextInstruction(pcDecorator);
-        }
+            instruction = getNextInstruction(registers);
+        } while (instruction.getInstructionType() != InstructionType.HLT);
+
     }
 
     /**
@@ -72,12 +71,14 @@ public class CPU {
      * passed the {@link RegisterDecorator} of the PC so we don't have to continually
      * create a new one, given that the current instruction index must be known.
      *
-     * @param pcDecorator The PCDecorator
+     * @param allRegisters All Registers
      * @return The next instruction to execute
      */
-    private Instruction getNextInstruction(RegisterDecorator pcDecorator){
-        int nextInstruction = pcDecorator.toInt();
-        BitSet instructionData = memory.fetch(nextInstruction);
+    private Instruction getNextInstruction(AllRegisters allRegisters){
+        int nextInstructionIndex = getPCDecorator().toInt();
+        BitSet instructionData = memory.fetch(nextInstructionIndex);
+        Register IR = allRegisters.getRegister(RegisterType.IR);
+        IR.setData(instructionData);
         return decoder.getInstruction(instructionData);
     }
 
@@ -117,8 +118,8 @@ public class CPU {
     public void step(){
         RegisterDecorator pcDecorator = getPCDecorator();
         int pcIndex = pcDecorator.toInt();
-        Instruction instruction = getNextInstruction(pcDecorator);
-        instruction.execute(memory, registers);
+        //Instruction instruction = getNextInstruction(pcDecorator);
+        //instruction.execute(memory, registers);
         pcIndex++;
         pcDecorator.setRegister(pcIndex);
     }

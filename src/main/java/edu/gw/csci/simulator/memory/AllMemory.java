@@ -36,7 +36,6 @@ public class AllMemory {
 
     public void store(int value, int index) throws MemoryOutOfBounds, IllegalMemoryAccess {
         checkIndex(index, true);
-
         String mess = String.format("Stroing %d to memory index %d", value, index);
         LOGGER.info(mess);
         String BinaryValue = Integer.toBinaryString(value);
@@ -69,6 +68,9 @@ public class AllMemory {
         Optional<BitSet> bits = memoryCache.get(index);
         BitSet fetched = bits.orElseGet(() -> memory.get(index));
         allRegisters.setRegister(RegisterType.MBR, fetched);
+        int value = BitConversion.convert(fetched);
+        String mess = String.format("Fetching %d from memory index %d", value, index);
+        LOGGER.info(mess);
         return fetched;
     }
 
@@ -83,6 +85,9 @@ public class AllMemory {
      */
     public void store(int index, BitSet bitSet) throws MemoryOutOfBounds, IllegalMemoryAccess {
         checkIndex(index, true);
+        int value = BitConversion.convert(bitSet);
+        String mess = String.format("Stroing %d to memory index %d", value, index);
+        LOGGER.info(mess);
         memory.set(index, bitSet);
         allRegisters.setRegister(RegisterType.MBR, bitSet);
         memoryCache.put(index, bitSet);

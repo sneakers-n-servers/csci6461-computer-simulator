@@ -26,8 +26,8 @@ public class ArithmeticLogic {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers) {
-            Register rx = registers.getRegister(RegisterType.getGeneralPurpose(this.rxCode));
-            Register ry = registers.getRegister(RegisterType.getGeneralPurpose(this.ryCode));
+            Register rx = registers.getRegister(RegisterType.R0);
+            Register ry = registers.getRegister(RegisterType.X1);
             RegisterDecorator rxDecorator = new RegisterDecorator(rx);
             RegisterDecorator ryDecorator = new RegisterDecorator(ry);
 
