@@ -2,7 +2,10 @@ package edu.gw.csci.simulator.memory;
 
 import edu.gw.csci.simulator.exceptions.IllegalMemoryAccess;
 import edu.gw.csci.simulator.exceptions.MemoryOutOfBounds;
+import edu.gw.csci.simulator.isa.InstructionType;
 import edu.gw.csci.simulator.registers.AllRegisters;
+import edu.gw.csci.simulator.registers.Register;
+import edu.gw.csci.simulator.registers.RegisterDecorator;
 import edu.gw.csci.simulator.registers.RegisterType;
 import edu.gw.csci.simulator.utils.BitConversion;
 import org.apache.logging.log4j.LogManager;
@@ -36,7 +39,7 @@ public class AllMemory {
 
     public void store(int value, int index) throws MemoryOutOfBounds, IllegalMemoryAccess {
         checkIndex(index, true);
-        String mess = String.format("Stroing %d to memory index %d", value, index);
+        String mess = String.format("Stroing %d(%s) to memory index %d", value, BitConversion.toBinaryString(value,16), index);
         LOGGER.info(mess);
         String BinaryValue = Integer.toBinaryString(value);
         //word is over 16 bits
@@ -62,14 +65,14 @@ public class AllMemory {
      * @throws IllegalMemoryAccess When the memory index is reserved
      */
     public BitSet fetch(int index) throws MemoryOutOfBounds, IllegalMemoryAccess {
-        checkIndex(index, true);
+        //checkIndex(index, true);
         BitSet toFetch = BitConversion.convert(index);
         allRegisters.setRegister(RegisterType.MAR, toFetch);
         Optional<BitSet> bits = memoryCache.get(index);
         BitSet fetched = bits.orElseGet(() -> memory.get(index));
         allRegisters.setRegister(RegisterType.MBR, fetched);
         int value = BitConversion.convert(fetched);
-        String mess = String.format("Fetching %d from memory index %d", value, index);
+        String mess = String.format("Fetching %d(%s) from memory index %d", value, BitConversion.toBinaryString(value,16), index);
         LOGGER.info(mess);
         return fetched;
     }
@@ -86,7 +89,7 @@ public class AllMemory {
     public void store(int index, BitSet bitSet) throws MemoryOutOfBounds, IllegalMemoryAccess {
         checkIndex(index, true);
         int value = BitConversion.convert(bitSet);
-        String mess = String.format("Stroing %d to memory index %d", value, index);
+        String mess = String.format("Stroing %d(%s) to memory index %d", value, BitConversion.toBinaryString(bitSet,16), index);
         LOGGER.info(mess);
         memory.set(index, bitSet);
         allRegisters.setRegister(RegisterType.MBR, bitSet);
@@ -116,4 +119,65 @@ public class AllMemory {
             throw new IllegalMemoryAccess(mess);
         }
     }
+
+    public int EA(){
+        int EA;
+        Register IR = allRegisters.getRegister(RegisterType.IR);
+        RegisterDecorator IRd = new RegisterDecorator(IR);
+        String instruction = IRd.toBinaryString();
+        String Opcode = instruction.substring(0, 6);
+        String IX_code = instruction.substring(8, 10);
+        String I_code = instruction.substring(10, 11);
+        String Address_code = instruction.substring(11, 16);
+
+        if (InstructionType.getInstructionType(Opcode).equals(InstructionType.RFS)) {
+                //I,IX is ignored in RFS
+                EA = Integer.parseInt(Address_code, 2);
+                return EA;
+            }
+            if (InstructionType.getInstructionType(Opcode).equals(InstructionType.AIR) || InstructionType.getInstructionType(Opcode).equals(InstructionType.SIR)) {
+                //I,IX is ignored in AIR,SIR
+                EA = Integer.parseInt(Address_code, 2);
+                return EA;
+            }
+            if (InstructionType.getInstructionType(Opcode).equals(InstructionType.LDX) ||
+                    InstructionType.getInstructionType(Opcode).equals(InstructionType.STX)) {
+                //IX is not used in LDX,STX
+                if (I_code.equals("0")) {
+                    return Integer.parseInt(Address_code, 2);
+                }
+                else {
+                    EA = BitConversion.convert(fetch(Integer.parseInt(Address_code, 2)));
+                    return EA;
+                }
+            }
+            if (I_code.equals("0")) {
+                if (IX_code.equals("00")) {
+                    EA = Integer.parseInt(Address_code, 2);
+                    return EA;
+                } else {
+                    //int ixCode = BitConversion.fromBinaryString(IX_code);
+                    RegisterType registerType = RegisterType.getIndex(IX_code);
+                    Register register = allRegisters.getRegister(registerType);
+                    RegisterDecorator Xd = new RegisterDecorator(register);
+                    EA = Xd.toInt() + Integer.parseInt(Address_code, 2);
+                    return EA;
+                }
+            }
+            else {
+                if (IX_code.equals("00")) {
+                    EA = BitConversion.convert(fetch(Integer.parseInt(Address_code, 2)));
+                    return EA;
+                } else {
+                    //int ixCode = BitConversion.fromBinaryString(IX_code);
+                    RegisterType registerType = RegisterType.getIndex(IX_code);
+                    Register register = allRegisters.getRegister(registerType);
+                    RegisterDecorator Xd = new RegisterDecorator(register);
+                    int index = Xd.toInt() + Integer.parseInt(Address_code, 2);
+                    EA = BitConversion.convert(fetch(index));
+                    return EA;
+                }
+            }
+        }
+
 }

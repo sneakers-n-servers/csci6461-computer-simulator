@@ -49,15 +49,12 @@ public class CPU {
     }
 
     /**
-     * This method pulls the current value of the program counter, and executes
-     * instructions until a HLT instruction is received. This is handy because
-     * unused memory will automatically indicate a halt, there is no need to explicitly
+     * This method executes instruction in IR register until a HLT instruction is received.
+     * This is handy because unused memory will automatically indicate a halt, there is no need to explicitly
      * declare one in the program. The GUI restricts one ability to call this function
      * unless the machine has been initialized, and a program has been set.
      */
     public void execute(){
-        RegisterDecorator pcDecorator = getPCDecorator();
-        int pcIndex = pcDecorator.toInt();
         Instruction instruction = getNextInstruction(registers);
         do {
             instruction.execute(memory, registers);
@@ -110,17 +107,31 @@ public class CPU {
         }
         registers.setRegister(RegisterType.PC, programCounter);
     }
+    /**
+     * This function receives a program from the GUI, and loads it into memory.
+     * The start index of program is set by users.
+     * The GUI restricts one to load a program before the machine is initialized,
+     * so we know that all memory addresses, and registers have been instantiated.
+     */
+    public void loadProgram(int start){
+        int defaultLoadLocation = start;
+        BitSet programCounter = BitConversion.convert(defaultLoadLocation);
+        List<String> lines = program.getLines();
+        for (String line : lines) {
+            LOGGER.info("Setting Line: " + line);
+            BitSet convert = BitConversion.convert(line);
+            memory.store(defaultLoadLocation, convert);
+            defaultLoadLocation++;
+        }
+        registers.setRegister(RegisterType.PC, programCounter);
+    }
 
     /**
      * This function grabs the next instruction, executes it, and
      * adjusts the program counter.
      */
     public void step(){
-        RegisterDecorator pcDecorator = getPCDecorator();
-        int pcIndex = pcDecorator.toInt();
-        //Instruction instruction = getNextInstruction(pcDecorator);
-        //instruction.execute(memory, registers);
-        pcIndex++;
-        pcDecorator.setRegister(pcIndex);
+        Instruction instruction = getNextInstruction(registers);
+        instruction.execute(memory, registers);
     }
 }

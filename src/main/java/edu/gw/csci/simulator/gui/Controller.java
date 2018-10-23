@@ -68,6 +68,9 @@ public class Controller {
     @FXML
     private TextArea consoleInput;
 
+    @FXML
+    private TextField startIndex;
+
     private AllRegisters allRegisters;
     private Memory memory;
     private MemoryCache memoryCache;
@@ -158,6 +161,10 @@ public class Controller {
         Program program1 = new Program("Program1");
         programs.put("Program1", program1);
 
+        Program programls = new Program("Programls");
+        this.programs.put("Programls", programls);
+        PreStoreProgram.SetProgramLS(programls);
+
         //Set the ComboBox to all of our programs
         Set<String> allPrograms = programs.keySet();
         String[] programNames = new String[allPrograms.size()];
@@ -208,7 +215,8 @@ public class Controller {
             LOGGER.error("Load program before stepping");
             return;
         }
-        LOGGER.info("Stepping Program");
+        LOGGER.info("One Step Run");
+        cpu.step();
     }
 
     @FXML
@@ -222,7 +230,13 @@ public class Controller {
         String programName = programNameSelector.getValue();
         Program program = programs.get(programName);
         cpu.setProgram(program);
-        cpu.loadProgram();
+        if(!startIndex.getText().isEmpty()) {
+            int start = Integer.parseInt(startIndex.getText());
+            cpu.loadProgram(start);
+        }
+        else{
+            cpu.loadProgram();
+        }
         loaded = true;
     }
 

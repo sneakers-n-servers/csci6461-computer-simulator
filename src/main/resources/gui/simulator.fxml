@@ -114,6 +114,9 @@
                 <Button id="load-button" text="Load" onAction="#loadProgram"/>
                 <Region prefWidth="5"/>
 
+                <TextField fx:id="startIndex"></TextField>
+                <Region prefWidth="5"/>
+
                 <!--Runs the program-->
                 <Button id="run-button" text="Run" onAction="#runProgram"/>
                 <Region prefWidth="5"/>

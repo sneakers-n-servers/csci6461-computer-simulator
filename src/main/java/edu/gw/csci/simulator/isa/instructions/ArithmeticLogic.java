@@ -1,14 +1,9 @@
 package edu.gw.csci.simulator.isa.instructions;
 
-import edu.gw.csci.simulator.isa.Decode;
 import edu.gw.csci.simulator.isa.Instruction;
 import edu.gw.csci.simulator.isa.InstructionType;
-import edu.gw.csci.simulator.isa.SetCC;
 import edu.gw.csci.simulator.memory.AllMemory;
 import edu.gw.csci.simulator.registers.AllRegisters;
-import edu.gw.csci.simulator.registers.Register;
-import edu.gw.csci.simulator.registers.RegisterDecorator;
-import edu.gw.csci.simulator.registers.RegisterType;
 import edu.gw.csci.simulator.utils.BitConversion;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,22 +21,10 @@ public class ArithmeticLogic {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers) {
-            Register rx = registers.getRegister(RegisterType.R0);
-            Register ry = registers.getRegister(RegisterType.X1);
-            RegisterDecorator rxDecorator = new RegisterDecorator(rx);
-            RegisterDecorator ryDecorator = new RegisterDecorator(ry);
 
-            int EA = Decode.EA(memory, registers);
-            int RxValue = rxDecorator.toInt();
-            int MemoryValue = BitConversion.convert(memory.fetch(EA));
-            if(ryDecorator.toInt() + MemoryValue>=Math.pow(2,16)){
-                SetCC.OVERFLOW(registers);
-            }
-            rxDecorator.setRegister(RxValue+MemoryValue);
-
-            String mess = String.format("AMR R:%s EA:%d, %s = %d + %d",
-                    rx.getName(),EA,ry.getName(),RxValue,MemoryValue);
-            LOGGER.info(mess);
+//            String mess = String.format("AMR R:%s EA:%d, %s = %d + %d",
+//                    rx.getName(),EA,ry.getName(),RxValue,MemoryValue);
+            LOGGER.info("AMR");
         }
 
         @Override

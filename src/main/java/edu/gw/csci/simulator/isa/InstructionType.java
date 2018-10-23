@@ -10,6 +10,8 @@ import java.util.HashMap;
  * @version 20180916
  */
 public enum InstructionType {
+
+
     //Miscellaneous
     HLT(0),
 
@@ -63,10 +65,11 @@ public enum InstructionType {
     }
 
     InstructionType(int opCode) {
-        String octal = Integer.toOctalString(opCode);
-        int octalOpCode = Integer.valueOf(octal);
-        this.opCode =  octalOpCode;
-        this.binary = toPadded(octalOpCode);
+        //the OpCode above is in Octal, so we transfer them to decimal
+        String decimal = Integer.valueOf(String.valueOf(opCode),8).toString();
+        int decimalOpCode = Integer.valueOf(decimal);
+        this.opCode =  decimalOpCode;
+        this.binary = toPadded(decimalOpCode);
     }
 
     private static String toPadded(int opCode) {

@@ -14,9 +14,9 @@ public class Decoder {
         instructions.put(InstructionType.HLT, new InstructionFactory<>(Miscellaneous.HLT::new));
         instructions.put(InstructionType.LDR, new InstructionFactory<>(LoadStore.LDR::new));
         instructions.put(InstructionType.LDA, new InstructionFactory<>(LoadStore.LDA::new));
-        //instructions.put(InstructionType.STR, new InstructionFactory<>(STR::new));
-        //instructions.put(InstructionType.LDX, new InstructionFactory<>(LDX::new));
-        //instructions.put(InstructionType.STX, new InstructionFactory<>(STX::new));
+        instructions.put(InstructionType.STR, new InstructionFactory<>(LoadStore.STR::new));
+        instructions.put(InstructionType.LDX, new InstructionFactory<>(LoadStore.LDX::new));
+        instructions.put(InstructionType.STX, new InstructionFactory<>(LoadStore.STX::new));
     }
 
     /**
