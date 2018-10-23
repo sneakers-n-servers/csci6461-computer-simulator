@@ -18,7 +18,7 @@ public class Transfer {
 
     public static class JZ implements Instruction {
 
-        private InstructionType instructionType = InstructionType.HLT;
+        private InstructionType instructionType = InstructionType.JZ;
 
         private String data;
 

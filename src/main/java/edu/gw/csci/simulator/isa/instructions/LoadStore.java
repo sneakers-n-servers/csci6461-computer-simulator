@@ -24,14 +24,14 @@ public class LoadStore {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers) {
-            LOGGER.info("LDR");
-            logger(data,registers);
-
             String Rs = data.substring(0,2);
             Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
 
             R.setData(memory.fetch(memory.EA()));
             addPC.PCadder(registers);
+
+            LOGGER.info("LDR");
+            logger(data,registers);
         }
 
         @Override
@@ -53,14 +53,14 @@ public class LoadStore {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers) {
-            LOGGER.info("STR");
-            logger(data,registers);
-
             String Rs = data.substring(0,2);
             Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
 
             memory.store(memory.EA(),R.getData());
             addPC.PCadder(registers);
+
+            LOGGER.info("STR");
+            logger(data,registers);
         }
 
         @Override
@@ -112,14 +112,14 @@ public class LoadStore {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers) {
-            LOGGER.info("LDX");
-            logger(data,registers);
-
             String Xs = data.substring(2,4);
             Register X =registers.getRegister(RegisterType.getIndex(Xs));
 
             X.setData(memory.fetch(memory.EA()));
             addPC.PCadder(registers);
+
+            LOGGER.info("LDX");
+            logger(data,registers);
         }
 
         @Override
@@ -141,14 +141,14 @@ public class LoadStore {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers) {
-            LOGGER.info("STX");
-            logger(data,registers);
-
             String Xs = data.substring(2,4);
             Register X =registers.getRegister(RegisterType.getIndex(Xs));
 
             memory.store(memory.EA(),X.getData());
             addPC.PCadder(registers);
+
+            LOGGER.info("STX");
+            logger(data,registers);
         }
 
         @Override
