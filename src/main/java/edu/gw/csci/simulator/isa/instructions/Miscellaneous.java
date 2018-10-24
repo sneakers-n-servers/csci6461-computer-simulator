@@ -1,5 +1,6 @@
 package edu.gw.csci.simulator.isa.instructions;
 
+import edu.gw.csci.simulator.cpu.CPU;
 import edu.gw.csci.simulator.isa.Instruction;
 import edu.gw.csci.simulator.isa.InstructionType;
 import edu.gw.csci.simulator.memory.AllMemory;
@@ -18,7 +19,7 @@ public class Miscellaneous {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers) {
+        public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
             //Handle the dirty work
             LOGGER.info("Halt");
         }

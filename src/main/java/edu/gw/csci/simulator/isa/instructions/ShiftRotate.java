@@ -1,8 +1,8 @@
 package edu.gw.csci.simulator.isa.instructions;
 
+import edu.gw.csci.simulator.cpu.CPU;
 import edu.gw.csci.simulator.isa.Instruction;
 import edu.gw.csci.simulator.isa.InstructionType;
-import edu.gw.csci.simulator.isa.addPC;
 import edu.gw.csci.simulator.memory.AllMemory;
 import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.Register;
@@ -22,7 +22,7 @@ public class ShiftRotate {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers) {
+        public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
             String Rs = data.substring(0,2);
             Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
             RegisterDecorator Rd = new RegisterDecorator(R);
@@ -35,10 +35,10 @@ public class ShiftRotate {
 
             LOGGER.info("SRC");
             if(count == 0){
-                addPC.PCadder(registers);
+                registers.PCadder();
             }
             else{
-                addPC.PCadder(registers);
+                registers.PCadder();
                 String s1 = BitConversion.toBinaryString(R.getData(),R.getSize());
                 if(LorR) {
                     //logically left shift equals to arithmetically left shift
@@ -85,7 +85,7 @@ public class ShiftRotate {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers) {
+        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
             LOGGER.info("RRC");
 
             String Rs = data.substring(0,2);
@@ -98,10 +98,10 @@ public class ShiftRotate {
 
             int count = Integer.parseInt(Counts,2);
             if(count ==0) {
-                addPC.PCadder(registers);
+                registers.PCadder();
             }
             else {
-                addPC.PCadder(registers);
+                registers.PCadder();
                 String s1 = BitConversion.toBinaryString(R.getData(),R.getSize());
                 if(LorR)
                 //left rotation

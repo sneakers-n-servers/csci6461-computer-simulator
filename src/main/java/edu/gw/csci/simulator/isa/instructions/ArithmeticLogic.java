@@ -1,9 +1,9 @@
 package edu.gw.csci.simulator.isa.instructions;
 
+import edu.gw.csci.simulator.cpu.CPU;
 import edu.gw.csci.simulator.isa.Instruction;
 import edu.gw.csci.simulator.isa.InstructionType;
 import edu.gw.csci.simulator.isa.SetCC;
-import edu.gw.csci.simulator.isa.addPC;
 import edu.gw.csci.simulator.memory.AllMemory;
 import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.Register;
@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.BitSet;
+import java.util.Optional;
 
 public class ArithmeticLogic {
 
@@ -26,7 +27,7 @@ public class ArithmeticLogic {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers) {
+        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
             String Rs = data.substring(0,2);
             Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
             RegisterDecorator Rd = new RegisterDecorator(R);
@@ -41,7 +42,7 @@ public class ArithmeticLogic {
             else {
                 Rd.setRegister(RValue + MemoryValue);
             }
-            addPC.PCadder(registers);
+            registers.PCadder();
             String mess = String.format("AMR R:%s EA:%d, %s = %d + %d",
                     R.getName(), EA, R.getName(), RValue, MemoryValue);
             LOGGER.info(mess);
@@ -65,7 +66,7 @@ public class ArithmeticLogic {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers) {
+        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
             String Rs = data.substring(0,2);
             Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
             RegisterDecorator Rd = new RegisterDecorator(R);
@@ -80,7 +81,7 @@ public class ArithmeticLogic {
             else {
                 Rd.setRegister(RValue - MemoryValue);
             }
-            addPC.PCadder(registers);
+            registers.PCadder();
             String mess = String.format("SMR R:%s EA:%d, %s = %d - %d",
                     R.getName(),EA,R.getName(),RValue,MemoryValue);
             LOGGER.info(mess);
@@ -104,7 +105,7 @@ public class ArithmeticLogic {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers) {
+        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
             String Rs = data.substring(0,2);
             Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
             RegisterDecorator Rd = new RegisterDecorator(R);
@@ -127,7 +128,7 @@ public class ArithmeticLogic {
                 Rd.setRegister(RValue+EA);
             }
 
-            addPC.PCadder(registers);
+            registers.PCadder();
             String mess = String.format("AIR R:%s immed:%d, %s = %d + %d",
                     R.getName(),EA,R.getName(),RValue,EA);
             LOGGER.info(mess);
@@ -151,7 +152,7 @@ public class ArithmeticLogic {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers) {
+        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
             String Rs = data.substring(0,2);
             Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
             RegisterDecorator Rd = new RegisterDecorator(R);
@@ -173,7 +174,7 @@ public class ArithmeticLogic {
                 Rd.setRegister(RValue-EA);
             }
 
-            addPC.PCadder(registers);
+            registers.PCadder();
             String mess = String.format("SIR R:%s immed:%d, %s = %d - %d",
                     R.getName(),EA,R.getName(),RValue,EA);
             LOGGER.info(mess);
@@ -197,7 +198,7 @@ public class ArithmeticLogic {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers) {
+        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
             String Rxs = data.substring(0,2);
             String Rys = data.substring(2,4);
             Register Rx =registers.getRegister(RegisterType.getGeneralPurpose(Rxs));
@@ -224,7 +225,7 @@ public class ArithmeticLogic {
                 Rx.setData(BitConversion.convert(MulValue.substring(0,16)));
                 Rx_1.setData(BitConversion.convert(MulValue.substring(16,31)));
             }
-            addPC.PCadder(registers);
+            registers.PCadder();
             String mess = String.format("MLT Rx:%s Ry:%s",
                     Rx.getName(),Ry.getName());
             LOGGER.info(mess);
@@ -248,7 +249,7 @@ public class ArithmeticLogic {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers) {
+        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
             String Rxs = data.substring(0,2);
             String Rys = data.substring(2,4);
             Register Rx =registers.getRegister(RegisterType.getGeneralPurpose(Rxs));
@@ -280,7 +281,7 @@ public class ArithmeticLogic {
                     Rx_1d.setRegister(RxValue%RyValue);
                 }
             }
-            addPC.PCadder(registers);
+            registers.PCadder();
             String mess = String.format("DVD Rx:%s Ry:%s",
                     Rx.getName(),Ry.getName());
             LOGGER.info(mess);
@@ -304,7 +305,7 @@ public class ArithmeticLogic {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers) {
+        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
             String Rxs = data.substring(0,2);
             String Rys = data.substring(2,4);
             Register Rx =registers.getRegister(RegisterType.getGeneralPurpose(Rxs));
@@ -317,7 +318,7 @@ public class ArithmeticLogic {
             else{
                 SetCC.EQUALORNOT(registers,false);
             }
-            addPC.PCadder(registers);
+            registers.PCadder();
 
             String mess = String.format("TRR Rx:%s Ry:%s If c(rx) = c(ry), set cc(4) <- 1; else, cc(4) <- 0",
                     Rx.getName(),Ry.getName());
@@ -342,7 +343,7 @@ public class ArithmeticLogic {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers) {
+        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
             String Rxs = data.substring(0,2);
             String Rys = data.substring(2,4);
             Register Rx =registers.getRegister(RegisterType.getGeneralPurpose(Rxs));
@@ -351,7 +352,7 @@ public class ArithmeticLogic {
             BitSet bits = Rx.getData();
             bits.and(Ry.getData());
             Rx.setData(bits);
-            addPC.PCadder(registers);
+            registers.PCadder();
 
             String mess = String.format("AND Rx:%s Ry:%s",
                     Rx.getName(),Ry.getName());
@@ -376,7 +377,7 @@ public class ArithmeticLogic {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers) {
+        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
             String Rxs = data.substring(0,2);
             String Rys = data.substring(2,4);
             Register Rx =registers.getRegister(RegisterType.getGeneralPurpose(Rxs));
@@ -385,7 +386,7 @@ public class ArithmeticLogic {
             BitSet bits = Rx.getData();
             bits.or(Ry.getData());
             Rx.setData(bits);
-            addPC.PCadder(registers);
+            registers.PCadder();
 
             String mess = String.format("ORR Rx:%s Ry:%s",
                     Rx.getName(),Ry.getName());
@@ -410,7 +411,7 @@ public class ArithmeticLogic {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers) {
+        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
             String Rs = data.substring(0,2);
             Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
 
@@ -418,7 +419,7 @@ public class ArithmeticLogic {
             BitSet bits = R.getData();
             bits.flip(0,16);
             R.setData(bits);
-            addPC.PCadder(registers);
+            registers.PCadder();
 
             String mess = String.format("NOT R:%s",
                     R.getName());

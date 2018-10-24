@@ -28,7 +28,18 @@
                     Initialize
                 </Label>
                 <Button id="ipl-button" text="IPL" onAction="#runIPL"/>
+                <Region prefWidth="5"/>
+                <HBox>
+                    <TextField fx:id="PCset"/>
+                    <Button fx:id="setPC" onAction="#setPC" text="setPC"/>
+                </HBox>
+                <Region prefWidth="10"/>
+                <HBox>
+                    <Button id="PreStoreMemory" onAction="#PreStoreMemoryForProgram1" text="PreStoreMemoryForProgram1"/>
+                    <Button id="LoadProgram1" onAction="#LoadProgram1" text="LoadProgram1"/>
+                </HBox>
             </HBox>
+
         </center>
     </BorderPane>
 
@@ -102,6 +113,7 @@
                 <!--The region acts as a spacer for left alight, right align-->
                 <Region HBox.hgrow="ALWAYS"/>
 
+                <Button id="input" text="Input" onAction="#input"/>
                 <!--Sets the desired program to be saved, loaded, or run-->
                 <ComboBox fx:id="programNameSelector"/>
                 <Region prefWidth="10"/>
@@ -137,7 +149,7 @@
                 </VBox>
                 <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
                     <Label>Simulator Console</Label>
-                    <TextArea fx:id="consoleInput" VBox.vgrow="ALWAYS" editable="false"/>
+                    <TextArea fx:id="consoleInput" VBox.vgrow="ALWAYS"/>
                 </VBox>
             </HBox>
         </center>

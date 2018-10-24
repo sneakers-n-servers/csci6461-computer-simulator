@@ -42,6 +42,10 @@ public class Decoder {
         //ShiftRotate
         instructions.put(InstructionType.SRC, new InstructionFactory<>(ShiftRotate.SRC::new));
         instructions.put(InstructionType.RRC, new InstructionFactory<>(ShiftRotate.RRC::new));
+
+        //IO
+        instructions.put(InstructionType.IN, new InstructionFactory<>(IO.IN::new));
+        instructions.put(InstructionType.OUT, new InstructionFactory<>(IO.OUT::new));
     }
 
     /**

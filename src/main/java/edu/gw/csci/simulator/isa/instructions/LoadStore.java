@@ -1,8 +1,8 @@
 package edu.gw.csci.simulator.isa.instructions;
 
+import edu.gw.csci.simulator.cpu.CPU;
 import edu.gw.csci.simulator.isa.Instruction;
 import edu.gw.csci.simulator.isa.InstructionType;
-import edu.gw.csci.simulator.isa.addPC;
 import edu.gw.csci.simulator.memory.AllMemory;
 import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.Register;
@@ -23,12 +23,12 @@ public class LoadStore {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers) {
+        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
             String Rs = data.substring(0,2);
             Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
 
             R.setData(memory.fetch(memory.EA()));
-            addPC.PCadder(registers);
+            registers.PCadder();
 
             LOGGER.info("LDR");
             logger(data,registers);
@@ -52,12 +52,12 @@ public class LoadStore {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers) {
+        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
             String Rs = data.substring(0,2);
             Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
 
             memory.store(memory.EA(),R.getData());
-            addPC.PCadder(registers);
+            registers.PCadder();
 
             LOGGER.info("STR");
             logger(data,registers);
@@ -81,7 +81,7 @@ public class LoadStore {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers) {
+        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
             LOGGER.info("LDA");
             logger(data,registers);
 
@@ -90,7 +90,7 @@ public class LoadStore {
             RegisterDecorator Rd = new RegisterDecorator(R);
 
             Rd.setRegister(memory.EA());
-            addPC.PCadder(registers);
+            registers.PCadder();
         }
 
         @Override
@@ -111,12 +111,12 @@ public class LoadStore {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers) {
+        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
             String Xs = data.substring(2,4);
             Register X =registers.getRegister(RegisterType.getIndex(Xs));
 
             X.setData(memory.fetch(memory.EA()));
-            addPC.PCadder(registers);
+            registers.PCadder();
 
             LOGGER.info("LDX");
             logger(data,registers);
@@ -140,12 +140,12 @@ public class LoadStore {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers) {
+        public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
             String Xs = data.substring(2,4);
             Register X =registers.getRegister(RegisterType.getIndex(Xs));
 
             memory.store(memory.EA(),X.getData());
-            addPC.PCadder(registers);
+            registers.PCadder();
 
             LOGGER.info("STX");
             logger(data,registers);

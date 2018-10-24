@@ -14,8 +14,10 @@ import javafx.scene.control.TextArea;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This is the main driver of our simulator. The CPU has instances of {@link AllRegisters registers},
@@ -31,22 +33,36 @@ public class CPU {
     private final AllRegisters registers;
 
     private Program program;
-    private TextArea consoleInput;
+//    public TextArea consoleInput;
+    public ArrayList<String> consoleInput;
+    public ArrayList<String> consoleOutput;
     private Decoder decoder;
 
     public CPU(Memory memory, AllRegisters registers, MemoryCache memoryCache){
         this.memory = new AllMemory(memory, registers, memoryCache);
         this.registers = registers;
         this.decoder = new Decoder();
+        this.consoleInput = new ArrayList<>();
+        this.consoleOutput = new ArrayList<>();
+    }
+    public Optional<String> getNextInput(){
+
+        if(!consoleInput.isEmpty()){
+            String current = consoleInput.get(0);
+            consoleInput.remove(0);
+            return Optional.of(current);
+        }
+        return Optional.empty();
     }
 
     public void setProgram(Program program){
         this.program = program;
     }
 
-    public void setTextArea(TextArea textArea){
-        this.consoleInput = textArea;
-    }
+//    public void setTextArea(TextArea textArea){
+//        this.consoleInput = textArea;
+//    }
+
 
     /**
      * This method executes instruction in IR register until a HLT instruction is received.
@@ -57,7 +73,7 @@ public class CPU {
     public void execute(){
         Instruction instruction = getNextInstruction(registers);
         do {
-            instruction.execute(memory, registers);
+            instruction.execute(memory, registers,this);
             instruction = getNextInstruction(registers);
         } while (instruction.getInstructionType() != InstructionType.HLT);
 
@@ -132,6 +148,12 @@ public class CPU {
      */
     public void step(){
         Instruction instruction = getNextInstruction(registers);
-        instruction.execute(memory, registers);
+        instruction.execute(memory, registers,this);
+
+    }
+
+
+    public void StoreValue(int value,int index){
+        memory.store(value,index);
     }
 }
