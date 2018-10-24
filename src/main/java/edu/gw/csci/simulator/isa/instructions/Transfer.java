@@ -14,7 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 public class Transfer {
 
-    private static final Logger LOGGER = LogManager.getLogger(Miscellaneous.class);
+    private static final Logger LOGGER = LogManager.getLogger(Transfer.class);
 
     public static class JZ implements Instruction {
 
@@ -165,12 +165,12 @@ public class Transfer {
             RegisterDecorator R3d = new RegisterDecorator(R3);
             int EA= memory.EA();
 
-
+            int returnAddress  = BitConversion.convert(PC.getData())+1;
             R3d.setRegister(BitConversion.convert(PC.getData())+1);
             PCd.setRegister(EA);
 
             String mess = String.format("JSR Jump to %d and Save Return Address:%d",
-                    EA,BitConversion.convert(PC.getData())+1);
+                    EA,returnAddress);
             LOGGER.info(mess);
         }
 
@@ -194,7 +194,7 @@ public class Transfer {
         @Override
         public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
             Register PC = registers.getRegister(RegisterType.PC);
-            Register R0 = registers.getRegister(RegisterType.R3);
+            Register R0 = registers.getRegister(RegisterType.R0);
             RegisterDecorator R0d = new RegisterDecorator(R0);
             Register R3 = registers.getRegister(RegisterType.R3);
 
@@ -245,7 +245,7 @@ public class Transfer {
             }
 
             String mess = String.format("SOB %s = %s -1 =%d, if %s>0, jump to %d",
-                    R.getName(),R.getName(),BitConversion.convert(R.getData())-1,R.getName(),EA);
+                    R.getName(),R.getName(),BitConversion.convert(R.getData()),R.getName(),EA);
             LOGGER.info(mess);
         }
 
@@ -275,8 +275,6 @@ public class Transfer {
             Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
             RegisterDecorator Rd = new RegisterDecorator(R);
 
-
-            Rd.setRegister(BitConversion.convert(R.getData())-1);
 
             if(BitConversion.convert(R.getData())>=0){
                 PCd.setRegister(EA);

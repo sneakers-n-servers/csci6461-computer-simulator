@@ -28,12 +28,22 @@ public class ShiftRotate {
             RegisterDecorator Rd = new RegisterDecorator(R);
             String LR = data.substring(2,3);
             String AL = data.substring(3,4);
-            String Counts = data.substring(6,9);
+            String Counts = data.substring(6,10);
+
             boolean LorR = LR.equals("1");
             boolean AorL = AL.equals("1");
             int count = Integer.parseInt(Counts,2);
+            String LRflag;
+            String ALflag;
 
-            LOGGER.info("SRC");
+            if(LorR) LRflag ="left";
+            else LRflag="right";
+
+            if(AorL) ALflag = "logically";
+            else ALflag = "arithmetically";
+
+            String mess = String.format("SRC Shift Register:%s %s %s by %d",R.getName(),LRflag,ALflag,count);
+            LOGGER.info(mess);
             if(count == 0){
                 registers.PCadder();
             }
@@ -43,25 +53,35 @@ public class ShiftRotate {
                 if(LorR) {
                     //logically left shift equals to arithmetically left shift
                     String s2 = s1.substring(count);
+                    StringBuilder s3 = new StringBuilder(count);
                     for (int i = 0; i < count; i++) {
-                        s2=s2+"0";
+                        s3.append("0");
+                        //s2=s2+"0";
                     }
+                    s2 = s2 + s3.toString();
                     R.setData(BitConversion.convert(s2));
                 }
-                else if((!LorR)&&AorL){
+                else if(AorL){
                     //logically right shift
                     String s2 = s1.substring(0,s1.length()-count);
+                    StringBuilder s3 = new StringBuilder(count);
                     for (int i = 0; i < count; i++) {
-                        s2="0"+s2;
+                        s3.append("0");
+                        //s2="0"+s2;
                     }
+                    s2 = s3.toString()+s2;
                     R.setData(BitConversion.convert(s2));
                 }
-                else if((!LorR)&&(!AorL)){
+                else{
                     //arithmetically right shift
                     String s2 = s1.substring(0,s1.length()-count);
+                    String first = s1.substring(0,1);
+                    StringBuilder s3 = new StringBuilder(count);
                     for (int i = 0; i < count; i++) {
-                        s2=s1.substring(0,1)+s2;
+                        s3.append(first);
+                        //s2=s1.substring(0,1)+s2;
                     }
+                    s2 = s3.toString()+s2;
                     R.setData(BitConversion.convert(s2));
                 }
             }
@@ -86,7 +106,6 @@ public class ShiftRotate {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
-            LOGGER.info("RRC");
 
             String Rs = data.substring(0,2);
             Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
@@ -94,9 +113,16 @@ public class ShiftRotate {
 
             String LR = data.substring(2,3);
             boolean LorR = LR.equals("1");
-            String Counts = data.substring(6,9);
-
+            String Counts = data.substring(6,10);
             int count = Integer.parseInt(Counts,2);
+            String LRflag;
+
+            if(LorR) LRflag ="left";
+            else LRflag="right";
+
+            String mess = String.format("RRC Rotate Register:%s %s by %d",R.getName(),LRflag,count);
+            LOGGER.info(mess);
+
             if(count ==0) {
                 registers.PCadder();
             }
