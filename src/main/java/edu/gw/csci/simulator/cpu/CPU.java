@@ -14,8 +14,10 @@ import javafx.scene.control.TextArea;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This is the main driver of our simulator. The CPU has instances of {@link AllRegisters registers},
@@ -31,40 +33,50 @@ public class CPU {
     private final AllRegisters registers;
 
     private Program program;
-    private TextArea consoleInput;
+//    public TextArea consoleInput;
+    public ArrayList<String> consoleInput;
+    public ArrayList<String> consoleOutput;
     private Decoder decoder;
 
     public CPU(Memory memory, AllRegisters registers, MemoryCache memoryCache){
         this.memory = new AllMemory(memory, registers, memoryCache);
         this.registers = registers;
         this.decoder = new Decoder();
+        this.consoleInput = new ArrayList<>();
+        this.consoleOutput = new ArrayList<>();
+    }
+    public Optional<String> getNextInput(){
+
+        if(!consoleInput.isEmpty()){
+            String current = consoleInput.get(0);
+            consoleInput.remove(0);
+            return Optional.of(current);
+        }
+        return Optional.empty();
     }
 
     public void setProgram(Program program){
         this.program = program;
     }
 
-    public void setTextArea(TextArea textArea){
-        this.consoleInput = textArea;
-    }
+//    public void setTextArea(TextArea textArea){
+//        this.consoleInput = textArea;
+//    }
+
 
     /**
-     * This method pulls the current value of the program counter, and executes
-     * instructions until a HLT instruction is received. This is handy because
-     * unused memory will automatically indicate a halt, there is no need to explicitly
+     * This method executes instruction in IR register until a HLT instruction is received.
+     * This is handy because unused memory will automatically indicate a halt, there is no need to explicitly
      * declare one in the program. The GUI restricts one ability to call this function
      * unless the machine has been initialized, and a program has been set.
      */
     public void execute(){
-        RegisterDecorator pcDecorator = getPCDecorator();
-        int pcIndex = pcDecorator.toInt();
-        Instruction instruction = getNextInstruction(pcDecorator);
-        while (instruction.getInstructionType() != InstructionType.HLT){
-            instruction.execute(memory, registers);
-            pcIndex++;
-            pcDecorator.setRegister(pcIndex);
-            instruction = getNextInstruction(pcDecorator);
-        }
+        Instruction instruction = getNextInstruction(registers);
+        do {
+            instruction.execute(memory, registers,this);
+            instruction = getNextInstruction(registers);
+        } while (instruction.getInstructionType() != InstructionType.HLT);
+
     }
 
     /**
@@ -72,12 +84,14 @@ public class CPU {
      * passed the {@link RegisterDecorator} of the PC so we don't have to continually
      * create a new one, given that the current instruction index must be known.
      *
-     * @param pcDecorator The PCDecorator
+     * @param allRegisters All Registers
      * @return The next instruction to execute
      */
-    private Instruction getNextInstruction(RegisterDecorator pcDecorator){
-        int nextInstruction = pcDecorator.toInt();
-        BitSet instructionData = memory.fetch(nextInstruction);
+    private Instruction getNextInstruction(AllRegisters allRegisters){
+        int nextInstructionIndex = getPCDecorator().toInt();
+        BitSet instructionData = memory.fetch(nextInstructionIndex);
+        Register IR = allRegisters.getRegister(RegisterType.IR);
+        IR.setData(instructionData);
         return decoder.getInstruction(instructionData);
     }
 
@@ -109,17 +123,37 @@ public class CPU {
         }
         registers.setRegister(RegisterType.PC, programCounter);
     }
+    /**
+     * This function receives a program from the GUI, and loads it into memory.
+     * The start index of program is set by users.
+     * The GUI restricts one to load a program before the machine is initialized,
+     * so we know that all memory addresses, and registers have been instantiated.
+     */
+    public void loadProgram(int start){
+        int defaultLoadLocation = start;
+        BitSet programCounter = BitConversion.convert(defaultLoadLocation);
+        List<String> lines = program.getLines();
+        for (String line : lines) {
+            LOGGER.info("Setting Line: " + line);
+            BitSet convert = BitConversion.convert(line);
+            memory.store(defaultLoadLocation, convert);
+            defaultLoadLocation++;
+        }
+        registers.setRegister(RegisterType.PC, programCounter);
+    }
 
     /**
      * This function grabs the next instruction, executes it, and
      * adjusts the program counter.
      */
     public void step(){
-        RegisterDecorator pcDecorator = getPCDecorator();
-        int pcIndex = pcDecorator.toInt();
-        Instruction instruction = getNextInstruction(pcDecorator);
-        instruction.execute(memory, registers);
-        pcIndex++;
-        pcDecorator.setRegister(pcIndex);
+        Instruction instruction = getNextInstruction(registers);
+        instruction.execute(memory, registers,this);
+
+    }
+
+
+    public void StoreValue(int value,int index){
+        memory.store(value,index);
     }
 }

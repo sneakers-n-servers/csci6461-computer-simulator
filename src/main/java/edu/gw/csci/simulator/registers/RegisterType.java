@@ -45,22 +45,22 @@ public enum RegisterType {
         return this.binarycode;
     }
 
-    public static RegisterType getGeneralPurpose(int i){
+    public static RegisterType getGeneralPurpose(String i){
         switch (i){
-            case 0: return R0;
-            case 1: return R1;
-            case 2: return R2;
-            case 3: return R3;
+            case "00": return R0;
+            case "01": return R1;
+            case "10": return R2;
+            case "11": return R3;
             default: throw new SimulatorException("General purpose register out of bounds");
         }
     }
 
-    public static RegisterType getIndex(int i){
+    public static RegisterType getIndex(String i){
         switch (i){
-            case 0: return X1;
-            case 1: return X2;
-            case 2: return X3;
-            default: throw new SimulatorException("General purpose register out of bounds");
+            case "01": return X1;
+            case "10": return X2;
+            case "11": return X3;
+            default: throw new SimulatorException("Index purpose register out of bounds");
         }
     }
 }

@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * This class "connects" the GUI to the simulated computer.
@@ -68,6 +69,11 @@ public class Controller {
     @FXML
     private TextArea consoleInput;
 
+    @FXML
+    private TextField startIndex;
+    @FXML
+    private TextField PCset;
+
     private AllRegisters allRegisters;
     private Memory memory;
     private MemoryCache memoryCache;
@@ -81,6 +87,7 @@ public class Controller {
         LOGGER.info("Initializing machine");
         allRegisters.initialize();
         memory.initialize();
+        initializeCPU();
         initialized = true;
     }
 
@@ -90,7 +97,7 @@ public class Controller {
         this.memoryCache = new MemoryCache();
         this.programs = new HashMap<>();
         CPU cpu = new CPU(memory, allRegisters, memoryCache);
-        cpu.setTextArea(consoleInput);
+        //cpu.setTextArea(consoleInput);
         this.cpu = cpu;
     }
 
@@ -99,6 +106,11 @@ public class Controller {
         initializeRegisters();
         initializeMemory();
         initializePrograms();
+    }
+
+    private void initializeCPU(){
+        cpu.consoleInput.clear();
+        cpu.consoleOutput.clear();
     }
 
     /**
@@ -157,6 +169,11 @@ public class Controller {
 
         Program program1 = new Program("Program1");
         programs.put("Program1", program1);
+        PreStoreProgram.SetProgram1(program1);
+
+        Program programls = new Program("Programls");
+        this.programs.put("Programls", programls);
+        PreStoreProgram.SetProgramLS(programls);
 
         //Set the ComboBox to all of our programs
         Set<String> allPrograms = programs.keySet();
@@ -196,6 +213,7 @@ public class Controller {
         Program program = programs.get(programName);
         cpu.setProgram(program);
         cpu.execute();
+        SetconsoleOutput();
     }
 
     @FXML
@@ -208,7 +226,9 @@ public class Controller {
             LOGGER.error("Load program before stepping");
             return;
         }
-        LOGGER.info("Stepping Program");
+        LOGGER.info("One Step Run");
+        cpu.step();
+        SetconsoleOutput();
     }
 
     @FXML
@@ -222,7 +242,13 @@ public class Controller {
         String programName = programNameSelector.getValue();
         Program program = programs.get(programName);
         cpu.setProgram(program);
-        cpu.loadProgram();
+        if(!startIndex.getText().isEmpty()) {
+            int start = Integer.parseInt(startIndex.getText());
+            cpu.loadProgram(start);
+        }
+        else{
+            cpu.loadProgram();
+        }
         loaded = true;
     }
 
@@ -243,5 +269,59 @@ public class Controller {
         for(String line : lines){
             program.appendLine(line);
         }
+    }
+    @FXML
+    private void setPC(){
+        Register PC = allRegisters.getRegister(RegisterType.PC);
+        RegisterDecorator PCd = new RegisterDecorator(PC);
+        PCd.setRegister(Integer.parseInt(PCset.getText()));
+        String mess = String.format("Set PC = %d",Integer.parseInt(PCset.getText()));
+        LOGGER.info(mess);
+    }
+
+    @FXML
+    private void input(){
+        String[] lines = consoleInput.textProperty().get().split("\n");
+        for(String line : lines){
+            if(isNumeric(line)) {
+                cpu.consoleInput.add(line.replace(" ", ""));
+            }
+        }
+        consoleInput.clear();
+    }
+
+    public void SetconsoleOutput()
+    {
+        if(!cpu.consoleOutput.isEmpty()) {
+            consoleInput.clear();
+
+            for(String line:cpu.consoleOutput)
+            consoleInput.appendText(line + "\n\r");
+        }
+    }
+
+    @FXML
+    private void LoadProgram1(){
+        //only use to store program1
+        LOGGER.info("Loading Program1");
+        Program program = programs.get("Program1");
+        cpu.setProgram(program);
+        cpu.loadProgram(126);
+        loaded = true;
+    }
+    @FXML
+    private void PreStoreMemoryForProgram1(){
+        //only use to store some value to memory to run program1
+        cpu.StoreValue(64,8);
+        cpu.StoreValue(170,9);
+        cpu.StoreValue(65535,85);
+        cpu.StoreValue(64,86);
+        cpu.StoreValue(84,87);
+    }
+
+
+    private static boolean isNumeric(String str) {
+        Pattern pattern = Pattern.compile("-?[0-9]*");
+        return pattern.matcher(str).matches();
     }
 }

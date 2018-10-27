@@ -1,6 +1,6 @@
 package edu.gw.csci.simulator.isa;
 
-import edu.gw.csci.simulator.isa.Instructions.*;
+import edu.gw.csci.simulator.isa.instructions.*;
 import edu.gw.csci.simulator.utils.BitConversion;
 
 import java.util.BitSet;
@@ -11,11 +11,41 @@ public class Decoder {
     private HashMap<InstructionType, InstructionFactory> instructions = new HashMap<>();
 
     public Decoder(){
-        instructions.put(InstructionType.HLT, new InstructionFactory<>(HLT::new));
-        instructions.put(InstructionType.LDR, new InstructionFactory<>(LDR::new));
-        instructions.put(InstructionType.STR, new InstructionFactory<>(STR::new));
-        instructions.put(InstructionType.LDX, new InstructionFactory<>(LDX::new));
-        instructions.put(InstructionType.STX, new InstructionFactory<>(STX::new));
+        //Miscellaneous
+        instructions.put(InstructionType.HLT, new InstructionFactory<>(Miscellaneous.HLT::new));
+        //LoadStore
+        instructions.put(InstructionType.LDR, new InstructionFactory<>(LoadStore.LDR::new));
+        instructions.put(InstructionType.LDA, new InstructionFactory<>(LoadStore.LDA::new));
+        instructions.put(InstructionType.STR, new InstructionFactory<>(LoadStore.STR::new));
+        instructions.put(InstructionType.LDX, new InstructionFactory<>(LoadStore.LDX::new));
+        instructions.put(InstructionType.STX, new InstructionFactory<>(LoadStore.STX::new));
+        //Transfer
+        instructions.put(InstructionType.JZ, new InstructionFactory<>(Transfer.JZ::new));
+        instructions.put(InstructionType.JNE, new InstructionFactory<>(Transfer.JNE::new));
+        instructions.put(InstructionType.JCC, new InstructionFactory<>(Transfer.JCC::new));
+        instructions.put(InstructionType.JMA, new InstructionFactory<>(Transfer.JMA::new));
+        instructions.put(InstructionType.JSR, new InstructionFactory<>(Transfer.JSR::new));
+        instructions.put(InstructionType.RFS, new InstructionFactory<>(Transfer.RFS::new));
+        instructions.put(InstructionType.SOB, new InstructionFactory<>(Transfer.SOB::new));
+        instructions.put(InstructionType.JGE, new InstructionFactory<>(Transfer.JGE::new));
+        //ArithmeticLogic
+        instructions.put(InstructionType.AMR, new InstructionFactory<>(ArithmeticLogic.AMR::new));
+        instructions.put(InstructionType.SMR, new InstructionFactory<>(ArithmeticLogic.SMR::new));
+        instructions.put(InstructionType.AIR, new InstructionFactory<>(ArithmeticLogic.AIR::new));
+        instructions.put(InstructionType.SIR, new InstructionFactory<>(ArithmeticLogic.SIR::new));
+        instructions.put(InstructionType.MLT, new InstructionFactory<>(ArithmeticLogic.MLT::new));
+        instructions.put(InstructionType.DVD, new InstructionFactory<>(ArithmeticLogic.DVD::new));
+        instructions.put(InstructionType.TRR, new InstructionFactory<>(ArithmeticLogic.TRR::new));
+        instructions.put(InstructionType.AND, new InstructionFactory<>(ArithmeticLogic.AND::new));
+        instructions.put(InstructionType.ORR, new InstructionFactory<>(ArithmeticLogic.ORR::new));
+        instructions.put(InstructionType.NOT, new InstructionFactory<>(ArithmeticLogic.NOT::new));
+        //ShiftRotate
+        instructions.put(InstructionType.SRC, new InstructionFactory<>(ShiftRotate.SRC::new));
+        instructions.put(InstructionType.RRC, new InstructionFactory<>(ShiftRotate.RRC::new));
+
+        //IO
+        instructions.put(InstructionType.IN, new InstructionFactory<>(IO.IN::new));
+        instructions.put(InstructionType.OUT, new InstructionFactory<>(IO.OUT::new));
     }
 
     /**

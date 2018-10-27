@@ -78,4 +78,16 @@ public class BitConversion {
     public static int fromBinaryString(String s){
         return Integer.parseInt(s, 2);
     }
+
+    public static int getBit (BitSet bits){
+        //return how many "1" in a BitSet
+        int i;
+        int bit = 0;
+        for(i =0;i<bits.length();i++){
+            if(bits.get(i)) {
+                bit += 1;
+            }
+        }
+        return bit;
+    }
 }

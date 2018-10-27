@@ -51,4 +51,10 @@ public class AllRegisters {
     public Register getRegister(RegisterType registerType) {
         return registerMap.get(registerType);
     }
+
+    public void PCadder(){
+        RegisterDecorator PCd = new RegisterDecorator(getRegister(RegisterType.PC));
+        int PC= PCd.toInt();
+        PCd.setRegister(PC+1);
+    }
 }
