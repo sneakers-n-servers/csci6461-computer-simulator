@@ -22,21 +22,4 @@ public class RegisterDecorator extends BitDecorator<Register> {
         Register register = super.getBitType();
         return new SimpleStringProperty(register.getName());
     }
-
-    public void setRegister(int i) {
-        BitSet bitSet = BitConversion.convert(i);
-        super.getBitType().setData(bitSet);
-    }
-
-    public String toBinaryString() {
-        Register register = super.getBitType();
-        BitSet data = register.getData();
-        return BitConversion.toBinaryString(data, register.getSize());
-    }
-
-    public int toInt() {
-        BitSet data = super.getBitType().getData();
-        return BitConversion.convert(data);
-    }
-
 }

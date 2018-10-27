@@ -57,4 +57,24 @@ public class BitDecorator<B extends Bits> {
     public B getBitType() {
         return bitType;
     }
+
+    public void setValue(int i) {
+        BitSet bitSet = BitConversion.convert(i);
+        bitType.setData(bitSet);
+    }
+
+    public void setValue(String data){
+        BitSet bitSet = BitConversion.convert(data);
+        bitType.setData(bitSet);
+    }
+
+    public String toBinaryString() {
+        BitSet data = bitType.getData();
+        return BitConversion.toBinaryString(data, bitType.getSize());
+    }
+
+    public int toInt() {
+        BitSet data = bitType.getData();
+        return BitConversion.convert(data);
+    }
 }

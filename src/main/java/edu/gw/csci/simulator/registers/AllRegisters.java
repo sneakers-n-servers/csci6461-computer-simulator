@@ -55,6 +55,6 @@ public class AllRegisters {
     public void PCadder(){
         RegisterDecorator PCd = new RegisterDecorator(getRegister(RegisterType.PC));
         int PC= PCd.toInt();
-        PCd.setRegister(PC+1);
+        PCd.setValue(PC+1);
     }
 }

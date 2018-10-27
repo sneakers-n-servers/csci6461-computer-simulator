@@ -75,6 +75,7 @@ public class BitConversion {
         return convert(decimal);
     }
 
+
     public static int fromBinaryString(String s){
         return Integer.parseInt(s, 2);
     }
@@ -90,4 +91,6 @@ public class BitConversion {
         }
         return bit;
     }
+
+
 }

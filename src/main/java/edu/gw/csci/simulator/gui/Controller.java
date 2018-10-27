@@ -1,6 +1,7 @@
 package edu.gw.csci.simulator.gui;
 
 import edu.gw.csci.simulator.cpu.CPU;
+import edu.gw.csci.simulator.exceptions.SimulatorException;
 import edu.gw.csci.simulator.memory.Memory;
 import edu.gw.csci.simulator.memory.MemoryCache;
 import edu.gw.csci.simulator.memory.MemoryChunk;
@@ -13,6 +14,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -99,6 +101,7 @@ public class Controller {
         CPU cpu = new CPU(memory, allRegisters, memoryCache);
         //cpu.setTextArea(consoleInput);
         this.cpu = cpu;
+        SimulatorException.setMachineFaultRegister(allRegisters.getRegister(RegisterType.MFR));
     }
 
     @FXML
@@ -121,8 +124,24 @@ public class Controller {
      */
     private void initializeRegisters() {
         registerNameColumn.setCellValueFactory(cellData -> new RegisterDecorator(cellData.getValue()).getRegisterName());
+
         registerBinaryColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toBinaryObservableString());
+        registerBinaryColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        registerBinaryColumn.setOnEditCommit((TableColumn.CellEditEvent<Register, String> t) -> {
+            Register register = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            RegisterDecorator rd = new RegisterDecorator(register);
+            rd.setValue(t.getNewValue());
+            LOGGER.info("Setting register {} to {}", register.getName(), rd.toBinaryString());
+        });
+
         registerDecimalColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toLongObservableString());
+        registerDecimalColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        registerDecimalColumn.setOnEditCommit((TableColumn.CellEditEvent<Register, String> t) -> {
+            Register register = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            RegisterDecorator rd = new RegisterDecorator(register);
+            rd.setValue(t.getNewValue());
+            LOGGER.info("Setting register {} to {}", register.getName(), rd.toInt());
+        });
 
         ObservableList<Register> registerList = FXCollections.observableArrayList();
         for (Map.Entry<RegisterType, Register> registerEntry : allRegisters.getRegisters()) {
@@ -141,7 +160,23 @@ public class Controller {
     private void initializeMemory() {
         memoryIndexColumn.setCellValueFactory(cellData -> new MemoryChunkDecorator(cellData.getValue()).getIndex());
         memoryBinaryColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toBinaryObservableString());
+        memoryBinaryColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        memoryBinaryColumn.setOnEditCommit((TableColumn.CellEditEvent<MemoryChunk, String> t) -> {
+            MemoryChunk mem = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            MemoryChunkDecorator md = new MemoryChunkDecorator(mem);
+            md.setValue(t.getNewValue());
+            LOGGER.info("Setting memory location {} to {}", md.getIndex().toString(), md.toBinaryString());
+        });
+
         memoryDecimalColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toLongObservableString());
+        memoryDecimalColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        memoryDecimalColumn.setOnEditCommit((TableColumn.CellEditEvent<MemoryChunk, String> t) -> {
+            MemoryChunk mem = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            MemoryChunkDecorator md = new MemoryChunkDecorator(mem);
+            md.setValue(t.getNewValue());
+            LOGGER.info("Setting memory location {} to {}", md.getIndex().toString(), md.toInt());
+        });
+
         ObservableList<MemoryChunk> memoryList = FXCollections.observableArrayList();
         memoryList.addAll(Arrays.asList(memory.getMemory()));
         memoryTable.setItems(memoryList);
@@ -274,7 +309,7 @@ public class Controller {
     private void setPC(){
         Register PC = allRegisters.getRegister(RegisterType.PC);
         RegisterDecorator PCd = new RegisterDecorator(PC);
-        PCd.setRegister(Integer.parseInt(PCset.getText()));
+        PCd.setValue(Integer.parseInt(PCset.getText()));
         String mess = String.format("Set PC = %d",Integer.parseInt(PCset.getText()));
         LOGGER.info(mess);
     }

@@ -40,7 +40,7 @@ public class ArithmeticLogic {
                 SetCC.OVERFLOW(registers);
             }
             else {
-                Rd.setRegister(RValue + MemoryValue);
+                Rd.setValue(RValue + MemoryValue);
             }
             registers.PCadder();
             String mess = String.format("AMR R:%s EA:%d, %s = %d + %d",
@@ -79,7 +79,7 @@ public class ArithmeticLogic {
                 SetCC.UNDERFLOW(registers);
             }
             else {
-                Rd.setRegister(RValue - MemoryValue);
+                Rd.setValue(RValue - MemoryValue);
             }
             registers.PCadder();
             String mess = String.format("SMR R:%s EA:%d, %s = %d - %d",
@@ -119,13 +119,13 @@ public class ArithmeticLogic {
             }
             else if(RValue ==0)
             {
-                Rd.setRegister(EA);
+                Rd.setValue(EA);
             }
             else{
                 if(RValue+EA>=Math.pow(2,16)){
                     SetCC.OVERFLOW(registers);
                 }
-                Rd.setRegister(RValue+EA);
+                Rd.setValue(RValue+EA);
             }
 
             registers.PCadder();
@@ -165,13 +165,13 @@ public class ArithmeticLogic {
             }
             else if(RValue ==0)
             {
-                Rd.setRegister(-EA);
+                Rd.setValue(-EA);
             }
             else{
                 if(RValue-EA<=-Math.pow(2,16)){
                     SetCC.UNDERFLOW(registers);
                 }
-                Rd.setRegister(RValue-EA);
+                Rd.setValue(RValue-EA);
             }
 
             registers.PCadder();
@@ -277,8 +277,8 @@ public class ArithmeticLogic {
                     Rx_1d = new RegisterDecorator(Rx_1);
                     int RxValue=BitConversion.convert(Rx.getData());
                     int RyValue=BitConversion.convert(Ry.getData());
-                    Rxd.setRegister(RxValue/RyValue);
-                    Rx_1d.setRegister(RxValue%RyValue);
+                    Rxd.setValue(RxValue/RyValue);
+                    Rx_1d.setValue(RxValue%RyValue);
                 }
             }
             registers.PCadder();

@@ -38,7 +38,7 @@ public class IO {
                 Optional<String> NextInput = cpu.getNextInput();
                 if(NextInput.isPresent()) {
                     int data = Integer.parseInt(NextInput.get());
-                    Rd.setRegister(data);
+                    Rd.setValue(data);
                     String mess = String.format("IN input Int:%d,Binary:%s to Register %s from Console Keyboard",
                             Rd.toInt(), Rd.toBinaryString(), R.getName());
                     LOGGER.info(mess);

@@ -89,7 +89,7 @@ public class LoadStore {
             Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
             RegisterDecorator Rd = new RegisterDecorator(R);
 
-            Rd.setRegister(memory.EA());
+            Rd.setValue(memory.EA());
             registers.PCadder();
         }
 

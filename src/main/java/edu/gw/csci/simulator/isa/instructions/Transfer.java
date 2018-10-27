@@ -30,7 +30,7 @@ public class Transfer {
             int EA = memory.EA();
             Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
             if(R.getData().isEmpty()){
-                PCd.setRegister(EA);
+                PCd.setValue(EA);
             }
             else{
                 registers.PCadder();
@@ -66,7 +66,7 @@ public class Transfer {
             Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
 
             if(!R.getData().isEmpty()){
-                PCd.setRegister(EA);
+                PCd.setValue(EA);
             }
             else{
                 registers.PCadder();
@@ -102,7 +102,7 @@ public class Transfer {
             Register CC = registers.getRegister(RegisterType.CC);
             int bit = BitConversion.getBit(CC.getData());
             if(bit ==1){
-                PCd.setRegister(EA);
+                PCd.setValue(EA);
             }
             else{
                 registers.PCadder();
@@ -134,7 +134,7 @@ public class Transfer {
             RegisterDecorator PCd = new RegisterDecorator(PC);
             int EA =memory.EA();
 
-            PCd.setRegister(EA);
+            PCd.setValue(EA);
 
             String mess = String.format("JMA Unconditional Jump To Address:%d",EA);
             LOGGER.info(mess);
@@ -166,8 +166,8 @@ public class Transfer {
             int EA= memory.EA();
 
             int returnAddress  = BitConversion.convert(PC.getData())+1;
-            R3d.setRegister(BitConversion.convert(PC.getData())+1);
-            PCd.setRegister(EA);
+            R3d.setValue(BitConversion.convert(PC.getData())+1);
+            PCd.setValue(EA);
 
             String mess = String.format("JSR Jump to %d and Save Return Address:%d",
                     EA,returnAddress);
@@ -201,7 +201,7 @@ public class Transfer {
             int EA= memory.EA();
 
 
-            R0d.setRegister(EA);
+            R0d.setValue(EA);
             PC.setData(R3.getData());
 
             String mess = String.format("RFS Return from subroutine, R0=%d PC=R3=%d",
@@ -236,9 +236,9 @@ public class Transfer {
             RegisterDecorator Rd = new RegisterDecorator(R);
 
 
-            Rd.setRegister(BitConversion.convert(R.getData())-1);
+            Rd.setValue(BitConversion.convert(R.getData())-1);
             if(BitConversion.convert(R.getData())>0){
-                PCd.setRegister(EA);
+                PCd.setValue(EA);
             }
             else{
                 registers.PCadder();
@@ -277,7 +277,7 @@ public class Transfer {
 
 
             if(BitConversion.convert(R.getData())>=0){
-                PCd.setRegister(EA);
+                PCd.setValue(EA);
             }
             else{
                 registers.PCadder();
