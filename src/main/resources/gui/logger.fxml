@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.*?>
-
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.text.TextFlow?>
 <BorderPane id="developer-console"
             styleClass="pane"
             fx:controller="edu.gw.csci.simulator.gui.LogController"
@@ -26,7 +27,8 @@
         </HBox>
     </top>
     <center>
-        <TextArea fx:id="developerLog" layoutX="61.0" prefHeight="200.0" prefWidth="200.0" wrapText="true"
-                  editable="false"/>
+        <ScrollPane id="developer-log" fx:id="scrollPane">
+            <TextFlow fx:id="developerLog"/>
+        </ScrollPane>
     </center>
 </BorderPane>

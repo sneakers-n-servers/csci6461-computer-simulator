@@ -3,7 +3,11 @@ package edu.gw.csci.simulator.gui;
 import edu.gw.csci.simulator.utils.ConsoleAppender;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 
@@ -15,11 +19,16 @@ public class LogController {
     private ComboBox<String> logLevels;
 
     @FXML
-    private TextArea developerLog;
+    private TextFlow developerLog;
+
+    @FXML
+    private ScrollPane scrollPane;
 
     @FXML
     private void initialize() {
         initializeLogs(Level.INFO);
+        ConsoleAppender.setTextFlow(developerLog);
+        ConsoleAppender.setScrollPane(scrollPane);
     }
 
     /**
@@ -42,14 +51,11 @@ public class LogController {
             Configurator.setRootLevel(currentLevel);
         });
         logLevels.setValue(level.toString());
-
-        //Set the text field to append to
-        ConsoleAppender.setTextArea(developerLog);
     }
 
     @FXML
     private void clear(){
-        ConsoleAppender.clear();
+       ConsoleAppender.clear();
     }
 
 }

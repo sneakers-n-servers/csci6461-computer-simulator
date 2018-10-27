@@ -2,7 +2,12 @@ package edu.gw.csci.simulator.utils;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -13,7 +18,9 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
+
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -24,13 +31,18 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 @Plugin(name = "ConsoleAppender", category = "Core", elementType = "appender", printObject = true)
 public class ConsoleAppender extends AbstractAppender {
 
-    private static TextArea textArea;
+    private static TextFlow textFlow;
+    private static ScrollPane scrollPane;
 
     private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
     private final Lock readLock = rwLock.readLock();
 
+    private final HashMap<Level, Color> colorMap = new HashMap<>();
+
     public ConsoleAppender(String name, Filter filter, Layout<? extends Serializable> layout, final boolean ignoreExceptions) {
         super(name, filter, layout, ignoreExceptions);
+        colorMap.put(Level.ERROR, Color.RED);
+        colorMap.put(Level.WARN, Color.YELLOW);
     }
 
     /**
@@ -41,18 +53,16 @@ public class ConsoleAppender extends AbstractAppender {
     @Override
     public void append(LogEvent event) {
         readLock.lock();
-
         final String message = new String(getLayout().toByteArray(event));
+        final Level level = event.getLevel();
         try {
             Platform.runLater(() -> {
                 try {
-                    if (textArea != null) {
-                        if (textArea.getText().length() == 0) {
-                            textArea.setText(message);
-                        } else {
-                            textArea.selectEnd();
-                            textArea.insertText(textArea.getText().length(), message);
-                        }
+                    if (textFlow != null){
+                        Text text = new Text(message);
+                        text.setFill(getColor(level));
+                        textFlow.getChildren().add(text);
+                        scrollPane.setVvalue(1.0);
                     }
                 } catch (final Throwable t) {
                     System.out.println("Error while append to TextArea: " + t.getMessage());
@@ -63,6 +73,10 @@ public class ConsoleAppender extends AbstractAppender {
         } finally {
             readLock.unlock();
         }
+    }
+
+    private Color getColor(Level level){
+        return colorMap.getOrDefault(level, Color.BLACK);
     }
 
     /**
@@ -94,13 +108,20 @@ public class ConsoleAppender extends AbstractAppender {
     /**
      * Set TextArea to append
      *
-     * @param textArea TextArea to append
+     * @param textFlow TextArea to append
      */
-    public static void setTextArea(TextArea textArea) {
-        ConsoleAppender.textArea = textArea;
+    public static void setTextFlow(TextFlow textFlow) {
+        ConsoleAppender.textFlow = textFlow;
     }
 
+    public static void setScrollPane(ScrollPane scrollPane){
+        ConsoleAppender.scrollPane = scrollPane;
+    }
+
+    /**
+     * Clears the log
+     */
     public static void clear(){
-        ConsoleAppender.textArea.clear();
+        textFlow.getChildren().clear();
     }
 }

@@ -234,7 +234,7 @@ public class Controller {
     @FXML
     private void loadProgram(){
         if(! initialized){
-            LOGGER.error("Please initialize the machine before loading");
+            LOGGER.error("Initialize the machine before loading");
             return;
         }
 

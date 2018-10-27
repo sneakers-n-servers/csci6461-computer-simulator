@@ -9,3 +9,8 @@
 .pane-header {
     -fx-font-size: 20px;
 }
+
+#developer-log {
+  -fx-border-color: lightgray;
+  -fx-border-width: 1px;
+}
