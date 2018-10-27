@@ -47,4 +47,9 @@ public class LogController {
         ConsoleAppender.setTextArea(developerLog);
     }
 
+    @FXML
+    private void clear(){
+        ConsoleAppender.clear();
+    }
+
 }

@@ -1,6 +1,7 @@
 package edu.gw.csci.simulator.utils;
 
 import javafx.application.Platform;
+import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -97,5 +98,9 @@ public class ConsoleAppender extends AbstractAppender {
      */
     public static void setTextArea(TextArea textArea) {
         ConsoleAppender.textArea = textArea;
+    }
+
+    public static void clear(){
+        ConsoleAppender.textArea.clear();
     }
 }

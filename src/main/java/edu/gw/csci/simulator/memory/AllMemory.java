@@ -66,7 +66,7 @@ public class AllMemory {
      * @throws IllegalMemoryAccess When the memory index is reserved
      */
     public BitSet fetch(int index) throws MemoryOutOfBounds, IllegalMemoryAccess {
-        //checkIndex(index, true);
+        checkIndex(index, false);
         BitSet toFetch = BitConversion.convert(index);
         allRegisters.setRegister(RegisterType.MAR, toFetch);
         Optional<BitSet> bits = memoryCache.get(index);

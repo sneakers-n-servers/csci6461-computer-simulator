@@ -8,12 +8,12 @@ public class InstructionTypeTest {
     @Test
     public void testOctal(){
         InstructionType it = InstructionType.LDX;
-        Assert.assertEquals(51, it.getOpCode());
+        Assert.assertEquals(33, it.getOpCode());
     }
 
     @Test
     public void testDecodeLDR(){
-        String binaryOpCode = "110011";
+        String binaryOpCode = "100001";
         InstructionType it = InstructionType.getInstructionType(binaryOpCode);
         Assert.assertEquals(it, InstructionType.LDX);
     }

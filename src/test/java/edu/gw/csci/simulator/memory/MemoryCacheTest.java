@@ -30,10 +30,12 @@ public class MemoryCacheTest {
             cache.put(i, toCache);
         }
         Assert.assertEquals(cacheSize, cache.getSize());
-        System.out.println("Checking cache contents");
+
+        int expected = 100 - cacheSize;
         for (BitSet ret : cache.getCacheData()) {
             int i = BitConversion.convert(ret);
-            System.out.println(i);
+            Assert.assertEquals(expected, i);
+            expected++;
         }
     }
 

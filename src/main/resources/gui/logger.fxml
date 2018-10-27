@@ -5,6 +5,7 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.control.Button?>
 <BorderPane id="developer-console"
             styleClass="pane"
             fx:controller="edu.gw.csci.simulator.gui.LogController"
@@ -16,6 +17,8 @@
             </Label>
             <!--The region acts as a spacer for left alight, right align-->
             <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Clear" onAction="#clear"/>
+            <Region prefWidth="5"/>
             <ComboBox fx:id="logLevels"/>
             <BorderPane.margin>
                 <Insets bottom="10"/>
