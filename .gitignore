@@ -8,6 +8,7 @@
 *.ctxt
 .DS_Store
 .idea
+*.iml
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -26,3 +27,4 @@ hs_err_pid*
 
 #Maven
 target/
+dependency-reduced-pom.xml
