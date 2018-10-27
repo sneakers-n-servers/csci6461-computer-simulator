@@ -1,7 +1,9 @@
 package edu.gw.csci.simulator.utils;
 
 import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.paint.Color;
@@ -62,7 +64,6 @@ public class ConsoleAppender extends AbstractAppender {
                         Text text = new Text(message);
                         text.setFill(getColor(level));
                         textFlow.getChildren().add(text);
-                        scrollPane.setVvalue(1.0);
                     }
                 } catch (final Throwable t) {
                     System.out.println("Error while append to TextArea: " + t.getMessage());
@@ -111,6 +112,10 @@ public class ConsoleAppender extends AbstractAppender {
      * @param textFlow TextArea to append
      */
     public static void setTextFlow(TextFlow textFlow) {
+        textFlow.getChildren().addListener( (ListChangeListener<Node>) ((change) -> {
+            scrollPane.layout();
+            scrollPane.setVvalue(1.0f);
+        }));
         ConsoleAppender.textFlow = textFlow;
     }
 

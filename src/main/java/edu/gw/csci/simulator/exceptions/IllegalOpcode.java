@@ -33,6 +33,8 @@ package edu.gw.csci.simulator.exceptions;
  */
 public class IllegalOpcode extends SimulatorException {
 
+    private int opCode = 4;
+
     /**
      * Instantiate an error for illegal opcode.
      *
