@@ -51,7 +51,8 @@ public enum RegisterType {
             case "01": return R1;
             case "10": return R2;
             case "11": return R3;
-            default: throw new SimulatorException("General purpose register out of bounds");
+            //default: throw new SimulatorException("General purpose register out of bounds");
+            default: return R0;
         }
     }
 
@@ -60,7 +61,8 @@ public enum RegisterType {
             case "01": return X1;
             case "10": return X2;
             case "11": return X3;
-            default: throw new SimulatorException("Index purpose register out of bounds");
+            //default: throw new SimulatorException("Index purpose register out of bounds");
+            default: return R0;
         }
     }
 }

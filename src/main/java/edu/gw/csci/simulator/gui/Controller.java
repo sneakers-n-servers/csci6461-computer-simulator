@@ -1,6 +1,7 @@
 package edu.gw.csci.simulator.gui;
 
 import edu.gw.csci.simulator.cpu.CPU;
+import edu.gw.csci.simulator.exceptions.IllegalMemoryAccess;
 import edu.gw.csci.simulator.exceptions.SimulatorException;
 import edu.gw.csci.simulator.memory.Memory;
 import edu.gw.csci.simulator.memory.MemoryCache;

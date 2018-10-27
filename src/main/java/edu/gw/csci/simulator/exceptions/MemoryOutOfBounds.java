@@ -40,10 +40,13 @@ public class MemoryOutOfBounds extends SimulatorException {
      * @param message A string that will be appended to the default backtrace.
      */
 
-    private int code = 8;
-
     public MemoryOutOfBounds(String message) {
         super(message);
+    }
+
+    @Override
+    int getOpcode() {
+        return 8;
     }
 }
 
