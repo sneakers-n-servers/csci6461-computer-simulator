@@ -44,7 +44,7 @@ public class ConsoleAppender extends AbstractAppender {
     public ConsoleAppender(String name, Filter filter, Layout<? extends Serializable> layout, final boolean ignoreExceptions) {
         super(name, filter, layout, ignoreExceptions);
         colorMap.put(Level.ERROR, Color.RED);
-        colorMap.put(Level.WARN, Color.YELLOW);
+        colorMap.put(Level.WARN, Color.GOLD);
     }
 
     /**

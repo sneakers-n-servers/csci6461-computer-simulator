@@ -81,12 +81,20 @@ public class Controller {
 
     private boolean initialized, loaded;
 
+    /**
+     * Both memory and registers are initialized to their default values.
+     * The reserved memory location 1 is set to 6, as to execute a halt
+     * if a trap instruction occurs. The boolean initialized is also set
+     * as to provide proper indication to other console settings that values can be
+     * set without throwing null pointers. We can safely set the memory here because it
+     * is developer driven, and there is no need to check for errors.
+     */
     @FXML
     protected void runIPL() {
-        LOGGER.info("Initializing machine");
+        LOGGER.info("Initializing simulator");
         allRegisters.initialize();
         memory.initialize();
-        memory.set(1, BitConversion.convert(6));
+        memory.set(SimulatorException.HALT_MEMORY_POINTER, BitConversion.convert(SimulatorException.HALT_LOCATION));
         initializeCPU();
         initialized = true;
     }
@@ -177,7 +185,11 @@ public class Controller {
                 memoryTable.refresh();
                 return;
             }
-            MemoryChunk mem = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            int tablePosition = t.getTablePosition().getRow();
+            if(tablePosition == SimulatorException.HALT_LOCATION){
+                LOGGER.warn("Index 6 is reserved for halt during trap codes, this is not recomended");
+            }
+            MemoryChunk mem = t.getTableView().getItems().get(tablePosition);
             MemoryChunkDecorator md = new MemoryChunkDecorator(mem);
             md.setBinaryValue(t.getNewValue());
             LOGGER.info("Setting memory location {} to {}", md.getIndex().toString(), md.toBinaryString());
@@ -192,7 +204,11 @@ public class Controller {
                 memoryTable.refresh();
                 return;
             }
-            MemoryChunk mem = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            int tablePosition = t.getTablePosition().getRow();
+            if(tablePosition == SimulatorException.HALT_LOCATION){
+                LOGGER.warn("Index 6 is reserved for halt during trap codes, this is not recomended");
+            }
+            MemoryChunk mem = t.getTableView().getItems().get(tablePosition);
             MemoryChunkDecorator md = new MemoryChunkDecorator(mem);
             md.setIntegerValue(t.getNewValue());
             LOGGER.info("Setting memory location {} to {}", md.getIndex().toString(), md.toInt());
@@ -210,10 +226,6 @@ public class Controller {
         });
         int maxPages = (int) Math.ceil((double) memory.getSize() / 32);
         memoryPagination.setPageCount(maxPages);
-    }
-
-    private void badEdit(){
-
     }
 
     /**
