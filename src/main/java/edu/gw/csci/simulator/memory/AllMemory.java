@@ -39,47 +39,56 @@ public class AllMemory {
     }
 
     /**
+     * This method overloads the {@link AllMemory#store(int, BitSet)} to check for
+     * illegal memory access by default. Therefore, this method will reject
+     * all requests to save to reserved memory location.
      *
-     * @param value
-     * @param index
-     * @throws MemoryOutOfBounds
-     * @throws IllegalMemoryAccess
+     * @param index The index of the data to store in memory
+     * @param bitSet The data to store
+     * @throws MemoryOutOfBounds When the memory index is out of bounds
+     * @throws IllegalMemoryAccess When the memory index is reserved
      */
-    public void store(int value, int index) throws MemoryOutOfBounds, IllegalMemoryAccess{
-        store(value, index, true);
+    public void store(int index, BitSet bitSet) throws MemoryOutOfBounds, IllegalMemoryAccess {
+        store(index, bitSet, true);
     }
 
     /**
+     * Checks to make sure that the memory address is valid, and if so, sets the bits in memory.
+     * The memory buffer register is updated to value set, and the data is placed in the cache.
+     * If the throwReserve value is set to true, modifications to reserved memory will be
+     * deemed illegal.
      *
-     * @param value
-     * @param index
-     * @param throwReserve
-     * @throws MemoryOutOfBounds
-     * @throws IllegalMemoryAccess
+     * @param index  The index of the data to store in memory
+     * @param bitSet The data to store
+     * @throws MemoryOutOfBounds   When the memory index is out of bounds
+     * @throws IllegalMemoryAccess When the memory index is reserved, unless indicated otherwise
      */
-    public void store(int value, int index, boolean throwReserve) throws MemoryOutOfBounds, IllegalMemoryAccess {
+    public void store(int index, BitSet bitSet, boolean throwReserve) throws MemoryOutOfBounds, IllegalMemoryAccess {
         checkIndex(index, throwReserve);
-        String mess = String.format("Stroing %d(%s) to memory index %d", value, BitConversion.toBinaryString(value,16), index);
-        LOGGER.info(mess);
-        String BinaryValue = Integer.toBinaryString(value);
-        //word is over 16 bits
-        if (BinaryValue.length() > 16) {
-            mess = "Word is over 16 bits.";
-            LOGGER.error(mess);
-            return;
+        if(index == SimulatorException.HALT_LOCATION){
+            LOGGER.warn("Index 6 is reserved for halt during trap codes, this is not recomended");
         }
-        BitSet store = BitConversion.convert(value);
-        memory.set(index, store);
-        allRegisters.setRegister(RegisterType.MBR, store);
+
+        //We know that this conversion is safe because the data is stored in a BitSet already
+        int value = BitConversion.convert(bitSet);
+        String mess = String.format("Storing %d(%s) to memory index %d", value, BitConversion.toBinaryString(bitSet,16), index);
+        LOGGER.debug(mess);
+        MemoryChunkDecorator memoryChunkDecorator = new MemoryChunkDecorator(memory.get(index));
+        memoryChunkDecorator.setValue(value);
+        allRegisters.setRegister(RegisterType.MBR, bitSet);
+        memoryCache.put(index, bitSet);
     }
 
 
     /**
+     * This method overloads the {@link AllMemory#fetch(int)} to check for
+     * illegal memory access by default. Therefore,this method will reject
+     * all requests to save to reserved memory location.
      *
-     * @param index
-     * @return
-     * @throws MemoryOutOfBounds
-     * @throws IllegalMemoryAccess
+     * @param index The index to fetch
+     * @return The contents of memory, or cache, as appropriate.
+     * @throws MemoryOutOfBounds When the memory index is out of bounds
+     * @throws IllegalMemoryAccess When the memory index is reserved
      */
     public BitSet fetch(int index) throws MemoryOutOfBounds, IllegalMemoryAccess {
         return fetch(index, true);
@@ -93,41 +102,22 @@ public class AllMemory {
      * @param index The index to fetch
      * @return The contents of memory, or cache, as appropriate.
      * @throws MemoryOutOfBounds   When the memory index is out of bounds
-     * @throws IllegalMemoryAccess When the memory index is reserved
+     * @throws IllegalMemoryAccess When the memory index is reserved, unless indicated otherwise
      */
     public BitSet fetch(int index, boolean throwReserve) throws MemoryOutOfBounds, IllegalMemoryAccess {
         checkIndex(index, throwReserve);
+
+        //We know that this conversion is safe because the instructions dictate as such
         BitSet toFetch = BitConversion.convert(index);
         allRegisters.setRegister(RegisterType.MAR, toFetch);
+
         Optional<BitSet> bits = memoryCache.get(index);
-        BitSet fetched = bits.orElseGet(() -> memory.get(index));
+        BitSet fetched = bits.orElseGet(() -> memory.getChunkData(index));
         allRegisters.setRegister(RegisterType.MBR, fetched);
         int value = BitConversion.convert(fetched);
         String mess = String.format("Fetching %d(%s) from memory index %d", value, BitConversion.toBinaryString(value,16), index);
-        LOGGER.info(mess);
+        LOGGER.debug(mess);
         return fetched;
-    }
-
-    /**
-     * Checks to make sure that the memory address is valid, and if so, sets the bits in memory.
-     * The memory buffer register is updated to value set, and the data is placed in the cache.
-     *
-     * @param index  The index of the data to store
-     * @param bitSet The data to store
-     * @throws MemoryOutOfBounds   When the memory index is out of bounds
-     * @throws IllegalMemoryAccess When the memory index is reserved
-     */
-    public void store(int index, BitSet bitSet) throws MemoryOutOfBounds, IllegalMemoryAccess {
-        checkIndex(index, true);
-        if(index == SimulatorException.HALT_LOCATION){
-            LOGGER.warn("Index 6 is reserved for halt during trap codes, this is not recomended");
-        }
-        int value = BitConversion.convert(bitSet);
-        String mess = String.format("Stroing %d(%s) to memory index %d", value, BitConversion.toBinaryString(bitSet,16), index);
-        LOGGER.info(mess);
-        memory.set(index, bitSet);
-        allRegisters.setRegister(RegisterType.MBR, bitSet);
-        memoryCache.put(index, bitSet);
     }
 
     /**

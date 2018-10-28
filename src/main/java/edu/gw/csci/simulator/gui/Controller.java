@@ -192,7 +192,7 @@ public class Controller {
             MemoryChunk mem = t.getTableView().getItems().get(tablePosition);
             MemoryChunkDecorator md = new MemoryChunkDecorator(mem);
             md.setBinaryValue(t.getNewValue());
-            LOGGER.info("Setting memory location {} to {}", md.getIndex().toString(), md.toBinaryString());
+            LOGGER.debug("Setting memory location {} to {}", md.getIndex().toString(), md.toBinaryString());
             memoryTable.refresh();
         });
 
@@ -211,7 +211,7 @@ public class Controller {
             MemoryChunk mem = t.getTableView().getItems().get(tablePosition);
             MemoryChunkDecorator md = new MemoryChunkDecorator(mem);
             md.setIntegerValue(t.getNewValue());
-            LOGGER.info("Setting memory location {} to {}", md.getIndex().toString(), md.toInt());
+            LOGGER.debug("Setting memory location {} to {}", md.getIndex().toString(), md.toInt());
         });
 
         ObservableList<MemoryChunk> memoryList = FXCollections.observableArrayList();

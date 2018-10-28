@@ -24,6 +24,13 @@ public class MemoryCache {
         this.maxCacheSize = cacheSize;
     }
 
+    /**
+     * Puts a value into the cache. If the cache has reached its maximum size, the first
+     * value inserted will be evicted (FIFO).
+     *
+     * @param memoryIndex The index of memory cached
+     * @param data The to be stored by the call
+     */
     public void put(int memoryIndex, BitSet data){
         if(cache.size() == maxCacheSize){
             //Pop the first off the queue
@@ -45,7 +52,13 @@ public class MemoryCache {
         lookup.put(memoryIndex, cache.size() - 1);
     }
 
-    public Optional<BitSet> get(int memoryIndex){
+    /**
+     * Gets the memory index from cache, if present, and adjusts counters
+     * for hit/miss.
+     * @param memoryIndex The memory index to fetch
+     * @return The memory data, if present.
+     */
+    public Optional<BitSet> get(int memoryIndex) {
         totalRequests++;
         if(lookup.containsKey(memoryIndex)){
             cacheHit++;
@@ -58,6 +71,10 @@ public class MemoryCache {
 
     public long getSize(){
         return this.cache.size();
+    }
+
+    public int getMaxCacheSize(){
+        return this.maxCacheSize;
     }
 
     public long getTotalRequests() {

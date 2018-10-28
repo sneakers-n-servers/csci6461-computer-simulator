@@ -20,8 +20,7 @@ public class Miscellaneous {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            //Handle the dirty work
-            LOGGER.info("Halt");
+
         }
 
         @Override

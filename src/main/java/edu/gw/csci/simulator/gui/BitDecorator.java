@@ -59,6 +59,11 @@ public class BitDecorator<B extends Bits> {
         return bitType;
     }
 
+    /**
+     * Sets the integer value of either memory or registers with trap handling.
+     *
+     * @param i The integer to set
+     */
     public void setValue(int i) {
         String binary = Integer.toBinaryString(i);
         if(binary.length() > bitType.getSize()){
@@ -70,20 +75,36 @@ public class BitDecorator<B extends Bits> {
     }
 
     /**
+     * Converts value from binary with trap handling, and sets the value
+     * to either memory, or the proper register.
      *
-     * @param data
+     * @param data The binary string
+     * @throws IllegalValue If the string is not binary
      */
     public void setBinaryValue(String data) throws IllegalValue{
         if(data.length() > bitType.getSize()){
             String mess = String.format("Value: %s is greater than max: %d", data, bitType.getSize());
             throw new IllegalValue(mess);
         }
-        BitSet bitSet = BitConversion.convert(data);
+        BitSet bitSet;
+        try{
+            bitSet = BitConversion.convert(data);
+        }catch (NumberFormatException e){
+            String mess = String.format("%s is not a binary string", data);
+            throw new IllegalValue(mess);
+        }
         bitType.setData(bitSet);
     }
 
+    /**
+     * Converts the integer data from string, with proper trap handline
+     * and sets either the memory or the registers.
+     *
+     * @param data The string to convert to integer
+     * @throws IllegalValue If the string is not an integer
+     */
     public void setIntegerValue(String data) throws IllegalValue{
-        Integer value;
+        int value;
         try{
             value = Integer.parseInt(data);
         }catch (NumberFormatException e){
@@ -94,8 +115,10 @@ public class BitDecorator<B extends Bits> {
     }
 
     /**
+     * Converts either registers or memory to the proper binary representation.
+     * The value will be zero padded depending on size.
      *
-     * @return
+     * @return The converted string
      */
     public String toBinaryString() {
         BitSet data = bitType.getData();
@@ -103,11 +126,20 @@ public class BitDecorator<B extends Bits> {
     }
 
     /**
+     * Converts either registers or memory to the proper integer representation.
      *
-     * @return
+     * @return The converted integer
      */
     public int toInt() {
         BitSet data = bitType.getData();
         return BitConversion.convert(data);
+    }
+
+    /**
+     * Retrieves the contents of either registers or memory
+     * @return The raw {@link BitSet data}
+     */
+    public BitSet getData(){
+        return bitType.getData();
     }
 }

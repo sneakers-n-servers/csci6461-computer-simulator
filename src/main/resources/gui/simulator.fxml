@@ -107,7 +107,6 @@
                 <!--The region acts as a spacer for left alight, right align-->
                 <Region HBox.hgrow="ALWAYS"/>
 
-                <Button id="input" text="Input" onAction="#input"/>
                 <!--Sets the desired program to be saved, loaded, or run-->
                 <ComboBox fx:id="programNameSelector"/>
                 <Region prefWidth="10"/>
