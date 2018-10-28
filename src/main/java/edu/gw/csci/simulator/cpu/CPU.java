@@ -38,9 +38,9 @@ public class CPU {
     public ArrayList<String> consoleOutput;
     private Decoder decoder;
 
-    public CPU(Memory memory, AllRegisters registers, MemoryCache memoryCache){
-        this.memory = new AllMemory(memory, registers, memoryCache);
-        this.registers = registers;
+    public CPU(AllMemory allMemory){
+        this.memory = allMemory;
+        this.registers = allMemory.getAllRegisters();
         this.decoder = new Decoder();
         this.consoleInput = new ArrayList<>();
         this.consoleOutput = new ArrayList<>();

@@ -1,6 +1,7 @@
 package edu.gw.csci.simulator.gui;
 
 import edu.gw.csci.simulator.Bits;
+import edu.gw.csci.simulator.exceptions.IllegalValue;
 import edu.gw.csci.simulator.utils.BitConversion;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -59,20 +60,52 @@ public class BitDecorator<B extends Bits> {
     }
 
     public void setValue(int i) {
+        String binary = Integer.toBinaryString(i);
+        if(binary.length() > bitType.getSize()){
+            String mess = String.format("Value: %d is greater than max: %d", i, bitType.getSize());
+            throw new IllegalValue(mess);
+        }
         BitSet bitSet = BitConversion.convert(i);
         bitType.setData(bitSet);
     }
 
-    public void setValue(String data){
+    /**
+     *
+     * @param data
+     */
+    public void setBinaryValue(String data) throws IllegalValue{
+        if(data.length() > bitType.getSize()){
+            String mess = String.format("Value: %s is greater than max: %d", data, bitType.getSize());
+            throw new IllegalValue(mess);
+        }
         BitSet bitSet = BitConversion.convert(data);
         bitType.setData(bitSet);
     }
 
+    public void setIntegerValue(String data) throws IllegalValue{
+        Integer value;
+        try{
+            value = Integer.parseInt(data);
+        }catch (NumberFormatException e){
+            String mess = String.format("%s is not a valid integer", data);
+            throw new IllegalValue(mess);
+        }
+        setValue(value);
+    }
+
+    /**
+     *
+     * @return
+     */
     public String toBinaryString() {
         BitSet data = bitType.getData();
         return BitConversion.toBinaryString(data, bitType.getSize());
     }
 
+    /**
+     *
+     * @return
+     */
     public int toInt() {
         BitSet data = bitType.getData();
         return BitConversion.convert(data);

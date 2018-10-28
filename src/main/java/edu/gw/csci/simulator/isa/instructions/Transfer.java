@@ -100,7 +100,7 @@ public class Transfer {
             int EA = memory.EA();
 
             Register CC = registers.getRegister(RegisterType.CC);
-            int bit = BitConversion.getBit(CC.getData());
+            int bit = CC.getData().cardinality();
             if(bit ==1){
                 PCd.setValue(EA);
             }

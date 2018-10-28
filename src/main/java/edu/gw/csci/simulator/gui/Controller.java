@@ -1,16 +1,15 @@
 package edu.gw.csci.simulator.gui;
 
+import edu.gw.csci.simulator.Bits;
+import edu.gw.csci.simulator.Simulator;
 import edu.gw.csci.simulator.cpu.CPU;
-import edu.gw.csci.simulator.exceptions.IllegalMemoryAccess;
 import edu.gw.csci.simulator.exceptions.SimulatorException;
-import edu.gw.csci.simulator.memory.Memory;
-import edu.gw.csci.simulator.memory.MemoryCache;
-import edu.gw.csci.simulator.memory.MemoryChunk;
-import edu.gw.csci.simulator.memory.MemoryChunkDecorator;
+import edu.gw.csci.simulator.memory.*;
 import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.Register;
 import edu.gw.csci.simulator.registers.RegisterDecorator;
 import edu.gw.csci.simulator.registers.RegisterType;
+import edu.gw.csci.simulator.utils.BitConversion;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -74,12 +73,9 @@ public class Controller {
 
     @FXML
     private TextField startIndex;
-    @FXML
-    private TextField PCset;
 
     private AllRegisters allRegisters;
     private Memory memory;
-    private MemoryCache memoryCache;
     private HashMap<String, Program> programs;
     private CPU cpu;
 
@@ -90,6 +86,7 @@ public class Controller {
         LOGGER.info("Initializing machine");
         allRegisters.initialize();
         memory.initialize();
+        memory.set(1, BitConversion.convert(6));
         initializeCPU();
         initialized = true;
     }
@@ -97,12 +94,13 @@ public class Controller {
     public Controller() {
         this.allRegisters = new AllRegisters();
         this.memory = new Memory();
-        this.memoryCache = new MemoryCache();
         this.programs = new HashMap<>();
-        CPU cpu = new CPU(memory, allRegisters, memoryCache);
+
+        AllMemory allMemory = new AllMemory(memory, allRegisters, new MemoryCache());
+        CPU cpu = new CPU(allMemory);
         //cpu.setTextArea(consoleInput);
         this.cpu = cpu;
-        SimulatorException.setMachineFaultRegister(allRegisters.getRegister(RegisterType.MFR));
+        SimulatorException.setAllMemory(allMemory);
     }
 
     @FXML
@@ -110,6 +108,7 @@ public class Controller {
         initializeRegisters();
         initializeMemory();
         initializePrograms();
+        SimulatorException.setTables(registerTable, memoryTable);
     }
 
     private void initializeCPU(){
@@ -121,7 +120,7 @@ public class Controller {
      * This function performs the proper binding of the registers to the GUI. Each register column is set with a value
      * factory that converts the {@link Register} to a desired format. The initial list of registers used to populate the
      * table is generated and set. Finally, each register value is bound to refresh the table when modified.
-     * This provides convenience throughout the simulators operation.
+     * This provides convenience throughout the simulators operation. Registers are modifiable within the console itself.
      */
     private void initializeRegisters() {
         registerNameColumn.setCellValueFactory(cellData -> new RegisterDecorator(cellData.getValue()).getRegisterName());
@@ -129,18 +128,28 @@ public class Controller {
         registerBinaryColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toBinaryObservableString());
         registerBinaryColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         registerBinaryColumn.setOnEditCommit((TableColumn.CellEditEvent<Register, String> t) -> {
+            if(! initialized){
+                LOGGER.error("Initialize the machine before editing");
+                registerTable.refresh();
+                return;
+            }
             Register register = t.getTableView().getItems().get(t.getTablePosition().getRow());
             RegisterDecorator rd = new RegisterDecorator(register);
-            rd.setValue(t.getNewValue());
+            rd.setBinaryValue(t.getNewValue());
             LOGGER.info("Setting register {} to {}", register.getName(), rd.toBinaryString());
         });
 
         registerDecimalColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toLongObservableString());
         registerDecimalColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         registerDecimalColumn.setOnEditCommit((TableColumn.CellEditEvent<Register, String> t) -> {
+            if(! initialized){
+                LOGGER.error("Initialize the machine before editing");
+                registerTable.refresh();
+                return;
+            }
             Register register = t.getTableView().getItems().get(t.getTablePosition().getRow());
             RegisterDecorator rd = new RegisterDecorator(register);
-            rd.setValue(t.getNewValue());
+            rd.setIntegerValue(t.getNewValue());
             LOGGER.info("Setting register {} to {}", register.getName(), rd.toInt());
         });
 
@@ -156,25 +165,36 @@ public class Controller {
      * This function performs the proper binding of the memory to the GUI. Each memory column is set with a value
      * factory that converts the {@link MemoryChunk} to a desired format. The initial list of memory locations used
      * to populate the table is generated and set. Finally each memmory location is bound to refresh the table when modified.
-     * This provides convenience throughout the simulator's operation.
+     * This provides convenience throughout the simulator's operation.  Memory is modifiable within the console itself.
      */
     private void initializeMemory() {
         memoryIndexColumn.setCellValueFactory(cellData -> new MemoryChunkDecorator(cellData.getValue()).getIndex());
         memoryBinaryColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toBinaryObservableString());
         memoryBinaryColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         memoryBinaryColumn.setOnEditCommit((TableColumn.CellEditEvent<MemoryChunk, String> t) -> {
+            if(! initialized){
+                LOGGER.error("Initialize the machine before editing");
+                memoryTable.refresh();
+                return;
+            }
             MemoryChunk mem = t.getTableView().getItems().get(t.getTablePosition().getRow());
             MemoryChunkDecorator md = new MemoryChunkDecorator(mem);
-            md.setValue(t.getNewValue());
+            md.setBinaryValue(t.getNewValue());
             LOGGER.info("Setting memory location {} to {}", md.getIndex().toString(), md.toBinaryString());
+            memoryTable.refresh();
         });
 
         memoryDecimalColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toLongObservableString());
         memoryDecimalColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         memoryDecimalColumn.setOnEditCommit((TableColumn.CellEditEvent<MemoryChunk, String> t) -> {
+            if(! initialized){
+                LOGGER.error("Initialize the machine before editing");
+                memoryTable.refresh();
+                return;
+            }
             MemoryChunk mem = t.getTableView().getItems().get(t.getTablePosition().getRow());
             MemoryChunkDecorator md = new MemoryChunkDecorator(mem);
-            md.setValue(t.getNewValue());
+            md.setIntegerValue(t.getNewValue());
             LOGGER.info("Setting memory location {} to {}", md.getIndex().toString(), md.toInt());
         });
 
@@ -190,6 +210,10 @@ public class Controller {
         });
         int maxPages = (int) Math.ceil((double) memory.getSize() / 32);
         memoryPagination.setPageCount(maxPages);
+    }
+
+    private void badEdit(){
+
     }
 
     /**
@@ -258,10 +282,6 @@ public class Controller {
             LOGGER.error("Initialize the machine before stepping");
             return;
         }
-        if(! loaded){
-            LOGGER.error("Load program before stepping");
-            return;
-        }
         LOGGER.info("One Step Run");
         cpu.step();
         SetconsoleOutput();
@@ -305,14 +325,6 @@ public class Controller {
         for(String line : lines){
             program.appendLine(line);
         }
-    }
-    @FXML
-    private void setPC(){
-        Register PC = allRegisters.getRegister(RegisterType.PC);
-        RegisterDecorator PCd = new RegisterDecorator(PC);
-        PCd.setValue(Integer.parseInt(PCset.getText()));
-        String mess = String.format("Set PC = %d",Integer.parseInt(PCset.getText()));
-        LOGGER.info(mess);
     }
 
     @FXML

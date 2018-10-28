@@ -2,6 +2,7 @@ package edu.gw.csci.simulator.memory;
 
 import edu.gw.csci.simulator.exceptions.IllegalMemoryAccess;
 import edu.gw.csci.simulator.exceptions.MemoryOutOfBounds;
+import edu.gw.csci.simulator.exceptions.SimulatorException;
 import edu.gw.csci.simulator.registers.AllRegisters;
 import org.junit.Assert;
 import org.junit.Before;
@@ -9,12 +10,10 @@ import org.junit.Test;
 
 import java.util.BitSet;
 
-import static org.junit.Assert.*;
-
 public class AllMemoryTest {
 
-    private Memory memory;
-    private AllRegisters registers;
+    private final Memory memory;
+    private final AllRegisters registers;
     private MemoryCache memoryCache;
 
     public AllMemoryTest(){
@@ -27,6 +26,7 @@ public class AllMemoryTest {
         this.memoryCache = new MemoryCache();
         memory.initialize();
         registers.initialize();
+        SimulatorException.setAllMemory(new AllMemory(memory, registers, memoryCache));
     }
 
     @Test(expected = IllegalMemoryAccess.class)
@@ -35,16 +35,16 @@ public class AllMemoryTest {
         allMemory.store(5, new BitSet());
     }
 
-    @Test(expected = MemoryOutOfBounds.class)
-    public void testOutOfBounds1(){
-        AllMemory allMemory = new AllMemory(memory, registers, memoryCache);
-        allMemory.store(memory.getSize(), new BitSet());
-    }
-
     @Test(expected = IllegalMemoryAccess.class)
     public void testIllegalAccess2(){
         AllMemory allMemory = new AllMemory(memory, registers, memoryCache);
         allMemory.fetch(5);
+    }
+
+    @Test(expected = MemoryOutOfBounds.class)
+    public void testOutOfBounds1(){
+        AllMemory allMemory = new AllMemory(memory, registers, memoryCache);
+        allMemory.store(memory.getSize(), new BitSet());
     }
 
     @Test(expected = MemoryOutOfBounds.class)
