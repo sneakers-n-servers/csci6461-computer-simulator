@@ -1,7 +1,5 @@
 package edu.gw.csci.simulator.gui;
 
-import edu.gw.csci.simulator.Bits;
-import edu.gw.csci.simulator.Simulator;
 import edu.gw.csci.simulator.cpu.CPU;
 import edu.gw.csci.simulator.exceptions.SimulatorException;
 import edu.gw.csci.simulator.memory.*;
@@ -19,10 +17,7 @@ import javafx.scene.layout.BorderPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -177,6 +172,7 @@ public class Controller {
      */
     private void initializeMemory() {
         memoryIndexColumn.setCellValueFactory(cellData -> new MemoryChunkDecorator(cellData.getValue()).getIndex());
+        memoryIndexColumn.setComparator(Comparator.comparingInt(Integer::parseInt));
         memoryBinaryColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toBinaryObservableString());
         memoryBinaryColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         memoryBinaryColumn.setOnEditCommit((TableColumn.CellEditEvent<MemoryChunk, String> t) -> {
