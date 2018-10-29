@@ -1,5 +1,7 @@
 package edu.gw.csci.simulator.cpu;
 
+import edu.gw.csci.simulator.Simulator;
+import edu.gw.csci.simulator.exceptions.SimulatorException;
 import edu.gw.csci.simulator.gui.Program;
 import edu.gw.csci.simulator.isa.*;
 import edu.gw.csci.simulator.memory.AllMemory;
@@ -37,7 +39,6 @@ public class CPU {
     public ArrayList<String> consoleInput;
     public ArrayList<String> consoleOutput;
     private Decoder decoder;
-    public boolean TrapFlag; //use a flag to show if the trap is running
 
     public CPU(AllMemory allMemory){
         this.memory = allMemory;
@@ -72,10 +73,10 @@ public class CPU {
      * unless the machine has been initialized, and a program has been set.
      */
     public void execute(){
-        Instruction instruction;
+        Instruction instruction = getNextInstruction(registers);
         do {
-            instruction = getNextInstruction(registers);
             instruction.execute(memory, registers,this);
+            instruction = getNextInstruction(registers);
         } while (instruction.getInstructionType() != InstructionType.HLT);
 
     }
@@ -88,7 +89,7 @@ public class CPU {
      * @param allRegisters All Registers
      * @return The next instruction to execute
      */
-    public Instruction getNextInstruction(AllRegisters allRegisters){
+    private Instruction getNextInstruction(AllRegisters allRegisters){
         int nextInstructionIndex = getPCDecorator().toInt();
         BitSet instructionData = memory.fetch(nextInstructionIndex);
         Register IR = allRegisters.getRegister(RegisterType.IR);
@@ -117,7 +118,7 @@ public class CPU {
         BitSet programCounter = BitConversion.convert(defaultLoadLocation);
         List<String> lines = program.getLines();
         for (String line : lines) {
-            LOGGER.info("Setting Line: " + line);
+            LOGGER.debug("Setting Line: " + line);
             BitSet convert = BitConversion.convert(line);
             memory.store(defaultLoadLocation, convert);
             defaultLoadLocation++;
@@ -149,11 +150,16 @@ public class CPU {
      */
     public void step(){
         Instruction instruction = getNextInstruction(registers);
-        instruction.execute(memory, registers,this);
+        try{
+            instruction.execute(memory, registers,this);
+        }catch (SimulatorException e){
+
+        }
     }
 
 
     public void StoreValue(int value,int index){
-        memory.store(value,index);
+        BitSet b = BitConversion.convert(value);
+        memory.store(index, b);
     }
 }

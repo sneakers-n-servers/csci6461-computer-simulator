@@ -1,37 +1,43 @@
 package edu.gw.csci.simulator.memory;
 
+import edu.gw.csci.simulator.exceptions.MemoryOutOfBounds;
+import edu.gw.csci.simulator.exceptions.SimulatorException;
+import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.utils.BitConversion;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.BitSet;
 
 public class MemoryCacheTest {
 
+    private MemoryCache cache;
+
+    @Before
+    public void before(){
+        cache = new MemoryCache();
+    }
+
     @Test
     public void testSimple() {
-        int cacheSize = 16;
-        MemoryCache cache = new MemoryCache(cacheSize);
         BitSet b = new BitSet(7);
         for (int i = 0; i < 16; i++) {
             cache.put(i, b);
             Assert.assertTrue(cache.get(i).isPresent());
         }
-        Assert.assertEquals(cacheSize, cache.getTotalRequests());
-        Assert.assertEquals(cacheSize, cache.getCacheHit());
+        Assert.assertEquals(cache.getSize(), cache.getTotalRequests());
+        Assert.assertEquals(cache.getSize(), cache.getCacheHit());
     }
 
     @Test
     public void testEvict() {
-        int cacheSize = 16;
-        MemoryCache cache = new MemoryCache(16);
-        for (int i = 0; i < 100; i++) {
+        int numToPut = 100;
+        for (int i = 0; i < numToPut; i++) {
             BitSet toCache = BitConversion.convert(i);
             cache.put(i, toCache);
         }
-        Assert.assertEquals(cacheSize, cache.getSize());
-
-        int expected = 100 - cacheSize;
+        int expected = numToPut - cache.getMaxCacheSize();
         for (BitSet ret : cache.getCacheData()) {
             int i = BitConversion.convert(ret);
             Assert.assertEquals(expected, i);

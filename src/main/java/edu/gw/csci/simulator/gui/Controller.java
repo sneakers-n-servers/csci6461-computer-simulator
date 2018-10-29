@@ -1,7 +1,5 @@
 package edu.gw.csci.simulator.gui;
 
-import edu.gw.csci.simulator.Bits;
-import edu.gw.csci.simulator.Simulator;
 import edu.gw.csci.simulator.cpu.CPU;
 import edu.gw.csci.simulator.exceptions.SimulatorException;
 import edu.gw.csci.simulator.memory.*;
@@ -19,10 +17,7 @@ import javafx.scene.layout.BorderPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -81,13 +76,20 @@ public class Controller {
 
     private boolean initialized, loaded;
 
+    /**
+     * Both memory and registers are initialized to their default values.
+     * The reserved memory location 1 is set to 6, as to execute a halt
+     * if a trap instruction occurs. The boolean initialized is also set
+     * as to provide proper indication to other console settings that values can be
+     * set without throwing null pointers. We can safely set the memory here because it
+     * is developer driven, and there is no need to check for errors.
+     */
     @FXML
     protected void runIPL() {
-        LOGGER.info("Initializing machine");
+        LOGGER.info("Initializing simulator");
         allRegisters.initialize();
         memory.initialize();
-        memory.set(0, BitConversion.convert(6));//the table start from memory[6]
-        memory.set(6,BitConversion.convert(20)); //memory[6] stores the start address of routine1,which is 20;
+        memory.set(SimulatorException.HALT_MEMORY_POINTER, BitConversion.convert(SimulatorException.HALT_LOCATION));
         initializeCPU();
         initialized = true;
     }
@@ -170,6 +172,7 @@ public class Controller {
      */
     private void initializeMemory() {
         memoryIndexColumn.setCellValueFactory(cellData -> new MemoryChunkDecorator(cellData.getValue()).getIndex());
+        memoryIndexColumn.setComparator(Comparator.comparingInt(Integer::parseInt));
         memoryBinaryColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toBinaryObservableString());
         memoryBinaryColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         memoryBinaryColumn.setOnEditCommit((TableColumn.CellEditEvent<MemoryChunk, String> t) -> {
@@ -178,10 +181,14 @@ public class Controller {
                 memoryTable.refresh();
                 return;
             }
-            MemoryChunk mem = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            int tablePosition = t.getTablePosition().getRow();
+            if(tablePosition == SimulatorException.HALT_LOCATION){
+                LOGGER.warn("Index 6 is reserved for halt during trap codes, this is not recomended");
+            }
+            MemoryChunk mem = t.getTableView().getItems().get(tablePosition);
             MemoryChunkDecorator md = new MemoryChunkDecorator(mem);
             md.setBinaryValue(t.getNewValue());
-            LOGGER.info("Setting memory location {} to {}", md.getIndex().toString(), md.toBinaryString());
+            LOGGER.debug("Setting memory location {} to {}", md.getIndex().toString(), md.toBinaryString());
             memoryTable.refresh();
         });
 
@@ -193,10 +200,14 @@ public class Controller {
                 memoryTable.refresh();
                 return;
             }
-            MemoryChunk mem = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            int tablePosition = t.getTablePosition().getRow();
+            if(tablePosition == SimulatorException.HALT_LOCATION){
+                LOGGER.warn("Index 6 is reserved for halt during trap codes, this is not recomended");
+            }
+            MemoryChunk mem = t.getTableView().getItems().get(tablePosition);
             MemoryChunkDecorator md = new MemoryChunkDecorator(mem);
             md.setIntegerValue(t.getNewValue());
-            LOGGER.info("Setting memory location {} to {}", md.getIndex().toString(), md.toInt());
+            LOGGER.debug("Setting memory location {} to {}", md.getIndex().toString(), md.toInt());
         });
 
         ObservableList<MemoryChunk> memoryList = FXCollections.observableArrayList();
@@ -211,10 +222,6 @@ public class Controller {
         });
         int maxPages = (int) Math.ceil((double) memory.getSize() / 32);
         memoryPagination.setPageCount(maxPages);
-    }
-
-    private void badEdit(){
-
     }
 
     /**

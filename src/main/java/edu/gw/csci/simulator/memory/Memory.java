@@ -42,9 +42,13 @@ public class Memory {
         }
     }
 
-    public BitSet get(int index) {
+    public BitSet getChunkData(int index) {
         MemoryChunk chunk = this.memory[index];
         return chunk.getData();
+    }
+
+    public MemoryChunk get(int index){
+        return this.memory[index];
     }
 
     public void set(int index, BitSet bitSet) {
