@@ -13,6 +13,7 @@ public class Decoder {
     public Decoder(){
         //Miscellaneous
         instructions.put(InstructionType.HLT, new InstructionFactory<>(Miscellaneous.HLT::new));
+        instructions.put(InstructionType.TRAP, new InstructionFactory<>(Miscellaneous.TRAP::new));
         //LoadStore
         instructions.put(InstructionType.LDR, new InstructionFactory<>(LoadStore.LDR::new));
         instructions.put(InstructionType.LDA, new InstructionFactory<>(LoadStore.LDA::new));

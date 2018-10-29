@@ -182,7 +182,8 @@ public class LoadStore {
             xName = X.getName();
         }
 
-        String mess = String.format("R:%s IX:%s I:%s Addr:%s(%d)",R.getName(),xName,I,AddressCode, BitConversion.fromBinaryString(AddressCode));
+        String mess = String.format("R:%s IX:%s I:%s Addr:%s(%d)",
+                R.getName(),xName,I,AddressCode, BitConversion.fromBinaryString(AddressCode));
         LOGGER.info(mess);
     }
 }

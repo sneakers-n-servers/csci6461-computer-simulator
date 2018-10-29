@@ -15,6 +15,8 @@ import org.apache.logging.log4j.Logger;
 import java.util.BitSet;
 import java.util.Optional;
 
+import static java.lang.Math.pow;
+
 /**
  * Provides abstraction of support operations for interaction between the simulated memory and the GUI framework.
  *
@@ -40,8 +42,8 @@ public class AllMemory {
 
     /**
      *
-     * @param value
-     * @param index
+     * @param value the integer value will be store to memory
+     * @param index the index of memory cell
      * @throws MemoryOutOfBounds
      * @throws IllegalMemoryAccess
      */
@@ -51,8 +53,8 @@ public class AllMemory {
 
     /**
      *
-     * @param value
-     * @param index
+     * @param value the integer value will be store to memory
+     * @param index the index of memory cell
      * @param throwReserve
      * @throws MemoryOutOfBounds
      * @throws IllegalMemoryAccess
@@ -61,9 +63,9 @@ public class AllMemory {
         checkIndex(index, throwReserve);
         String mess = String.format("Stroing %d(%s) to memory index %d", value, BitConversion.toBinaryString(value,16), index);
         LOGGER.info(mess);
-        String BinaryValue = Integer.toBinaryString(value);
+        //String BinaryValue = Integer.toBinaryString(value);
         //word is over 16 bits
-        if (BinaryValue.length() > 16) {
+        if (value<=-pow(2,16)||value>=pow(2,16)) {
             mess = "Word is over 16 bits.";
             LOGGER.error(mess);
             return;
@@ -151,10 +153,10 @@ public class AllMemory {
             throw new MemoryOutOfBounds(mess);
         }
 
-        if(throwReseve && index <= highestReservedMemory){
-            String mess = String.format("Will not store/fetch index: %d from reserved memory location 0-5", index);
-            throw new IllegalMemoryAccess(mess);
-        }
+//        if(throwReseve && index <= highestReservedMemory){
+//            String mess = String.format("Will not store/fetch index: %d from reserved memory location 0-5", index);
+//            throw new IllegalMemoryAccess(mess);
+//        }
     }
 
     public int EA() {

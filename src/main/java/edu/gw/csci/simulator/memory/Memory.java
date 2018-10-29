@@ -1,5 +1,6 @@
 package edu.gw.csci.simulator.memory;
 
+import edu.gw.csci.simulator.utils.BitConversion;
 import javafx.scene.control.TableView;
 
 import java.util.BitSet;

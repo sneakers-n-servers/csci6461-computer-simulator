@@ -86,7 +86,8 @@ public class Controller {
         LOGGER.info("Initializing machine");
         allRegisters.initialize();
         memory.initialize();
-        memory.set(1, BitConversion.convert(6));
+        memory.set(0, BitConversion.convert(6));//the table start from memory[6]
+        memory.set(6,BitConversion.convert(20)); //memory[6] stores the start address of routine1,which is 20;
         initializeCPU();
         initialized = true;
     }

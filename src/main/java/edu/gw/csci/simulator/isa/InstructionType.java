@@ -14,9 +14,7 @@ public enum InstructionType {
 
     //Miscellaneous
     HLT(0),
-
-    //We don't have to implement the trap instruction until part 3
-    //TRAP(36),
+    TRAP(36),
 
     //Load Store instructions
     LDR(1),

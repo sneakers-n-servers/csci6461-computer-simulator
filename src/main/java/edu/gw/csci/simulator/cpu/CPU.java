@@ -37,6 +37,7 @@ public class CPU {
     public ArrayList<String> consoleInput;
     public ArrayList<String> consoleOutput;
     private Decoder decoder;
+    public boolean TrapFlag; //use a flag to show if the trap is running
 
     public CPU(AllMemory allMemory){
         this.memory = allMemory;
@@ -71,10 +72,10 @@ public class CPU {
      * unless the machine has been initialized, and a program has been set.
      */
     public void execute(){
-        Instruction instruction = getNextInstruction(registers);
+        Instruction instruction;
         do {
-            instruction.execute(memory, registers,this);
             instruction = getNextInstruction(registers);
+            instruction.execute(memory, registers,this);
         } while (instruction.getInstructionType() != InstructionType.HLT);
 
     }
@@ -87,7 +88,7 @@ public class CPU {
      * @param allRegisters All Registers
      * @return The next instruction to execute
      */
-    private Instruction getNextInstruction(AllRegisters allRegisters){
+    public Instruction getNextInstruction(AllRegisters allRegisters){
         int nextInstructionIndex = getPCDecorator().toInt();
         BitSet instructionData = memory.fetch(nextInstructionIndex);
         Register IR = allRegisters.getRegister(RegisterType.IR);
@@ -149,7 +150,6 @@ public class CPU {
     public void step(){
         Instruction instruction = getNextInstruction(registers);
         instruction.execute(memory, registers,this);
-
     }
 
 
