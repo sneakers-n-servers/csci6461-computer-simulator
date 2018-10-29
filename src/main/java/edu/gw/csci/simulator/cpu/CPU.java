@@ -39,6 +39,7 @@ public class CPU {
     public ArrayList<String> consoleInput;
     public ArrayList<String> consoleOutput;
     private Decoder decoder;
+    public boolean TrapFlag;
 
     public CPU(AllMemory allMemory){
         this.memory = allMemory;
@@ -46,6 +47,7 @@ public class CPU {
         this.decoder = new Decoder();
         this.consoleInput = new ArrayList<>();
         this.consoleOutput = new ArrayList<>();
+        this.TrapFlag = false;
     }
     public Optional<String> getNextInput(){
 
@@ -73,10 +75,10 @@ public class CPU {
      * unless the machine has been initialized, and a program has been set.
      */
     public void execute(){
-        Instruction instruction = getNextInstruction(registers);
+        Instruction instruction ;
         do {
-            instruction.execute(memory, registers,this);
             instruction = getNextInstruction(registers);
+            instruction.execute(memory, registers,this);
         } while (instruction.getInstructionType() != InstructionType.HLT);
 
     }

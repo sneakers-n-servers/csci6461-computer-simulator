@@ -90,6 +90,8 @@ public class Controller {
         allRegisters.initialize();
         memory.initialize();
         memory.set(SimulatorException.HALT_MEMORY_POINTER, BitConversion.convert(SimulatorException.HALT_LOCATION));
+        memory.set(6,BitConversion.convert(20));
+        //suppose the table is start from memory[6] and the start of routine in table[1] is 20;
         initializeCPU();
         initialized = true;
     }
@@ -368,11 +370,12 @@ public class Controller {
     @FXML
     private void PreStoreMemoryForProgram1(){
         //only use to store some value to memory to run program1
-        cpu.StoreValue(64,8);
-        cpu.StoreValue(170,9);
-        cpu.StoreValue(65535,85);
-        cpu.StoreValue(64,86);
-        cpu.StoreValue(84,87);
+        PreStoreMemory.PreStoreMemoryForProgram1(cpu);
+//        cpu.StoreValue(64,8);
+//        cpu.StoreValue(170,9);
+//        cpu.StoreValue(65535,85);
+//        cpu.StoreValue(64,86);
+//        cpu.StoreValue(84,87);
     }
 
 

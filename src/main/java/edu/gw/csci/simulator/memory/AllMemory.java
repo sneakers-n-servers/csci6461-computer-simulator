@@ -38,6 +38,37 @@ public class AllMemory {
         this.maxMemory = memory.getSize() - 1;
     }
 
+    public void reservedStore(int index, BitSet bitSet) {
+        if(index>=0&&index<=5){
+        //We know that this conversion is safe because the data is stored in a BitSet already
+        int value = BitConversion.convert(bitSet);
+        String mess = String.format("Storing %d(%s) to memory index %d", value, BitConversion.toBinaryString(bitSet,16), index);
+        LOGGER.debug(mess);
+        MemoryChunkDecorator memoryChunkDecorator = new MemoryChunkDecorator(memory.get(index));
+        memoryChunkDecorator.setValue(value);
+        allRegisters.setRegister(RegisterType.MBR, bitSet);
+        memoryCache.put(index, bitSet);
+        }
+    }
+
+    public BitSet reservedFetch(int index) {
+        if(index>=0&&index<=5) {
+            BitSet toFetch = BitConversion.convert(index);
+            allRegisters.setRegister(RegisterType.MAR, toFetch);
+
+            Optional<BitSet> bits = memoryCache.get(index);
+            BitSet fetched = bits.orElseGet(() -> memory.getChunkData(index));
+            allRegisters.setRegister(RegisterType.MBR, fetched);
+
+            int value = BitConversion.convert(fetched);
+            String mess = String.format("Fetching %d(%s) from memory index %d", value, BitConversion.toBinaryString(value, 16), index);
+            LOGGER.debug(mess);
+            return fetched;
+        }
+        BitSet bits = new BitSet();
+        return bits;
+    }
+
     /**
      * This method overloads the {@link AllMemory#store(int, BitSet)} to check for
      * illegal memory access by default. Therefore, this method will reject
@@ -63,12 +94,13 @@ public class AllMemory {
      * @throws MemoryOutOfBounds   When the memory index is out of bounds
      * @throws IllegalMemoryAccess When the memory index is reserved, unless indicated otherwise
      */
+
+
     public void store(int index, BitSet bitSet, boolean throwReserve) throws MemoryOutOfBounds, IllegalMemoryAccess {
         checkIndex(index, throwReserve);
         if(index == SimulatorException.HALT_LOCATION){
             LOGGER.warn("Index 6 is reserved for halt during trap codes, this is not recomended");
         }
-
         //We know that this conversion is safe because the data is stored in a BitSet already
         int value = BitConversion.convert(bitSet);
         String mess = String.format("Storing %d(%s) to memory index %d", value, BitConversion.toBinaryString(bitSet,16), index);
@@ -78,7 +110,6 @@ public class AllMemory {
         allRegisters.setRegister(RegisterType.MBR, bitSet);
         memoryCache.put(index, bitSet);
     }
-
 
     /**
      * This method overloads the {@link AllMemory#fetch(int)} to check for

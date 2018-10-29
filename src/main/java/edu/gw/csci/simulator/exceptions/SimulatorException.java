@@ -30,7 +30,7 @@ public abstract class SimulatorException extends RuntimeException {
 
     public static final int HALT_LOCATION = 6,
             TRAP_PC_LOCATION = 2,
-            HALT_MEMORY_POINTER = 1;
+            HALT_MEMORY_POINTER = 0;
 
     public SimulatorException(String message) {
         LOGGER.error(message);
