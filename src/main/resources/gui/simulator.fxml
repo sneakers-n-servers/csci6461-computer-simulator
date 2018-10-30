@@ -30,9 +30,19 @@
                 <Region prefWidth="5"/>
                 <Button id="ipl-button" text="IPL" onAction="#runIPL"/>
                 <Region prefWidth="5"/>
-                <Button id="PreStoreMemory" onAction="#PreStoreMemoryForProgram1" text="PreStoreMemoryForProgram1"/>
+                <Button id="PreStoreMemoryForProgram1" onAction="#PreStoreMemoryForProgram1" text="PreStoreMemoryForProgram1"/>
+                <Region prefWidth="5"/>
+                <Button id="PreStoreMemoryForProgram2" onAction="#PreStoreMemoryForProgram2" text="PreStoreMemoryForProgram2"/>
                 <Region prefWidth="5"/>
                 <Button id="LoadProgram1" onAction="#LoadProgram1" text="LoadProgram1"/>
+                <Region prefWidth="5"/>
+                <Button id="LoadProgram2" onAction="#LoadProgram2" text="LoadProgram2"/>
+                <Region prefWidth="5"/>
+                <Button id="ReadFile" onAction="#ReadFile" text="ReadFile"/>
+                <Button id="InputAWord" text="InputAWord" onAction="#InputAWord"/>
+                <Region prefWidth="5"/>
+                <TextField fx:id="InputWord"></TextField>
+                <Region prefWidth="5"/>
             </HBox>
 
         </center>

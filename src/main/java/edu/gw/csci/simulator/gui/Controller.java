@@ -1,6 +1,8 @@
 package edu.gw.csci.simulator.gui;
 
+import edu.gw.csci.simulator.Simulator;
 import edu.gw.csci.simulator.cpu.CPU;
+import edu.gw.csci.simulator.cpu.SimulatorFileReader;
 import edu.gw.csci.simulator.exceptions.SimulatorException;
 import edu.gw.csci.simulator.memory.*;
 import edu.gw.csci.simulator.registers.AllRegisters;
@@ -69,6 +71,9 @@ public class Controller {
     @FXML
     private TextField startIndex;
 
+    @FXML
+    private TextField InputWord;
+
     private AllRegisters allRegisters;
     private Memory memory;
     private HashMap<String, Program> programs;
@@ -94,6 +99,9 @@ public class Controller {
         memory.set(7,BitConversion.convert(20));
         //suppose the table is start from memory[7] and the start of routine in table[1] is 20;
         initializeCPU();
+
+        programContents.clear();
+        consoleInput.clear();
         initialized = true;
     }
 
@@ -120,6 +128,9 @@ public class Controller {
     private void initializeCPU(){
         cpu.consoleInput.clear();
         cpu.consoleOutput.clear();
+        SimulatorFileReader.WordMap.clear();
+        SimulatorFileReader.WordStoreIndex = 512;
+        SimulatorFileReader.code = 32;
     }
 
     /**
@@ -242,6 +253,10 @@ public class Controller {
         programs.put("Program1", program1);
         PreStoreProgram.SetProgram1(program1);
 
+        Program program2 = new Program("Program2");
+        programs.put("Program2", program2);
+        PreStoreProgram.SetProgram2(program2);
+
         Program programls = new Program("Programls");
         this.programs.put("Programls", programls);
         PreStoreProgram.SetProgramLS(programls);
@@ -361,7 +376,7 @@ public class Controller {
 
     @FXML
     private void LoadProgram1(){
-        //only use to store program1
+        //only use to load program1
         LOGGER.info("Loading Program1");
         Program program = programs.get("Program1");
         cpu.setProgram(program);
@@ -369,19 +384,47 @@ public class Controller {
         loaded = true;
     }
     @FXML
+    private void LoadProgram2(){
+        //only use to load program2
+        LOGGER.info("Loading Program2");
+        Program program = programs.get("Program2");
+        cpu.setProgram(program);
+        cpu.loadProgram(64);
+        loaded = true;
+    }
+    @FXML
     private void PreStoreMemoryForProgram1(){
         //only use to store some value to memory to run program1
         PreStoreMemory.PreStoreMemoryForProgram1(cpu);
-//        cpu.StoreValue(64,8);
-//        cpu.StoreValue(170,9);
-//        cpu.StoreValue(65535,85);
-//        cpu.StoreValue(64,86);
-//        cpu.StoreValue(84,87);
+    }
+
+    @FXML
+    private void PreStoreMemoryForProgram2(){
+        //only use to store some value to memory to run program2
+        PreStoreMemory.PreStoreMemoryForProgram2(cpu);
     }
 
 
     private static boolean isNumeric(String str) {
         Pattern pattern = Pattern.compile("-?[0-9]*");
         return pattern.matcher(str).matches();
+    }
+
+    @FXML
+    private void ReadFile(){
+        cpu.FileReader();
+        SetconsoleOutput();
+    }
+    @FXML
+    private void InputAWord(){
+        String word = InputWord.getText().toLowerCase();
+        if(SimulatorFileReader.WordMap.containsKey(word)){
+            cpu.consoleOutput.add(word);
+        }
+        else
+        {
+            SimulatorFileReader.encode(word);
+        }
+        cpu.consoleInput.add(String.valueOf(SimulatorFileReader.getCode(word)));
     }
 }

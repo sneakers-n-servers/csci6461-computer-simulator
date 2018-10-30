@@ -1,0 +1,68 @@
+package edu.gw.csci.simulator.cpu;
+
+import edu.gw.csci.simulator.Simulator;
+
+import java.io.*;
+import java.util.HashMap;
+
+public class SimulatorFileReader {
+
+    public static HashMap<String, Integer> WordMap = new HashMap<String, Integer>();
+    public static int code = 32;
+    public static int WordStoreIndex = 512;
+
+    public static void readSentences(String fileName,CPU cpu) {
+        File file = new File(fileName);
+        try (Reader reader = new InputStreamReader(new FileInputStream(file))) {
+            int tempChar;
+            StringBuilder tempString = new StringBuilder();
+
+            while ((tempChar = reader.read()) != -1) {
+                if (((char) tempChar) == ' ') {
+                    if (tempString.length() != 0) {
+                        tempString.append((char) tempChar);
+                    }
+                } else {
+                    tempString.append((char) tempChar);
+                }
+                if (((char) tempChar) == '.') {
+                    String temp = tempString.toString();
+                    cpu.consoleOutput.add(temp);
+                    tempString.delete(0, tempString.length());
+
+                    temp = temp.replaceAll("[\\pP‘’“”]", "");
+
+
+                    for (String word : temp.split(" ")) {
+                        word = word.toLowerCase();
+                        encode(word);
+                        StoreToMemory(WordStoreIndex, getCode(word), cpu);
+                        WordStoreIndex += 1;
+                    }
+                    StoreToMemory(WordStoreIndex, 10, cpu);
+                    WordStoreIndex += 1;
+                }
+            }
+            StoreToMemory(WordStoreIndex, 11, cpu);
+            WordStoreIndex += 1;
+            //reader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void encode(String word){
+        if(!WordMap.containsKey(word)){
+            WordMap.put(word,code);
+            code += (int)(Math.random()*8 + 1);
+        }
+    }
+
+    public static int getCode(String word){
+        return WordMap.get(word);
+    }
+    
+    public static void StoreToMemory(int index,int value,CPU cpu){
+        cpu.StoreValue(index,value);
+    }
+}

@@ -155,13 +155,16 @@ public class CPU {
         try{
             instruction.execute(memory, registers,this);
         }catch (SimulatorException e){
-
         }
     }
 
 
-    public void StoreValue(int value,int index){
+    public void StoreValue(int index,int value){
         BitSet b = BitConversion.convert(value);
         memory.store(index, b);
+    }
+
+    public void FileReader(){
+        SimulatorFileReader.readSentences("program2_paragraph.txt",this);
     }
 }

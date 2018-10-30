@@ -75,4 +75,44 @@ public class PreStoreProgram {
         program.appendLine("0010010110000000");
         program.appendLine("1100101100000001");
     }
+
+    public static void SetProgram2(Program program){
+        program.appendLine("1000010001001101");
+        program.appendLine("1000010010001110");
+        program.appendLine("1100010000000000");
+        program.appendLine("0000100000001011");
+        program.appendLine("0000010100101100");
+        program.appendLine("0001110100001010");
+        program.appendLine("0010010101010010");
+        program.appendLine("0000010100001111");
+        program.appendLine("0001100100000001");
+        program.appendLine("0000100100001111");
+        program.appendLine("0000100100010000");
+        program.appendLine("0001010100010000");
+        program.appendLine("0001100100000001");
+        program.appendLine("0000100100010000");
+        program.appendLine("0000010100001100");
+        program.appendLine("0001100100000001");
+        program.appendLine("0000100100001100");
+        program.appendLine("0010110001000100");
+        program.appendLine("0000010100101100");
+        program.appendLine("0001110100001011");
+        program.appendLine("0010010101010111");
+        program.appendLine("0000100100001111");
+        program.appendLine("0010110010000001");
+        program.appendLine("0000010000001011");
+        program.appendLine("0001010000101100");
+        program.appendLine("0010000010000001");
+        program.appendLine("0000010100010000");
+        program.appendLine("0001100100000001");
+        program.appendLine("0000100100010000");
+        program.appendLine("0000010100001100");
+        program.appendLine("0001100100000001");
+        program.appendLine("0000100100001100");
+        program.appendLine("0010110001000100");
+        program.appendLine("0000010100001111");
+        program.appendLine("1100100100000001");
+        program.appendLine("0000010100010000");
+        program.appendLine("1100100100000001");
+    }
 }
