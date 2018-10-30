@@ -1,6 +1,7 @@
 package edu.gw.csci.simulator.isa.instructions;
 
 import edu.gw.csci.simulator.cpu.CPU;
+import edu.gw.csci.simulator.exceptions.IllegalTrapCode;
 import edu.gw.csci.simulator.isa.Instruction;
 import edu.gw.csci.simulator.isa.InstructionType;
 import edu.gw.csci.simulator.memory.AllMemory;
@@ -71,8 +72,14 @@ public class Miscellaneous {
             //the start address of the routine is in the index
             BitSet address = memory.fetch(index);
 
-            PC.setData(address);
-            cpu.TrapFlag = true;
+            if(address.isEmpty()){
+                String mess = "Illegal TrapCode: There is no address in the trap table.";
+                throw  new IllegalTrapCode(mess);
+            }
+            else {
+                PC.setData(address);
+                cpu.TrapFlag = true;
+            }
         }
 
         @Override

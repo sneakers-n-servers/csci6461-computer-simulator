@@ -1,6 +1,7 @@
 package edu.gw.csci.simulator.cpu;
 
 import edu.gw.csci.simulator.Simulator;
+import edu.gw.csci.simulator.exceptions.IllegalOpcode;
 import edu.gw.csci.simulator.exceptions.SimulatorException;
 import edu.gw.csci.simulator.gui.Program;
 import edu.gw.csci.simulator.isa.*;
@@ -138,10 +139,15 @@ public class CPU {
         BitSet programCounter = BitConversion.convert(defaultLoadLocation);
         List<String> lines = program.getLines();
         for (String line : lines) {
-            LOGGER.info("Setting Line: " + line);
-            BitSet convert = BitConversion.convert(line);
-            memory.store(defaultLoadLocation, convert);
-            defaultLoadLocation++;
+            if (line.length() == 16) {
+                LOGGER.info("Setting Line: " + line);
+                BitSet convert = BitConversion.convert(line);
+                memory.store(defaultLoadLocation, convert);
+                defaultLoadLocation++;
+            } else {
+                String mess = "Illegal Opcode: An instruction should be 16 bits.";
+                throw new IllegalOpcode(mess);
+            }
         }
         registers.setRegister(RegisterType.PC, programCounter);
     }

@@ -1,6 +1,9 @@
 package edu.gw.csci.simulator.utils;
 
+import edu.gw.csci.simulator.exceptions.IllegalOpcode;
+
 import java.util.BitSet;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 import static java.lang.Math.toIntExact;
@@ -71,12 +74,30 @@ public class BitConversion {
     }
 
     public static BitSet convert(String binaryString){
-        int decimal = Integer.parseInt(binaryString, 2);
-        return convert(decimal);
+        if(!isBinary(binaryString)){
+            String mess = String.format("Illegal Opcode: An instruction should be a binary string.");
+            throw new IllegalOpcode(mess);
+        }
+        else {
+            int decimal = Integer.parseInt(binaryString, 2);
+            return convert(decimal);
+        }
     }
 
 
     public static int fromBinaryString(String s){
+        if(!isBinary(s)){
+            String mess = String.format("Illegal Opcode: An instruction should be a binary string.");
+            throw new IllegalOpcode(mess);
+        }
+        else{
         return Integer.parseInt(s, 2);
+        }
+    }
+
+    //Opcode must be binary String
+    public static boolean isBinary(String str){
+    Pattern pattern = Pattern.compile("[0-1]*");
+        return pattern.matcher(str).matches();
     }
 }

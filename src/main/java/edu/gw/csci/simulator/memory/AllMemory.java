@@ -164,28 +164,28 @@ public class AllMemory {
 
         if (InstructionType.getInstructionType(Opcode).equals(InstructionType.RFS)) {
             //I,IX is ignored in RFS
-            EA = Integer.parseInt(Address_code, 2);
+            EA = BitConversion.fromBinaryString(Address_code);
             return EA;
         }
         if (InstructionType.getInstructionType(Opcode).equals(InstructionType.AIR) ||
                 InstructionType.getInstructionType(Opcode).equals(InstructionType.SIR)) {
             //I,IX is ignored in AIR,SIR
-            EA = Integer.parseInt(Address_code, 2);
+            EA = BitConversion.fromBinaryString(Address_code);
             return EA;
         }
         if (InstructionType.getInstructionType(Opcode).equals(InstructionType.LDX) ||
                 InstructionType.getInstructionType(Opcode).equals(InstructionType.STX)) {
             //IX is not used in LDX,STX
             if (I_code.equals("0")) {
-                return Integer.parseInt(Address_code, 2);
+                return BitConversion.fromBinaryString(Address_code);
             } else {
-                EA = BitConversion.convert(fetch(Integer.parseInt(Address_code, 2)));
+                EA = BitConversion.convert(fetch(BitConversion.fromBinaryString(Address_code)));
                 return EA;
             }
         }
         if (I_code.equals("0")) {
             if (IX_code.equals("00")) {
-                EA = Integer.parseInt(Address_code, 2);
+                EA = BitConversion.fromBinaryString(Address_code);
                 return EA;
 
             } else {
@@ -193,19 +193,19 @@ public class AllMemory {
                 RegisterType registerType = RegisterType.getIndex(IX_code);
                 Register register = allRegisters.getRegister(registerType);
                 RegisterDecorator Xd = new RegisterDecorator(register);
-                EA = Xd.toInt() + Integer.parseInt(Address_code, 2);
+                EA = Xd.toInt() + BitConversion.fromBinaryString(Address_code);
                 return EA;
             }
         } else {
             if (IX_code.equals("00")) {
-                EA = BitConversion.convert(fetch(Integer.parseInt(Address_code, 2)));
+                EA = BitConversion.convert(fetch(BitConversion.fromBinaryString(Address_code)));
                 return EA;
             } else {
                 //int ixCode = BitConversion.fromBinaryString(IX_code);
                 RegisterType registerType = RegisterType.getIndex(IX_code);
                 Register register = allRegisters.getRegister(registerType);
                 RegisterDecorator Xd = new RegisterDecorator(register);
-                int index = Xd.toInt() + Integer.parseInt(Address_code, 2);
+                int index = Xd.toInt() + BitConversion.fromBinaryString(Address_code);
                 EA = BitConversion.convert(fetch(index));
                 return EA;
             }

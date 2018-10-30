@@ -31,7 +31,7 @@ public class ShiftRotate {
 
             boolean LorR = LR.equals("1");
             boolean AorL = AL.equals("1");
-            int count = Integer.parseInt(Counts,2);
+            int count = BitConversion.fromBinaryString(Counts);
             String LRflag;
             String ALflag;
 
@@ -112,7 +112,7 @@ public class ShiftRotate {
             String LR = data.substring(2,3);
             boolean LorR = LR.equals("1");
             String Counts = data.substring(6,10);
-            int count = Integer.parseInt(Counts,2);
+            int count = BitConversion.fromBinaryString(Counts);//Integer.parseInt(Counts,2);
             String LRflag;
 
             if(LorR) LRflag ="left";
