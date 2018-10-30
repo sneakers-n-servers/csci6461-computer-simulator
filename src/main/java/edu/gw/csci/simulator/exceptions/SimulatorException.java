@@ -77,8 +77,10 @@ public abstract class SimulatorException extends RuntimeException {
         Register pcRegister = allRegisters.getRegister(RegisterType.PC);
         RegisterDecorator pcDecorator = new RegisterDecorator(pcRegister);
         allMemory.store(TRAP_PC_LOCATION, pcDecorator.getData(), false);
+        //allMemory.reservedStore(TRAP_PC_LOCATION, pcDecorator.getData());
 
         BitSet haltData = allMemory.fetch(HALT_MEMORY_POINTER, false);
+        //BitSet haltData = allMemory.reservedFetch(HALT_MEMORY_POINTER);
         pcDecorator.setValue(BitConversion.convert(haltData));
 
         if(registerTable != null){

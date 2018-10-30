@@ -31,7 +31,7 @@ public class Miscellaneous {
                 Register PC = registers.getRegister(RegisterType.PC);
                 //when trap meets hlt, return to memory[2]
                 LOGGER.info("Trap instruction return to memory[2]");
-                PC.setData(memory.reservedFetch(2));
+                PC.setData(memory.fetch(2,false));
             }
         }
 
@@ -58,14 +58,14 @@ public class Miscellaneous {
             Register PC = registers.getRegister(RegisterType.PC);
             int PCplus1 = BitConversion.convert(PC.getData())+1;
             //store the return PC+1 of trap instruction to memory[2]
-            memory.reservedStore(2,BitConversion.convert(PCplus1));
+            memory.store(2,BitConversion.convert(PCplus1),false);
 
             String TrapCode = data.substring(6,10);
             //TrapCode is the index in the table
             int TableIndex = BitConversion.fromBinaryString(TrapCode);
 
             //M0 is the start of the table
-            int TableStart = BitConversion.convert(memory.reservedFetch(0));
+            int TableStart = BitConversion.convert(memory.fetch(0,false));
             //get the memory index
             int index = TableIndex+TableStart;
             //the start address of the routine is in the index

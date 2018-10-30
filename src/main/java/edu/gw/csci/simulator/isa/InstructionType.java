@@ -1,5 +1,6 @@
 package edu.gw.csci.simulator.isa;
 
+import edu.gw.csci.simulator.exceptions.IllegalOpcode;
 import edu.gw.csci.simulator.utils.BitConversion;
 
 import java.util.HashMap;
@@ -74,8 +75,14 @@ public enum InstructionType {
         return BitConversion.toBinaryString(opCode,6);
     }
 
-    public static InstructionType getInstructionType(String binary) {
-        return instructionMap.get(binary);
+    public static InstructionType getInstructionType(String binary) throws IllegalOpcode {
+        if (!instructionMap.containsKey(binary)){
+            String mess = String.format("Illegal Opcode");
+            throw new IllegalOpcode(mess);
+        }
+        else {
+            return instructionMap.get(binary);
+        }
     }
 
     public int getOpCode() {

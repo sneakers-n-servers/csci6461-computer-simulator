@@ -38,37 +38,6 @@ public class AllMemory {
         this.maxMemory = memory.getSize() - 1;
     }
 
-    public void reservedStore(int index, BitSet bitSet) {
-        if(index>=0&&index<=5){
-        //We know that this conversion is safe because the data is stored in a BitSet already
-        int value = BitConversion.convert(bitSet);
-        String mess = String.format("Storing %d(%s) to memory index %d", value, BitConversion.toBinaryString(bitSet,16), index);
-        LOGGER.debug(mess);
-        MemoryChunkDecorator memoryChunkDecorator = new MemoryChunkDecorator(memory.get(index));
-        memoryChunkDecorator.setValue(value);
-        allRegisters.setRegister(RegisterType.MBR, bitSet);
-        memoryCache.put(index, bitSet);
-        }
-    }
-
-    public BitSet reservedFetch(int index) {
-        if(index>=0&&index<=5) {
-            BitSet toFetch = BitConversion.convert(index);
-            allRegisters.setRegister(RegisterType.MAR, toFetch);
-
-            Optional<BitSet> bits = memoryCache.get(index);
-            BitSet fetched = bits.orElseGet(() -> memory.getChunkData(index));
-            allRegisters.setRegister(RegisterType.MBR, fetched);
-
-            int value = BitConversion.convert(fetched);
-            String mess = String.format("Fetching %d(%s) from memory index %d", value, BitConversion.toBinaryString(value, 16), index);
-            LOGGER.debug(mess);
-            return fetched;
-        }
-        BitSet bits = new BitSet();
-        return bits;
-    }
-
     /**
      * This method overloads the {@link AllMemory#store(int, BitSet)} to check for
      * illegal memory access by default. Therefore, this method will reject
@@ -99,7 +68,7 @@ public class AllMemory {
     public void store(int index, BitSet bitSet, boolean throwReserve) throws MemoryOutOfBounds, IllegalMemoryAccess {
         checkIndex(index, throwReserve);
         if(index == SimulatorException.HALT_LOCATION){
-            LOGGER.warn("Index 6 is reserved for halt during trap codes, this is not recomended");
+            LOGGER.warn("Index 6 is reserved for halt during trap codes, this is not recommended");
         }
         //We know that this conversion is safe because the data is stored in a BitSet already
         int value = BitConversion.convert(bitSet);
@@ -137,7 +106,6 @@ public class AllMemory {
      */
     public BitSet fetch(int index, boolean throwReserve) throws MemoryOutOfBounds, IllegalMemoryAccess {
         checkIndex(index, throwReserve);
-
         //We know that this conversion is safe because the instructions dictate as such
         BitSet toFetch = BitConversion.convert(index);
         allRegisters.setRegister(RegisterType.MAR, toFetch);
@@ -158,11 +126,11 @@ public class AllMemory {
      * the special memory locations. This is why the throwReserve flag exists
      *
      * @param index An index to check the validity of
-     * @param throwReseve Whether or not to throw an exception if trying to access a reserved location
+     * @param throwReserve Whether or not to throw an exception if trying to access a reserved location
      * @throws MemoryOutOfBounds When the memory index is out of bounds
      * @throws IllegalMemoryAccess When the memory index is reserved
      */
-    private void checkIndex(int index, boolean throwReseve) throws MemoryOutOfBounds, IllegalMemoryAccess {
+    private void checkIndex(int index, boolean throwReserve) throws MemoryOutOfBounds, IllegalMemoryAccess {
         if(index > maxMemory){
             String mess = String.format("Will not store/fetch from index: %d, greater than max memory: %d", index, maxMemory);
             throw new MemoryOutOfBounds(mess);
@@ -172,12 +140,18 @@ public class AllMemory {
             throw new MemoryOutOfBounds(mess);
         }
 
-        if(throwReseve && index <= highestReservedMemory){
+        if(throwReserve && index <= highestReservedMemory){
             String mess = String.format("Will not store/fetch index: %d from reserved memory location 0-5", index);
             throw new IllegalMemoryAccess(mess);
         }
     }
 
+
+    /**
+     * This function will calculate the Effective Address for each instruction
+     *
+     *
+     */
     public int EA() {
         int EA;
         Register IR = allRegisters.getRegister(RegisterType.IR);
@@ -193,7 +167,8 @@ public class AllMemory {
             EA = Integer.parseInt(Address_code, 2);
             return EA;
         }
-        if (InstructionType.getInstructionType(Opcode).equals(InstructionType.AIR) || InstructionType.getInstructionType(Opcode).equals(InstructionType.SIR)) {
+        if (InstructionType.getInstructionType(Opcode).equals(InstructionType.AIR) ||
+                InstructionType.getInstructionType(Opcode).equals(InstructionType.SIR)) {
             //I,IX is ignored in AIR,SIR
             EA = Integer.parseInt(Address_code, 2);
             return EA;
@@ -212,6 +187,7 @@ public class AllMemory {
             if (IX_code.equals("00")) {
                 EA = Integer.parseInt(Address_code, 2);
                 return EA;
+
             } else {
                 //int ixCode = BitConversion.fromBinaryString(IX_code);
                 RegisterType registerType = RegisterType.getIndex(IX_code);

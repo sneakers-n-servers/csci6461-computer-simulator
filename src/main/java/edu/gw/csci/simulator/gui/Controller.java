@@ -102,6 +102,7 @@ public class Controller {
 
         programContents.clear();
         consoleInput.clear();
+
         initialized = true;
     }
 
@@ -126,8 +127,10 @@ public class Controller {
     }
 
     private void initializeCPU(){
+        //initialize Input and Output
         cpu.consoleInput.clear();
         cpu.consoleOutput.clear();
+        //initialize FileReader
         SimulatorFileReader.WordMap.clear();
         SimulatorFileReader.WordStoreIndex = 512;
         SimulatorFileReader.code = 32;

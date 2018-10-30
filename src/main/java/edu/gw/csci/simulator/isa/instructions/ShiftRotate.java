@@ -25,7 +25,6 @@ public class ShiftRotate {
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
             String Rs = data.substring(0,2);
             Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
-            RegisterDecorator Rd = new RegisterDecorator(R);
             String LR = data.substring(2,3);
             String AL = data.substring(3,4);
             String Counts = data.substring(6,10);
@@ -109,7 +108,6 @@ public class ShiftRotate {
 
             String Rs = data.substring(0,2);
             Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
-            RegisterDecorator Rd = new RegisterDecorator(R);
 
             String LR = data.substring(2,3);
             boolean LorR = LR.equals("1");

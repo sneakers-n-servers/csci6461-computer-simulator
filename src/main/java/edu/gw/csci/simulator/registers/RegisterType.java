@@ -1,5 +1,6 @@
 package edu.gw.csci.simulator.registers;
 
+import edu.gw.csci.simulator.exceptions.IllegalOpcode;
 import edu.gw.csci.simulator.exceptions.SimulatorException;
 
 /**
@@ -52,7 +53,8 @@ public enum RegisterType {
             case "10": return R2;
             case "11": return R3;
             //default: throw new SimulatorException("General purpose register out of bounds");
-            default: return R0;
+            default: String mess = "Illegal Opcode";
+            throw new IllegalOpcode(mess);
         }
     }
 
@@ -62,7 +64,8 @@ public enum RegisterType {
             case "10": return X2;
             case "11": return X3;
             //default: throw new SimulatorException("Index purpose register out of bounds");
-            default: return R0;
+            default: String mess = "Illegal Opcode";
+                throw new IllegalOpcode(mess);
         }
     }
 }

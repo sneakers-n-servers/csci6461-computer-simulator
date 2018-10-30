@@ -1,9 +1,14 @@
 package edu.gw.csci.simulator.memory;
 
 import edu.gw.csci.simulator.exceptions.IllegalMemoryAccess;
+import edu.gw.csci.simulator.exceptions.IllegalOpcode;
 import edu.gw.csci.simulator.exceptions.MemoryOutOfBounds;
 import edu.gw.csci.simulator.exceptions.SimulatorException;
+import edu.gw.csci.simulator.isa.Decoder;
 import edu.gw.csci.simulator.registers.AllRegisters;
+import edu.gw.csci.simulator.registers.Register;
+import edu.gw.csci.simulator.registers.RegisterType;
+import edu.gw.csci.simulator.utils.BitConversion;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,10 +20,12 @@ public class AllMemoryTest {
     private final Memory memory;
     private final AllRegisters registers;
     private MemoryCache memoryCache;
+    private Decoder decoder;
 
     public AllMemoryTest(){
         this.memory = new Memory();
         this.registers = new AllRegisters();
+        this.decoder = new Decoder();
     }
 
     @Before
@@ -39,6 +46,25 @@ public class AllMemoryTest {
     public void testIllegalAccess2(){
         AllMemory allMemory = new AllMemory(memory, registers, memoryCache);
         allMemory.fetch(5);
+    }
+
+    @Test()
+    public void testIllegalAccess3(){
+        AllMemory allMemory = new AllMemory(memory, registers, memoryCache);
+        //allMemory.reservedStore(1,new BitSet());
+        allMemory.store(2, new BitSet(),false);
+    }
+
+    @Test(expected = IllegalOpcode.class)
+    public void testIllegalOpcode1(){
+        BitSet bits = BitConversion.convert("1111110000000000");
+        decoder.getInstruction(bits);
+    }
+
+    @Test(expected = IllegalOpcode.class)
+    public void testIllegalOpcode2(){
+        String X = "23";
+        registers.getRegister(RegisterType.getGeneralPurpose(X));
     }
 
     @Test(expected = MemoryOutOfBounds.class)
