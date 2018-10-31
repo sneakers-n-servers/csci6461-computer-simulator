@@ -47,6 +47,7 @@ public class BitDecorator<B extends Bits> {
     public SimpleStringProperty toLongObservableString() {
         BitSet bitSet = bitType.getData();
         String str = (bitSet == null) ? NULL_STRING : Integer.toString(BitConversion.convert(bitSet));
+        //String str = (bitSet == null) ? NULL_STRING : Integer.toString(BitConversion.convert(bitSet));
         return new SimpleStringProperty(str);
     }
 
@@ -65,11 +66,11 @@ public class BitDecorator<B extends Bits> {
      * @param i The integer to set
      */
     public void setValue(int i) {
-        String binary = Integer.toBinaryString(i);
-        if(binary.length() > bitType.getSize()){
-            String mess = String.format("Value: %d is greater than max: %d", i, bitType.getSize());
-            throw new IllegalValue(mess);
-        }
+        //Integer.toBinaryString(i);
+        //if(binary.length() > bitType.getSize()){
+            //String mess = String.format("Value: %d is greater than max: %d", i, bitType.getSize());
+            //throw new IllegalValue(mess);
+        //}
         BitSet bitSet = BitConversion.convert(i);
         bitType.setData(bitSet);
     }

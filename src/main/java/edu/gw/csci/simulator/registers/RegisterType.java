@@ -46,25 +46,25 @@ public enum RegisterType {
         return this.binarycode;
     }
 
-    public static RegisterType getGeneralPurpose(String i){
+    public static RegisterType getGeneralPurpose(String i) throws IllegalOpcode{
         switch (i){
             case "00": return R0;
             case "01": return R1;
             case "10": return R2;
             case "11": return R3;
             //default: throw new SimulatorException("General purpose register out of bounds");
-            default: String mess = "Illegal Opcode";
+            default: String mess = "Illegal Opcode: General purpose register out of bounds.";
             throw new IllegalOpcode(mess);
         }
     }
 
-    public static RegisterType getIndex(String i){
+    public static RegisterType getIndex(String i) throws IllegalOpcode{
         switch (i){
             case "01": return X1;
             case "10": return X2;
             case "11": return X3;
             //default: throw new SimulatorException("Index purpose register out of bounds");
-            default: String mess = "Illegal Opcode";
+            default: String mess = "Illegal Opcode: Index purpose register out of bounds.";
                 throw new IllegalOpcode(mess);
         }
     }

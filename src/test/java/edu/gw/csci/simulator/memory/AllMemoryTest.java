@@ -60,11 +60,16 @@ public class AllMemoryTest {
         BitSet bits = BitConversion.convert("1111110000000000");
         decoder.getInstruction(bits);
     }
-
     @Test(expected = IllegalOpcode.class)
     public void testIllegalOpcode2(){
         String X = "23";
         registers.getRegister(RegisterType.getGeneralPurpose(X));
+    }
+
+    @Test(expected = IllegalOpcode.class)
+    public void testIllegalOpcode3(){
+        String X = "00";
+        registers.getRegister(RegisterType.getIndex(X));
     }
 
     @Test(expected = MemoryOutOfBounds.class)

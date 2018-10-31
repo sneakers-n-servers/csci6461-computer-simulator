@@ -1,6 +1,7 @@
 package edu.gw.csci.simulator.registers;
 
 
+import edu.gw.csci.simulator.isa.SetCC;
 import javafx.scene.control.TableView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,5 +57,63 @@ public class AllRegisters {
         RegisterDecorator PCd = new RegisterDecorator(getRegister(RegisterType.PC));
         int PC= PCd.toInt();
         PCd.setValue(PC+1);
+    }
+
+    public void OVERFLOW(){
+        Register CC = getRegister(RegisterType.CC);
+        BitSet bits = CC.getData();
+        bits.set(3);
+        CC.setData(bits);
+        LOGGER.warn("OVERFLOW");
+    }
+
+    public void UNDERFLOW(){
+        Register CC = getRegister(RegisterType.CC);
+        BitSet bits = CC.getData();
+        bits.set(2);
+        CC.setData(bits);
+        LOGGER.warn("UNDERFLOW");
+    }
+
+    public void DIVZERO(){
+        Register CC = getRegister(RegisterType.CC);
+        BitSet bits = CC.getData();
+        bits.set(1);
+        CC.setData(bits);
+        LOGGER.warn("DIVIDE 0");
+    }
+
+    public void EQUALORNOT(boolean equal){
+        Register CC = getRegister(RegisterType.CC);
+        BitSet bits = CC.getData();
+        if(equal){
+            bits.set(0);
+            LOGGER.info("EQUAL");
+        }
+        else{
+            bits.clear(0);
+            LOGGER.info("NOTEQUAL");
+        }
+        CC.setData(bits);
+    }
+
+    public boolean checkOverUnderFlow(int value){
+        if(value> SetCC.MaxValue||value<SetCC.MinValue){
+            OVERFLOW();
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public boolean checkExtendOverUnderFlow(int value){
+        if(value>SetCC.ExtendMaxValue||value<SetCC.ExtendMinValue){
+            OVERFLOW();
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }

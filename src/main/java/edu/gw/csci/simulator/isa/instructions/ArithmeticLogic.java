@@ -1,6 +1,7 @@
 package edu.gw.csci.simulator.isa.instructions;
 
 import edu.gw.csci.simulator.cpu.CPU;
+import edu.gw.csci.simulator.exceptions.IllegalOpcode;
 import edu.gw.csci.simulator.isa.Instruction;
 import edu.gw.csci.simulator.isa.InstructionType;
 import edu.gw.csci.simulator.isa.SetCC;
@@ -9,12 +10,15 @@ import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.Register;
 import edu.gw.csci.simulator.registers.RegisterDecorator;
 import edu.gw.csci.simulator.registers.RegisterType;
+import edu.gw.csci.simulator.utils.BinaryCalculate;
 import edu.gw.csci.simulator.utils.BitConversion;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.BitSet;
 import java.util.Optional;
+
+import static edu.gw.csci.simulator.utils.BitConversion.toBinaryString;
 
 public class ArithmeticLogic {
 
@@ -28,24 +32,24 @@ public class ArithmeticLogic {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
-            String Rs = data.substring(0,2);
-            Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
+            String Rs = data.substring(0, 2);
+            Register R = registers.getRegister(RegisterType.getGeneralPurpose(Rs));
             RegisterDecorator Rd = new RegisterDecorator(R);
 
             int EA = memory.EA();
             int RValue = Rd.toInt();
-            int MemoryValue = BitConversion.convert(memory.fetch(EA));
+            BitSet MemoryBits = memory.fetch(EA);
+            int MemoryValue = BitConversion.convert(MemoryBits);
 
-            if(RValue+MemoryValue>=Math.pow(2,16)){
-                SetCC.OVERFLOW(registers);
-            }
-            else {
-                Rd.setValue(RValue + MemoryValue);
-            }
-            registers.PCadder();
+            registers.checkOverUnderFlow(RValue + MemoryValue);
+
+            R.setData(BinaryCalculate.BitAdd(R.getData(),MemoryBits));
+
+
             String mess = String.format("AMR R:%s EA:%d, %s = %d + %d",
                     R.getName(), EA, R.getName(), RValue, MemoryValue);
             LOGGER.info(mess);
+
         }
 
         @Override
@@ -73,15 +77,13 @@ public class ArithmeticLogic {
 
             int EA = memory.EA();
             int RValue = Rd.toInt();
-            int MemoryValue = BitConversion.convert(memory.fetch(EA));
+            BitSet MemoryBits = memory.fetch(EA);
+            int MemoryValue = BitConversion.convert(MemoryBits);
 
-            if(RValue-MemoryValue<=-Math.pow(2,16)){
-                SetCC.UNDERFLOW(registers);
-            }
-            else {
-                Rd.setValue(RValue - MemoryValue);
-            }
-            registers.PCadder();
+            registers.checkOverUnderFlow(RValue-MemoryValue);
+
+            R.setData(BinaryCalculate.BitMinus(R.getData(),MemoryBits));
+
             String mess = String.format("SMR R:%s EA:%d, %s = %d - %d",
                     R.getName(),EA,R.getName(),RValue,MemoryValue);
             LOGGER.info(mess);
@@ -122,13 +124,10 @@ public class ArithmeticLogic {
                 Rd.setValue(EA);
             }
             else{
-                if(RValue+EA>=Math.pow(2,16)){
-                    SetCC.OVERFLOW(registers);
-                }
-                Rd.setValue(RValue+EA);
+               registers.checkOverUnderFlow(RValue+EA);
+               R.setData(BinaryCalculate.BitAdd(R.getData(),EA));
             }
 
-            registers.PCadder();
             String mess = String.format("AIR R:%s immed:%d, %s = %d + %d",
                     R.getName(),EA,R.getName(),RValue,EA);
             LOGGER.info(mess);
@@ -168,13 +167,10 @@ public class ArithmeticLogic {
                 Rd.setValue(-EA);
             }
             else{
-                if(RValue-EA<=-Math.pow(2,16)){
-                    SetCC.UNDERFLOW(registers);
-                }
-                Rd.setValue(RValue-EA);
+                registers.checkOverUnderFlow(RValue-EA);
+                R.setData(BinaryCalculate.BitMinus(R.getData(),EA));
             }
 
-            registers.PCadder();
             String mess = String.format("SIR R:%s immed:%d, %s = %d - %d",
                     R.getName(),EA,R.getName(),RValue,EA);
             LOGGER.info(mess);
@@ -214,21 +210,23 @@ public class ArithmeticLogic {
                 }
                 int RxValue=BitConversion.convert(Rx.getData());
                 int RyValue=BitConversion.convert(Ry.getData());
-                if(RxValue*RyValue>=Math.pow(2,16)){
-                    SetCC.OVERFLOW(registers);
-                }
-                if(RxValue*RyValue<=-Math.pow(2,16)){
-                    SetCC.UNDERFLOW(registers);
-                }
-                String MulValue = BitConversion.toBinaryString(RxValue*RyValue,32);
 
-                Rx.setData(BitConversion.convert(MulValue.substring(0,16)));
-                Rx_1.setData(BitConversion.convert(MulValue.substring(16,31)));
+                registers.checkExtendOverUnderFlow(RxValue*RyValue);
+
+                String MulValue = BitConversion.toBinaryString(BitConversion.ExtendConvert(RxValue*RyValue),32);
+
+                Rx.setData(BitConversion.fromBinaryStringToBitSet(MulValue.substring(0,16)));
+                Rx_1.setData(BitConversion.fromBinaryStringToBitSet(MulValue.substring(16,31)));
+
+                String mess = String.format("MLT Rx:%s(%d) Ry:%s(%d)",
+                        Rx.getName(),RxValue,Ry.getName(),RyValue);
+                LOGGER.info(mess);
             }
-            registers.PCadder();
-            String mess = String.format("MLT Rx:%s Ry:%s",
-                    Rx.getName(),Ry.getName());
-            LOGGER.info(mess);
+            else{
+                String mess = "R registers must be 0 or 2.";
+                throw  new IllegalOpcode(mess);
+            }
+
         }
 
         @Override
@@ -261,7 +259,7 @@ public class ArithmeticLogic {
 
             if(Ry.getData().isEmpty()) {
                 //If c(ry) = 0, set cc(3) to 1 (set DIVZERO flag)
-                SetCC.DIVZERO(registers);
+                registers.DIVZERO();
             }
             else
             {
@@ -279,12 +277,18 @@ public class ArithmeticLogic {
                     int RyValue=BitConversion.convert(Ry.getData());
                     Rxd.setValue(RxValue/RyValue);
                     Rx_1d.setValue(RxValue%RyValue);
+
+                    String mess = String.format("DVD Rx:%s Ry:%s",
+                            Rx.getName(),Ry.getName());
+                    LOGGER.info(mess);
+                }
+                else{
+                    String mess = "R registers must be 0 or 2.";
+                    throw  new IllegalOpcode(mess);
                 }
             }
-            registers.PCadder();
-            String mess = String.format("DVD Rx:%s Ry:%s",
-                    Rx.getName(),Ry.getName());
-            LOGGER.info(mess);
+            //registers.PCadder();
+
         }
 
         @Override
@@ -313,12 +317,12 @@ public class ArithmeticLogic {
 
             //If c(rx) = c(ry), set cc(4) <- 1; else, cc(4) <- 0
             if(Rx.getData().equals(Ry.getData())){
-                SetCC.EQUALORNOT(registers,true);
+                registers.EQUALORNOT(true);
             }
             else{
-                SetCC.EQUALORNOT(registers,false);
+                registers.EQUALORNOT(false);
             }
-            registers.PCadder();
+            //registers.PCadder();
 
             String mess = String.format("TRR Rx:%s Ry:%s If c(rx) = c(ry), set cc(4) <- 1; else, cc(4) <- 0",
                     Rx.getName(),Ry.getName());
@@ -352,7 +356,6 @@ public class ArithmeticLogic {
             BitSet bits = Rx.getData();
             bits.and(Ry.getData());
             Rx.setData(bits);
-            registers.PCadder();
 
             String mess = String.format("AND Rx:%s Ry:%s",
                     Rx.getName(),Ry.getName());
@@ -386,7 +389,6 @@ public class ArithmeticLogic {
             BitSet bits = Rx.getData();
             bits.or(Ry.getData());
             Rx.setData(bits);
-            registers.PCadder();
 
             String mess = String.format("ORR Rx:%s Ry:%s",
                     Rx.getName(),Ry.getName());
@@ -419,7 +421,6 @@ public class ArithmeticLogic {
             BitSet bits = R.getData();
             bits.flip(0,16);
             R.setData(bits);
-            registers.PCadder();
 
             String mess = String.format("NOT R:%s",
                     R.getName());

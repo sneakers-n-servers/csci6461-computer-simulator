@@ -30,6 +30,8 @@
                 <Region prefWidth="5"/>
                 <Button id="ipl-button" text="IPL" onAction="#runIPL"/>
                 <Region prefWidth="5"/>
+                <Button id="Input" text="Input" onAction="#input"/>
+                <Region prefWidth="5"/>
                 <Button id="PreStoreMemoryForProgram1" onAction="#PreStoreMemoryForProgram1" text="PreStoreMemoryForProgram1"/>
                 <Region prefWidth="5"/>
                 <Button id="PreStoreMemoryForProgram2" onAction="#PreStoreMemoryForProgram2" text="PreStoreMemoryForProgram2"/>

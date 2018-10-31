@@ -6,7 +6,8 @@ public class PreStoreMemory {
     public static void PreStoreMemoryForProgram1(CPU cpu){
         cpu.StoreValue(8,64);
         cpu.StoreValue(9,170);
-        cpu.StoreValue(85,65535);
+        cpu.StoreValue(85,32767);
+        //cpu.StoreValue(85,65535);
         cpu.StoreValue(86,64);
         cpu.StoreValue(87,84);
     }

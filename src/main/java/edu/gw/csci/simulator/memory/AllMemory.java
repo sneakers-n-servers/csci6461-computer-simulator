@@ -39,7 +39,7 @@ public class AllMemory {
     }
 
     /**
-     * This method overloads the {@link AllMemory#store(int, BitSet)} to check for
+     * This method overloads the {@link AllMemory#store(int, BitSet,boolean throwReserve)} to check for
      * illegal memory access by default. Therefore, this method will reject
      * all requests to save to reserved memory location.
      *
@@ -81,7 +81,7 @@ public class AllMemory {
     }
 
     /**
-     * This method overloads the {@link AllMemory#fetch(int)} to check for
+     * This method overloads the {@link AllMemory#fetch(int,boolean throwReserve)} to check for
      * illegal memory access by default. Therefore,this method will reject
      * all requests to save to reserved memory location.
      *
@@ -132,16 +132,15 @@ public class AllMemory {
      */
     private void checkIndex(int index, boolean throwReserve) throws MemoryOutOfBounds, IllegalMemoryAccess {
         if(index > maxMemory){
-            String mess = String.format("Will not store/fetch from index: %d, greater than max memory: %d", index, maxMemory);
+            String mess = String.format("MemoryOutOfBounds: Will not store/fetch from index: %d, greater than max memory: %d", index, maxMemory);
             throw new MemoryOutOfBounds(mess);
         }
         else if (index < 0){
-            String mess = String.format("Will not store/fetch from negative index: %d", index);
+            String mess = String.format("MemoryOutOfBounds: Will not store/fetch from negative index: %d", index);
             throw new MemoryOutOfBounds(mess);
         }
-
         if(throwReserve && index <= highestReservedMemory){
-            String mess = String.format("Will not store/fetch index: %d from reserved memory location 0-5", index);
+            String mess = String.format("MemoryOutOfBounds: Will not store/fetch index: %d from reserved memory location 0-5", index);
             throw new IllegalMemoryAccess(mess);
         }
     }
@@ -164,28 +163,28 @@ public class AllMemory {
 
         if (InstructionType.getInstructionType(Opcode).equals(InstructionType.RFS)) {
             //I,IX is ignored in RFS
-            EA = BitConversion.fromBinaryString(Address_code);
+            EA = Integer.parseInt(Address_code,2);
             return EA;
         }
         if (InstructionType.getInstructionType(Opcode).equals(InstructionType.AIR) ||
                 InstructionType.getInstructionType(Opcode).equals(InstructionType.SIR)) {
             //I,IX is ignored in AIR,SIR
-            EA = BitConversion.fromBinaryString(Address_code);
+            EA = Integer.parseInt(Address_code,2);
             return EA;
         }
         if (InstructionType.getInstructionType(Opcode).equals(InstructionType.LDX) ||
                 InstructionType.getInstructionType(Opcode).equals(InstructionType.STX)) {
             //IX is not used in LDX,STX
             if (I_code.equals("0")) {
-                return BitConversion.fromBinaryString(Address_code);
+                return Integer.parseInt(Address_code,2);
             } else {
-                EA = BitConversion.convert(fetch(BitConversion.fromBinaryString(Address_code)));
+                EA = BitConversion.convert(fetch(Integer.parseInt(Address_code,2)));
                 return EA;
             }
         }
         if (I_code.equals("0")) {
             if (IX_code.equals("00")) {
-                EA = BitConversion.fromBinaryString(Address_code);
+                EA = Integer.parseInt(Address_code,2);
                 return EA;
 
             } else {
@@ -193,19 +192,19 @@ public class AllMemory {
                 RegisterType registerType = RegisterType.getIndex(IX_code);
                 Register register = allRegisters.getRegister(registerType);
                 RegisterDecorator Xd = new RegisterDecorator(register);
-                EA = Xd.toInt() + BitConversion.fromBinaryString(Address_code);
+                EA = Xd.toInt() + Integer.parseInt(Address_code,2);
                 return EA;
             }
         } else {
             if (IX_code.equals("00")) {
-                EA = BitConversion.convert(fetch(BitConversion.fromBinaryString(Address_code)));
+                EA = BitConversion.convert(fetch(Integer.parseInt(Address_code,2)));
                 return EA;
             } else {
                 //int ixCode = BitConversion.fromBinaryString(IX_code);
                 RegisterType registerType = RegisterType.getIndex(IX_code);
                 Register register = allRegisters.getRegister(registerType);
                 RegisterDecorator Xd = new RegisterDecorator(register);
-                int index = Xd.toInt() + BitConversion.fromBinaryString(Address_code);
+                int index = Xd.toInt() + Integer.parseInt(Address_code,2);
                 EA = BitConversion.convert(fetch(index));
                 return EA;
             }

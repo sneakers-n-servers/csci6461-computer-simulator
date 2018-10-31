@@ -76,11 +76,13 @@ public class CPU {
      * unless the machine has been initialized, and a program has been set.
      */
     public void execute(){
-        Instruction instruction ;
-        do {
-            instruction = getNextInstruction(registers);
+        Instruction instruction = getNextInstruction(registers);
+        while (instruction.getInstructionType() != InstructionType.HLT){
             instruction.execute(memory, registers,this);
-        } while (instruction.getInstructionType() != InstructionType.HLT);
+            registers.PCadder();
+            instruction = getNextInstruction(registers);
+        }
+        instruction.execute(memory, registers,this);
 
     }
 
@@ -134,7 +136,7 @@ public class CPU {
      * The GUI restricts one to load a program before the machine is initialized,
      * so we know that all memory addresses, and registers have been instantiated.
      */
-    public void loadProgram(int start){
+    public void loadProgram(int start) throws SimulatorException{
         int defaultLoadLocation = start;
         BitSet programCounter = BitConversion.convert(defaultLoadLocation);
         List<String> lines = program.getLines();
@@ -145,8 +147,8 @@ public class CPU {
                 memory.store(defaultLoadLocation, convert);
                 defaultLoadLocation++;
             } else {
-                String mess = "Illegal Opcode: An instruction should be 16 bits.";
-                throw new IllegalOpcode(mess);
+                String mess = "An instruction should be 16 bits.";
+                LOGGER.error(mess);
             }
         }
         registers.setRegister(RegisterType.PC, programCounter);
@@ -160,6 +162,8 @@ public class CPU {
         Instruction instruction = getNextInstruction(registers);
         try{
             instruction.execute(memory, registers,this);
+            if(instruction.getInstructionType()!= InstructionType.HLT)
+                registers.PCadder();
         }catch (SimulatorException e){
         }
     }

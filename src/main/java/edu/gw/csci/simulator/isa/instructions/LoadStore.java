@@ -28,7 +28,7 @@ public class LoadStore {
             Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
 
             R.setData(memory.fetch(memory.EA()));
-            registers.PCadder();
+            //registers.PCadder();
 
             LOGGER.info("LDR");
             logger(data,registers);
@@ -57,7 +57,7 @@ public class LoadStore {
             Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
 
             memory.store(memory.EA(),R.getData());
-            registers.PCadder();
+            //registers.PCadder();
 
             LOGGER.info("STR");
             logger(data,registers);
@@ -90,7 +90,7 @@ public class LoadStore {
             RegisterDecorator Rd = new RegisterDecorator(R);
 
             Rd.setValue(memory.EA());
-            registers.PCadder();
+            //registers.PCadder();
         }
 
         @Override
@@ -116,7 +116,7 @@ public class LoadStore {
             Register X =registers.getRegister(RegisterType.getIndex(Xs));
 
             X.setData(memory.fetch(memory.EA()));
-            registers.PCadder();
+            //registers.PCadder();
 
             LOGGER.info("LDX");
             logger(data,registers);
@@ -145,7 +145,7 @@ public class LoadStore {
             Register X =registers.getRegister(RegisterType.getIndex(Xs));
 
             memory.store(memory.EA(),X.getData());
-            registers.PCadder();
+            //registers.PCadder();
 
             LOGGER.info("STX");
             logger(data,registers);
@@ -183,7 +183,7 @@ public class LoadStore {
         }
 
         String mess = String.format("R:%s IX:%s I:%s Addr:%s(%d)",
-                R.getName(),xName,I,AddressCode, BitConversion.fromBinaryString(AddressCode));
+                R.getName(),xName,I,AddressCode, Integer.parseInt(AddressCode,2));
         LOGGER.info(mess);
     }
 }

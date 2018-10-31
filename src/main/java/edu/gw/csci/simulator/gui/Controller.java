@@ -99,7 +99,7 @@ public class Controller {
         memory.set(7,BitConversion.convert(20));
         //suppose the table is start from memory[7] and the start of routine in table[1] is 20;
         initializeCPU();
-
+        initializePrograms();
         programContents.clear();
         consoleInput.clear();
 
@@ -131,9 +131,7 @@ public class Controller {
         cpu.consoleInput.clear();
         cpu.consoleOutput.clear();
         //initialize FileReader
-        SimulatorFileReader.WordMap.clear();
-        SimulatorFileReader.WordStoreIndex = 512;
-        SimulatorFileReader.code = 32;
+        SimulatorFileReader.initializeFileReader();
     }
 
     /**

@@ -26,4 +26,5 @@ public class DecoderTest {
         Instruction instruction2 = decoder.getInstruction(b);
         Assert.assertNotEquals(instruction1, instruction2);
     }
+
 }

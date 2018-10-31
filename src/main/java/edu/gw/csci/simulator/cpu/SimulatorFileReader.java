@@ -6,10 +6,19 @@ import java.io.*;
 import java.util.HashMap;
 
 public class SimulatorFileReader {
+    private static final int DEFAULT_WORD_STORE_INDEX = 512;
+    private static final int DEFAULT_CODE = 32;
+    public static HashMap<String, Integer> WordMap = new HashMap<>();
+    private static int code = DEFAULT_CODE;
+    private static int WordStoreIndex = DEFAULT_WORD_STORE_INDEX;
 
-    public static HashMap<String, Integer> WordMap = new HashMap<String, Integer>();
-    public static int code = 32;
-    public static int WordStoreIndex = 512;
+
+    public static void initializeFileReader(){
+        WordMap.clear();
+        code = DEFAULT_CODE;
+        WordStoreIndex = DEFAULT_WORD_STORE_INDEX;
+    }
+
 
     public static void readSentences(String fileName,CPU cpu) {
         File file = new File(fileName);
@@ -62,7 +71,7 @@ public class SimulatorFileReader {
         return WordMap.get(word);
     }
     
-    public static void StoreToMemory(int index,int value,CPU cpu){
+    private static void StoreToMemory(int index,int value,CPU cpu){
         cpu.StoreValue(index,value);
     }
 }

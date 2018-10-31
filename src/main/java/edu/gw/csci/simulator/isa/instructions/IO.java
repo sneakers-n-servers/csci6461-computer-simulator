@@ -9,6 +9,7 @@ import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.Register;
 import edu.gw.csci.simulator.registers.RegisterDecorator;
 import edu.gw.csci.simulator.registers.RegisterType;
+import edu.gw.csci.simulator.utils.BitConversion;
 import javafx.scene.control.TextArea;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,6 +33,8 @@ public class IO {
             Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
             RegisterDecorator Rd = new RegisterDecorator(R);
             String DevID = data.substring(5, 10);
+            Register PC = registers.getRegister(RegisterType.PC);
+            RegisterDecorator PCd = new RegisterDecorator(PC);
 
             if(DevID.equals("00000")) {
                 //Console Keyboard input
@@ -42,10 +45,12 @@ public class IO {
                     String mess = String.format("IN input Int:%d,Binary:%s to Register %s from Console Keyboard",
                             Rd.toInt(), Rd.toBinaryString(), R.getName());
                     LOGGER.info(mess);
-                    registers.PCadder();
+                    //registers.PCadder();
                 }
                 else{
-                    registers.PCadder();
+                    int PCindex = BitConversion.convert(PC.getData());
+                    PCd.setValue(PCindex-1);
+                    //registers.PCadder();
                     LOGGER.info("Please input first.");
                 }
             }
@@ -85,7 +90,7 @@ public class IO {
                        Rd.toInt(), Rd.toBinaryString(), R.getName());
                 LOGGER.info(mess);
                 cpu.consoleOutput.add(String.valueOf(Rd.toInt()));
-                registers.PCadder();
+                //registers.PCadder();
             }
         }
 

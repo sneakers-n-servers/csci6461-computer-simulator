@@ -30,11 +30,11 @@ public class Transfer {
             int EA = memory.EA();
             Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
             if(R.getData().isEmpty()){
-                PCd.setValue(EA);
+                PCd.setValue(EA-1);
             }
-            else{
-                registers.PCadder();
-            }
+//            else{
+//                registers.PCadder();
+//            }
 
             String mess = String.format("JZ Jump to %d when %s =0",EA,R.getName());
             LOGGER.info(mess);
@@ -66,10 +66,7 @@ public class Transfer {
             Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
 
             if(!R.getData().isEmpty()){
-                PCd.setValue(EA);
-            }
-            else{
-                registers.PCadder();
+                PCd.setValue(EA-1);
             }
 
             String mess = String.format("JNE Jump to %d when %s !=0",EA,R.getName());
@@ -102,11 +99,11 @@ public class Transfer {
             Register CC = registers.getRegister(RegisterType.CC);
             int bit = CC.getData().cardinality();
             if(bit ==1){
-                PCd.setValue(EA);
+                PCd.setValue(EA-1);
             }
-            else{
-                registers.PCadder();
-            }
+//            else{
+//                registers.PCadder();
+//            }
             String mess =String.format("JCC Jump to %d if CC bit =1", EA);
             LOGGER.info(mess);
         }
@@ -134,7 +131,7 @@ public class Transfer {
             RegisterDecorator PCd = new RegisterDecorator(PC);
             int EA =memory.EA();
 
-            PCd.setValue(EA);
+            PCd.setValue(EA-1);
 
             String mess = String.format("JMA Unconditional Jump To Address:%d",EA);
             LOGGER.info(mess);
@@ -166,8 +163,8 @@ public class Transfer {
             int EA= memory.EA();
 
             int returnAddress  = BitConversion.convert(PC.getData())+1;
-            R3d.setValue(BitConversion.convert(PC.getData())+1);
-            PCd.setValue(EA);
+            R3d.setValue(returnAddress);
+            PCd.setValue(EA-1);
 
             String mess = String.format("JSR Jump to %d and Save Return Address:%d",
                     EA,returnAddress);
@@ -194,6 +191,7 @@ public class Transfer {
         @Override
         public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
             Register PC = registers.getRegister(RegisterType.PC);
+            RegisterDecorator PCd = new RegisterDecorator(PC);
             Register R0 = registers.getRegister(RegisterType.R0);
             RegisterDecorator R0d = new RegisterDecorator(R0);
             Register R3 = registers.getRegister(RegisterType.R3);
@@ -202,7 +200,8 @@ public class Transfer {
 
 
             R0d.setValue(EA);
-            PC.setData(R3.getData());
+            int PCindex = BitConversion.convert(R3.getData());
+            PCd.setValue(PCindex-1);
 
             String mess = String.format("RFS Return from subroutine, R0=%d PC=R3=%d",
                     EA,BitConversion.convert(R3.getData()));
@@ -238,11 +237,11 @@ public class Transfer {
 
             Rd.setValue(BitConversion.convert(R.getData())-1);
             if(BitConversion.convert(R.getData())>0){
-                PCd.setValue(EA);
+                PCd.setValue(EA-1);
             }
-            else{
-                registers.PCadder();
-            }
+//            else{
+//                registers.PCadder();
+//            }
 
             String mess = String.format("SOB %s = %s -1 =%d, if %s>0, jump to %d",
                     R.getName(),R.getName(),BitConversion.convert(R.getData()),R.getName(),EA);
@@ -277,11 +276,11 @@ public class Transfer {
 
 
             if(BitConversion.convert(R.getData())>=0){
-                PCd.setValue(EA);
+                PCd.setValue(EA-1);
             }
-            else{
-                registers.PCadder();
-            }
+//            else{
+//                registers.PCadder();
+//            }
 
             String mess = String.format("JGE if %s(%d) >=0, jump to %d",
                     R.getName(),BitConversion.convert(R.getData()),EA);
