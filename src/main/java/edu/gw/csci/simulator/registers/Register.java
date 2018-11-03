@@ -1,6 +1,8 @@
 package edu.gw.csci.simulator.registers;
 
 import edu.gw.csci.simulator.Bits;
+import edu.gw.csci.simulator.exceptions.IllegalValue;
+import edu.gw.csci.simulator.utils.BitConversion;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
@@ -44,11 +46,23 @@ public class Register implements Bits {
         return registerType.toString();
     }
 
+    public String getDescription() {
+        return registerType.getDescription();
+    }
+
     public void setData(BitSet data) {
+        if (data.length() > getSize()){
+            String mess = String.format(
+                    "Binary value %s is larger than maximum %d",
+                    BitConversion.toBinaryString(data, data.length()),
+                    getSize()
+            );
+            throw new IllegalValue(mess);
+        }
         this.data.setValue(data);
     }
 
-    public ObjectProperty<BitSet> getBitSetProperty() {
+    ObjectProperty<BitSet> getBitSetProperty() {
         return data;
     }
 }

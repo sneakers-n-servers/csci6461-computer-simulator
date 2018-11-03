@@ -1,8 +1,8 @@
 package edu.gw.csci.simulator.memory;
 
+import edu.gw.csci.simulator.cpu.TrapController;
 import edu.gw.csci.simulator.exceptions.IllegalMemoryAccess;
 import edu.gw.csci.simulator.exceptions.MemoryOutOfBounds;
-import edu.gw.csci.simulator.exceptions.SimulatorException;
 import edu.gw.csci.simulator.isa.InstructionType;
 import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.Register;
@@ -67,7 +67,7 @@ public class AllMemory {
 
     public void store(int index, BitSet bitSet, boolean throwReserve) throws MemoryOutOfBounds, IllegalMemoryAccess {
         checkIndex(index, throwReserve);
-        if(index == SimulatorException.HALT_LOCATION){
+        if(index == TrapController.HALT_LOCATION){
             LOGGER.warn("Index 6 is reserved for halt during trap codes, this is not recommended");
         }
         //We know that this conversion is safe because the data is stored in a BitSet already
@@ -214,4 +214,5 @@ public class AllMemory {
     public AllRegisters getAllRegisters(){
         return this.allRegisters;
     }
+    public Memory getMemory(){ return this.memory;}
 }

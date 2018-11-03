@@ -57,7 +57,7 @@ public class BitConversion {
      * @param bits The BitSet to utils
      * @return The converted integer
      */
-    public static int convert(BitSet bits) {
+    public static int convert(BitSet bits) throws IllegalValue {
         BitSet bitSet = (BitSet)bits.clone();
         if(bits.length()>16){
             String mess = String.format("Value is out of range:[%d,%d]",SetCC.MinValue,SetCC.MaxValue);
@@ -190,15 +190,20 @@ public class BitConversion {
      * @return The binary string representation
      * @throws IllegalOpcode An instruction must be binary.
      */
-    public static BitSet convert(String binaryString) throws IllegalOpcode{
-            if(isNotBinary(binaryString))
-            {
-                String mess = "IllegalOpcode: An Instruction must be binary";
-                throw new IllegalOpcode(mess);
-            }
-            else {
-                return fromBinaryStringToBitSet(binaryString);
-            }
+    public static BitSet convert(String binaryString) throws IllegalValue{
+        try{
+            Integer.parseInt(binaryString, 2);
+        }catch (NumberFormatException e){
+            String mess = String.format("%s is not binary", binaryString);
+            throw new IllegalValue(mess);
+        }
+
+        BitSet bits = new BitSet(binaryString.length());
+        for (int i = 0; i < binaryString.length(); i++) {
+            if (binaryString.charAt(i) == '1')
+                bits.set(binaryString.length() - i - 1);
+        }
+        return bits;
     }
     /**
      * Converts a binary String to Integer
@@ -207,27 +212,6 @@ public class BitConversion {
      * @return The Integer value of this binaryString
      */
     public static int fromBinaryStringToInt(String s) {
-            return convert(fromBinaryStringToBitSet(s));
-    }
-
-    /**
-     * Converts a binary String to BitSet
-     *
-     * @param s A binaryString
-     * @return The binary string representation
-     */
-    public static BitSet fromBinaryStringToBitSet(String s){
-            BitSet bits = new BitSet();
-            for (int i = 0; i <s.length() ; i++) {
-                if(s.charAt(i) == '1')
-                bits.set(s.length()-i-1);
-            }
-            return bits;
-        }
-
-    //Opcode must be binary String
-    private static boolean isNotBinary(String str){
-    Pattern pattern = Pattern.compile("[0-1]*");
-        return !pattern.matcher(str).matches();
+        return convert(convert(s));
     }
 }

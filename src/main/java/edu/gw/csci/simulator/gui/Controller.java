@@ -3,6 +3,7 @@ package edu.gw.csci.simulator.gui;
 import edu.gw.csci.simulator.Simulator;
 import edu.gw.csci.simulator.cpu.CPU;
 import edu.gw.csci.simulator.cpu.SimulatorFileReader;
+import edu.gw.csci.simulator.cpu.TrapController;
 import edu.gw.csci.simulator.exceptions.SimulatorException;
 import edu.gw.csci.simulator.memory.*;
 import edu.gw.csci.simulator.registers.AllRegisters;
@@ -10,6 +11,7 @@ import edu.gw.csci.simulator.registers.Register;
 import edu.gw.csci.simulator.registers.RegisterDecorator;
 import edu.gw.csci.simulator.registers.RegisterType;
 import edu.gw.csci.simulator.utils.BitConversion;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -36,13 +38,10 @@ public class Controller {
     private TableView<Register> registerTable;
 
     @FXML
-    private TableColumn<Register, String> registerNameColumn;
-
-    @FXML
-    private TableColumn<Register, String> registerBinaryColumn;
-
-    @FXML
-    private TableColumn<Register, String> registerDecimalColumn;
+    private TableColumn<Register, String> registerNameColumn,
+            registerDescriptionColumn,
+            registerBinaryColumn,
+            registerDecimalColumn;
 
     @FXML
     private Pagination memoryPagination;
@@ -51,13 +50,9 @@ public class Controller {
     private TableView<MemoryChunk> memoryTable;
 
     @FXML
-    private TableColumn<MemoryChunk, String> memoryIndexColumn;
-
-    @FXML
-    private TableColumn<MemoryChunk, String> memoryBinaryColumn;
-
-    @FXML
-    private TableColumn<MemoryChunk, String> memoryDecimalColumn;
+    private TableColumn<MemoryChunk, String> memoryIndexColumn,
+            memoryBinaryColumn,
+            memoryDecimalColumn;
 
     @FXML
     private ComboBox<String> programNameSelector;
@@ -67,6 +62,9 @@ public class Controller {
 
     @FXML
     private TextArea console;
+
+    @FXML
+    private Spinner<Integer> memorySpinner;
 
     @FXML
     private TextField startIndex;
@@ -79,7 +77,9 @@ public class Controller {
     private HashMap<String, Program> programs;
     private CPU cpu;
 
-    private boolean initialized, loaded;
+    private boolean initialized;
+
+    private TrapController trapController;
 
     /**
      * Both memory and registers are initialized to their default values.
@@ -94,15 +94,12 @@ public class Controller {
         LOGGER.info("Initializing simulator");
         allRegisters.initialize();
         memory.initialize();
-        memory.set(SimulatorException.HALT_MEMORY_POINTER, BitConversion.convert(SimulatorException.HALT_LOCATION));
-        memory.set(0,BitConversion.convert(7));
-        memory.set(7,BitConversion.convert(20));
-        //suppose the table is start from memory[7] and the start of routine in table[1] is 20;
         initializeCPU();
         programContents.clear();
         console.clear();
         programNameSelector.setValue("FreeRun");
         initialized = true;
+        trapController.setDefaultExceptionTable();
     }
 
     public Controller() {
@@ -112,9 +109,9 @@ public class Controller {
 
         AllMemory allMemory = new AllMemory(memory, allRegisters, new MemoryCache());
         CPU cpu = new CPU(allMemory);
-        //cpu.setTextArea(consoleInput);
         this.cpu = cpu;
-        SimulatorException.setAllMemory(allMemory);
+        trapController = new TrapController(cpu);
+        SimulatorException.setTrapController(trapController);
     }
 
     @FXML
@@ -122,7 +119,7 @@ public class Controller {
         initializeRegisters();
         initializeMemory();
         initializePrograms();
-        SimulatorException.setTables(registerTable, memoryTable);
+        trapController.setTables(registerTable, memoryTable);
     }
 
     private void initializeCPU(){
@@ -141,6 +138,7 @@ public class Controller {
      */
     private void initializeRegisters() {
         registerNameColumn.setCellValueFactory(cellData -> new RegisterDecorator(cellData.getValue()).getRegisterName());
+        registerDescriptionColumn.setCellValueFactory(cellData -> new RegisterDecorator(cellData.getValue()).getRegisterDescription());
 
         registerBinaryColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toBinaryObservableString());
         registerBinaryColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -196,7 +194,7 @@ public class Controller {
                 return;
             }
             int tablePosition = t.getTablePosition().getRow();
-            if(tablePosition == SimulatorException.HALT_LOCATION){
+            if(tablePosition == TrapController.HALT_LOCATION){
                 LOGGER.warn("Index 6 is reserved for halt during trap codes, this is not recomended");
             }
             MemoryChunk mem = t.getTableView().getItems().get(tablePosition);
@@ -215,7 +213,7 @@ public class Controller {
                 return;
             }
             int tablePosition = t.getTablePosition().getRow();
-            if(tablePosition == SimulatorException.HALT_LOCATION){
+            if(tablePosition == TrapController.HALT_LOCATION){
                 LOGGER.warn("Index 6 is reserved for halt during trap codes, this is not recomended");
             }
             MemoryChunk mem = t.getTableView().getItems().get(tablePosition);
@@ -236,6 +234,25 @@ public class Controller {
         });
         int maxPages = (int) Math.ceil((double) memory.getSize() / 32);
         memoryPagination.setPageCount(maxPages);
+
+        memorySpinner.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
+            if (! newValue.isEmpty()) {
+                int i;
+                try{
+                    i = Integer.parseInt(newValue);
+                    if (i >= memory.getSize()){
+                        return;
+                    }
+                }catch (NumberFormatException e){
+                    return;
+                }
+                Platform.runLater(() -> {
+                    memoryPagination.currentPageIndexProperty().setValue(i / 32);
+                    memoryTable.scrollTo(i % 32);
+                    memoryTable.getSelectionModel().select(i % 32);
+                });
+            }
+        });
     }
 
     /**
@@ -289,11 +306,6 @@ public class Controller {
             LOGGER.error("Initialize the machine before running");
             return;
         }
-        if(! loaded){
-            LOGGER.error("Load program before stepping");
-            return;
-        }
-
         LOGGER.info("Running Program");
         String programName = programNameSelector.getValue();
         Program program = programs.get(programName);
@@ -308,7 +320,6 @@ public class Controller {
             LOGGER.error("Initialize the machine before stepping");
             return;
         }
-        LOGGER.info("One Step Run");
         cpu.step();
         SetconsoleOutput();
     }
@@ -331,7 +342,6 @@ public class Controller {
         else{
             cpu.loadProgram();
         }
-        loaded = true;
     }
 
     /**
@@ -381,7 +391,6 @@ public class Controller {
         Program program = programs.get("Program1");
         cpu.setProgram(program);
         cpu.loadProgram(126);
-        loaded = true;
     }
     @FXML
     private void LoadProgram2(){
@@ -390,7 +399,6 @@ public class Controller {
         Program program = programs.get("Program2");
         cpu.setProgram(program);
         cpu.loadProgram(64);
-        loaded = true;
     }
     @FXML
     private void PreStoreMemoryForProgram1(){

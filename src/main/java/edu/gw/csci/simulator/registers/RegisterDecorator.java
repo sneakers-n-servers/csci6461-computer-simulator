@@ -22,4 +22,9 @@ public class RegisterDecorator extends BitDecorator<Register> {
         Register register = super.getBitType();
         return new SimpleStringProperty(register.getName());
     }
+
+    public SimpleStringProperty getRegisterDescription(){
+        Register register = super.getBitType();
+        return new SimpleStringProperty(register.getDescription());
+    }
 }

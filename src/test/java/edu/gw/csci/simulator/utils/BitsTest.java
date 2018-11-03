@@ -83,7 +83,7 @@ public class BitsTest {
     public void testConvert3(){
         //String s = "0000110000011001";
         String s = "1000010001011110";
-        BitSet bits1 = BitConversion.fromBinaryStringToBitSet(s);
+        BitSet bits1 = BitConversion.convert(s);
         int a = BitConversion.fromBinaryStringToInt(s);
         //int b = BitConversion.convert()
         BitSet bits2 = BitConversion.convert(s);

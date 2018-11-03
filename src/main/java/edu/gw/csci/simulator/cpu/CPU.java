@@ -1,19 +1,16 @@
 package edu.gw.csci.simulator.cpu;
 
-import edu.gw.csci.simulator.Simulator;
-import edu.gw.csci.simulator.exceptions.IllegalOpcode;
 import edu.gw.csci.simulator.exceptions.SimulatorException;
 import edu.gw.csci.simulator.gui.Program;
-import edu.gw.csci.simulator.isa.*;
+import edu.gw.csci.simulator.isa.Decoder;
+import edu.gw.csci.simulator.isa.Instruction;
+import edu.gw.csci.simulator.isa.InstructionType;
 import edu.gw.csci.simulator.memory.AllMemory;
-import edu.gw.csci.simulator.memory.Memory;
-import edu.gw.csci.simulator.memory.MemoryCache;
 import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.Register;
 import edu.gw.csci.simulator.registers.RegisterDecorator;
 import edu.gw.csci.simulator.registers.RegisterType;
 import edu.gw.csci.simulator.utils.BitConversion;
-import javafx.scene.control.TextArea;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,11 +33,9 @@ public class CPU {
     private final AllRegisters registers;
 
     private Program program;
-//    public TextArea consoleInput;
     public ArrayList<String> consoleInput;
     public ArrayList<String> consoleOutput;
     private Decoder decoder;
-    public boolean TrapFlag;
 
     public CPU(AllMemory allMemory){
         this.memory = allMemory;
@@ -48,8 +43,8 @@ public class CPU {
         this.decoder = new Decoder();
         this.consoleInput = new ArrayList<>();
         this.consoleOutput = new ArrayList<>();
-        this.TrapFlag = false;
     }
+
     public Optional<String> getNextInput(){
 
         if(!consoleInput.isEmpty()){
@@ -64,11 +59,6 @@ public class CPU {
         this.program = program;
     }
 
-//    public void setTextArea(TextArea textArea){
-//        this.consoleInput = textArea;
-//    }
-
-
     /**
      * This method executes instruction in IR register until a HLT instruction is received.
      * This is handy because unused memory will automatically indicate a halt, there is no need to explicitly
@@ -76,14 +66,24 @@ public class CPU {
      * unless the machine has been initialized, and a program has been set.
      */
     public void execute(){
-        Instruction instruction = getNextInstruction(registers);
-        while (instruction.getInstructionType() != InstructionType.HLT){
-            instruction.execute(memory, registers,this);
-            registers.PCadder();
-            instruction = getNextInstruction(registers);
-        }
-        instruction.execute(memory, registers,this);
+        //Set the first instruction to null
+        Instruction instruction = null;
 
+        //Iterate until we get a halt
+        while (instruction == null || instruction.getInstructionType() != InstructionType.HLT){
+            try{
+                instruction = getNextInstruction(registers, true);
+                instruction.execute(memory, registers,this);
+                incrementPC();
+                instruction = getNextInstruction(registers, true);
+            }catch (SimulatorException e){
+                //Load the saved off PC
+                BitSet oldPC = memory.fetch(TrapController.TRAP_PC_LOCATION, false);
+                Register pc = registers.getRegister(RegisterType.PC);
+                LOGGER.info("Finished trap routine, resuming to {}", BitConversion.convert(oldPC));
+                pc.setData(oldPC);
+            }
+        }
     }
 
     /**
@@ -94,9 +94,9 @@ public class CPU {
      * @param allRegisters All Registers
      * @return The next instruction to execute
      */
-    private Instruction getNextInstruction(AllRegisters allRegisters){
+    Instruction getNextInstruction(AllRegisters allRegisters, boolean throwReserve) {
         int nextInstructionIndex = getPCDecorator().toInt();
-        BitSet instructionData = memory.fetch(nextInstructionIndex);
+        BitSet instructionData = memory.fetch(nextInstructionIndex, throwReserve);
         Register IR = allRegisters.getRegister(RegisterType.IR);
         IR.setData(instructionData);
         return decoder.getInstruction(instructionData);
@@ -154,18 +154,31 @@ public class CPU {
         registers.setRegister(RegisterType.PC, programCounter);
     }
 
+
+
     /**
      * This function grabs the next instruction, executes it, and
      * adjusts the program counter.
      */
     public void step(){
-        Instruction instruction = getNextInstruction(registers);
         try{
+            Instruction instruction = getNextInstruction(registers, true);
             instruction.execute(memory, registers,this);
-            if(instruction.getInstructionType()!= InstructionType.HLT)
-                registers.PCadder();
+            incrementPC();
         }catch (SimulatorException e){
+            //Load the old PC
+            BitSet oldPC = memory.fetch(TrapController.TRAP_PC_LOCATION, false);
+            Register pc = registers.getRegister(RegisterType.PC);
+            LOGGER.info("Finished trap routine, resuming to {}", BitConversion.convert(oldPC));
+            pc.setData(oldPC);
         }
+    }
+
+    public void incrementPC(){
+        Register pc = registers.getRegister(RegisterType.PC);
+        RegisterDecorator pcDecorator = new RegisterDecorator(pc);
+        int count= pcDecorator.toInt();
+        pcDecorator.setValue(count+1);
     }
 
 
@@ -176,5 +189,9 @@ public class CPU {
 
     public void FileReader(){
         SimulatorFileReader.readSentences("program2_paragraph.txt",this);
+    }
+
+    public AllMemory getAllMemory(){
+        return memory;
     }
 }

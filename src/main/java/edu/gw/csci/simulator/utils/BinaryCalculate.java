@@ -46,28 +46,28 @@ public class BinaryCalculate {
         String add = add(BitConversion.toBinaryString(a,16),
                 BitConversion.toBinaryString(b,16));
         add = add.substring(add.length()-16);
-        return BitConversion.fromBinaryStringToBitSet(add);
+        return BitConversion.convert(add);
     }
 
     public static BitSet BitAdd(BitSet a,int b){
         String add = add(BitConversion.toBinaryString(a,16),
                 BitConversion.toBinaryString(b,16));
         add = add.substring(add.length()-16);
-        return BitConversion.fromBinaryStringToBitSet(add);
+        return BitConversion.convert(add);
     }
 
     public static BitSet BitMinus(BitSet a,BitSet b){
         String minus = minus(BitConversion.toBinaryString(a,16),
                 BitConversion.toBinaryString(b,16));
         minus = minus.substring(minus.length()-16);
-        return BitConversion.fromBinaryStringToBitSet(minus);
+        return BitConversion.convert(minus);
     }
 
     public static BitSet BitMinus(BitSet a,int b){
         String minus = minus(BitConversion.toBinaryString(a,16),
                 BitConversion.toBinaryString(b,16));
         minus = minus.substring(minus.length()-16);
-        return BitConversion.fromBinaryStringToBitSet(minus);
+        return BitConversion.convert(minus);
     }
 
     public static String BinaryLeftShift(String s, AllRegisters registers){

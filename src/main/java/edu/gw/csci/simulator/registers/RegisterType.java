@@ -1,6 +1,8 @@
 package edu.gw.csci.simulator.registers;
 
 import edu.gw.csci.simulator.exceptions.IllegalOpcode;
+import edu.gw.csci.simulator.exceptions.IllegalRegisterAccess;
+import edu.gw.csci.simulator.exceptions.IllegalValue;
 import edu.gw.csci.simulator.exceptions.SimulatorException;
 
 /**
@@ -10,28 +12,26 @@ import edu.gw.csci.simulator.exceptions.SimulatorException;
  */
 public enum RegisterType {
 
-    PC("Program Counter", 12, ""),
-    CC("Condition Code", 4, ""),
-    IR("Instruction Register", 16, ""),
-    MAR("Memory Address Register", 16, ""),
-    MBR("Memory Buffer Register", 16, ""),
-    MFR("Machine Fault Register", 16, ""),
-    R0("General Purpose Register", 16, "00"),
-    R1("General Purpose Register", 16, "01"),
-    R2("General Purpose Register", 16, "10"),
-    R3("General Purpose Register", 16, "11"),
-    X1("Index Register", 16, "01"),
-    X2("Index Register", 16, "10"),
-    X3("Index Register", 16, "11");
+    PC("Program Counter", 12),
+    CC("Condition Code", 4),
+    IR("Instruction Register", 16),
+    MAR("Memory Address Register", 16),
+    MBR("Memory Buffer Register", 16),
+    MFR("Machine Fault Register", 16),
+    R0("General Purpose Register", 16),
+    R1("General Purpose Register", 16),
+    R2("General Purpose Register", 16),
+    R3("General Purpose Register", 16),
+    X1("Index Register", 16),
+    X2("Index Register", 16),
+    X3("Index Register", 16);
 
     private final String description;
     private final int size;
-    private final String binarycode;
 
-    RegisterType(String description, int size, String binarycode) {
+    RegisterType(String description, int size) {
         this.description = description;
         this.size = size;
-        this.binarycode = binarycode;
     }
 
     public String getDescription() {
@@ -42,30 +42,49 @@ public enum RegisterType {
         return this.size;
     }
 
-    public String getBinaryCode() {
-        return this.binarycode;
+
+    public static RegisterType getGeneralPurpose(String index) throws IllegalRegisterAccess, IllegalValue {
+        int i = 0;
+        try{
+            i = Integer.parseInt(index, 2);
+        }catch (NumberFormatException e){
+            String mess = String.format("General purpose register index: %s is not binary", i);
+            throw new IllegalValue(mess);
+        }
+        return getGeneralPurpose(i);
     }
 
-    public static RegisterType getGeneralPurpose(String i) throws IllegalOpcode{
-        switch (i){
-            case "00": return R0;
-            case "01": return R1;
-            case "10": return R2;
-            case "11": return R3;
-            //default: throw new SimulatorException("General purpose register out of bounds");
-            default: String mess = "Illegal Opcode: General purpose register out of bounds.";
-            throw new IllegalOpcode(mess);
+    public static RegisterType getGeneralPurpose(int index) throws IllegalRegisterAccess {
+        switch (index){
+            case 0: return R0;
+            case 1: return R1;
+            case 2: return R2;
+            case 3: return R3;
+            default:
+                String mess = String.format("Index register index: %d out of bounds.", index);
+                throw new IllegalRegisterAccess(mess);
         }
     }
 
-    public static RegisterType getIndex(String i) throws IllegalOpcode{
-        switch (i){
-            case "01": return X1;
-            case "10": return X2;
-            case "11": return X3;
-            //default: throw new SimulatorException("Index purpose register out of bounds");
-            default: String mess = "Illegal Opcode: Index purpose register out of bounds.";
-                throw new IllegalOpcode(mess);
+    public static RegisterType getIndex(String index) throws IllegalRegisterAccess, IllegalValue{
+        int i = 0;
+        try{
+            i = Integer.parseInt(index, 2);
+        }catch (NumberFormatException e){
+            String mess = String.format("Index register index: %s is not binary", i);
+            throw new IllegalValue(mess);
+        }
+        return getIndex(i);
+    }
+
+    public static RegisterType getIndex(int index) throws IllegalRegisterAccess{
+        switch (index){
+            case 1: return X1;
+            case 2: return X2;
+            case 3: return X3;
+            default:
+                String mess = String.format("Index register index: %d out of bounds.", index);
+                throw new IllegalRegisterAccess(mess);
         }
     }
 }

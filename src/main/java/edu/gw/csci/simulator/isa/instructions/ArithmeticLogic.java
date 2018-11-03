@@ -215,8 +215,8 @@ public class ArithmeticLogic {
 
                 String MulValue = BitConversion.toBinaryString(BitConversion.ExtendConvert(RxValue*RyValue),32);
 
-                Rx.setData(BitConversion.fromBinaryStringToBitSet(MulValue.substring(0,16)));
-                Rx_1.setData(BitConversion.fromBinaryStringToBitSet(MulValue.substring(16,31)));
+                Rx.setData(BitConversion.convert(MulValue.substring(0,16)));
+                Rx_1.setData(BitConversion.convert(MulValue.substring(16,31)));
 
                 String mess = String.format("MLT Rx:%s(%d) Ry:%s(%d)",
                         Rx.getName(),RxValue,Ry.getName(),RyValue);

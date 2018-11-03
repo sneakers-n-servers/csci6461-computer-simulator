@@ -1,9 +1,6 @@
 package edu.gw.csci.simulator.memory;
 
-import edu.gw.csci.simulator.exceptions.IllegalMemoryAccess;
-import edu.gw.csci.simulator.exceptions.IllegalOpcode;
-import edu.gw.csci.simulator.exceptions.MemoryOutOfBounds;
-import edu.gw.csci.simulator.exceptions.SimulatorException;
+import edu.gw.csci.simulator.exceptions.*;
 import edu.gw.csci.simulator.isa.Decoder;
 import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.Register;
@@ -33,7 +30,6 @@ public class AllMemoryTest {
         this.memoryCache = new MemoryCache();
         memory.initialize();
         registers.initialize();
-        SimulatorException.setAllMemory(new AllMemory(memory, registers, memoryCache));
     }
 
     @Test(expected = IllegalMemoryAccess.class)
@@ -60,13 +56,13 @@ public class AllMemoryTest {
         BitSet bits = BitConversion.convert("1111110000000000");
         decoder.getInstruction(bits);
     }
-    @Test(expected = IllegalOpcode.class)
+    @Test(expected = IllegalValue.class)
     public void testIllegalOpcode2(){
         String X = "23";
         registers.getRegister(RegisterType.getGeneralPurpose(X));
     }
 
-    @Test(expected = IllegalOpcode.class)
+    @Test(expected = IllegalRegisterAccess.class)
     public void testIllegalOpcode3(){
         String X = "00";
         registers.getRegister(RegisterType.getIndex(X));

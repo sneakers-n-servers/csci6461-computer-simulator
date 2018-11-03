@@ -1,5 +1,6 @@
 package edu.gw.csci.simulator.isa;
 
+import edu.gw.csci.simulator.exceptions.IllegalOpcode;
 import edu.gw.csci.simulator.isa.instructions.*;
 import edu.gw.csci.simulator.utils.BitConversion;
 
@@ -57,7 +58,7 @@ public class Decoder {
      * @return A new instance of the Instruction
      */
 
-    public Instruction getInstruction(BitSet data){
+    public Instruction getInstruction(BitSet data) throws IllegalOpcode {
         String binary = BitConversion.toBinaryString(data, 16);
         String typeString = binary.substring(0, 6);
         String instructionData = binary.substring(6);

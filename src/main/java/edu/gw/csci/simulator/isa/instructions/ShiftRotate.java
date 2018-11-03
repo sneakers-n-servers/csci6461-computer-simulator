@@ -63,7 +63,7 @@ public class ShiftRotate {
 
                 }
 
-                R.setData(BitConversion.fromBinaryStringToBitSet(s1));
+                R.setData(BitConversion.convert(s1));
             }
         }
 
@@ -114,7 +114,7 @@ public class ShiftRotate {
                     s1 = BinaryCalculate.BinaryRightRotate(s1,count);
                 }
 
-                R.setData(BitConversion.fromBinaryStringToBitSet(s1));
+                R.setData(BitConversion.convert(s1));
             }
         }
 

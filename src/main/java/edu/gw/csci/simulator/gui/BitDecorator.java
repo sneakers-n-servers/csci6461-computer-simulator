@@ -65,14 +65,25 @@ public class BitDecorator<B extends Bits> {
      *
      * @param i The integer to set
      */
-    public void setValue(int i) {
-        //Integer.toBinaryString(i);
-        //if(binary.length() > bitType.getSize()){
-            //String mess = String.format("Value: %d is greater than max: %d", i, bitType.getSize());
-            //throw new IllegalValue(mess);
-        //}
+    public void setValue(int i) throws IllegalValue {
         BitSet bitSet = BitConversion.convert(i);
+        if(bitSet.length() > bitType.getSize()){
+            String mess = String.format("Value: %d is greater than max: %d", i, bitType.getSize());
+            throw new IllegalValue(mess);
+        }
         bitType.setData(bitSet);
+    }
+
+    public void setValue(BitSet data) throws IllegalValue{
+        if (data.length() > bitType.getSize()){
+            String mess = String.format(
+                    "Binary value %s is larger than maximum %d",
+                    BitConversion.toBinaryString(data, data.length()),
+                    bitType.getSize()
+            );
+            throw new IllegalValue(mess);
+        }
+        bitType.setData(data);
     }
 
     /**
@@ -87,13 +98,7 @@ public class BitDecorator<B extends Bits> {
             String mess = String.format("Value: %s is greater than max: %d", data, bitType.getSize());
             throw new IllegalValue(mess);
         }
-        BitSet bitSet;
-        try{
-            bitSet = BitConversion.convert(data);
-        }catch (NumberFormatException e){
-            String mess = String.format("%s is not a binary string", data);
-            throw new IllegalValue(mess);
-        }
+        BitSet bitSet = BitConversion.convert(data);
         bitType.setData(bitSet);
     }
 
@@ -104,7 +109,7 @@ public class BitDecorator<B extends Bits> {
      * @param data The string to convert to integer
      * @throws IllegalValue If the string is not an integer
      */
-    public void setIntegerValue(String data) throws IllegalValue{
+    public void setIntegerValue(String data) throws IllegalValue {
         int value;
         try{
             value = Integer.parseInt(data);
