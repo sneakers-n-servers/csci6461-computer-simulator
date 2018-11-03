@@ -59,23 +59,27 @@ public class CPU {
         this.program = program;
     }
 
+    public void execute(){
+        execute(true);
+    }
+
     /**
      * This method executes instruction in IR register until a HLT instruction is received.
      * This is handy because unused memory will automatically indicate a halt, there is no need to explicitly
      * declare one in the program. The GUI restricts one ability to call this function
      * unless the machine has been initialized, and a program has been set.
      */
-    public void execute() {
+    public void execute(boolean throwReserve) {
         //Set the first instruction to null
         Instruction instruction = null;
 
         //Iterate until we get a halt
         while (instruction == null || instruction.getInstructionType() != InstructionType.HLT) {
             try {
-                instruction = getNextInstruction(registers);
+                instruction = getNextInstruction(registers, throwReserve);
                 instruction.execute(memory, registers, this);
                 incrementPC();
-                instruction = getNextInstruction(registers);
+                instruction = getNextInstruction(registers ,throwReserve);
             } catch (SimulatorException e) {
                 //Load the saved off PC
                 BitSet oldPC = memory.fetch(TrapController.TRAP_PC_LOCATION, false);
@@ -94,9 +98,9 @@ public class CPU {
      * @param allRegisters All Registers
      * @return The next instruction to execute
      */
-    private Instruction getNextInstruction(AllRegisters allRegisters) {
+    private Instruction getNextInstruction(AllRegisters allRegisters, Boolean throwReserve) {
         int nextInstructionIndex = getPCDecorator().toInt();
-        BitSet instructionData = memory.fetch(nextInstructionIndex);
+        BitSet instructionData = memory.fetch(nextInstructionIndex, throwReserve);
         Register IR = allRegisters.getRegister(RegisterType.IR);
         IR.setData(instructionData);
         return decoder.getInstruction(instructionData);
@@ -164,7 +168,7 @@ public class CPU {
      */
     public void step() {
         try {
-            Instruction instruction = getNextInstruction(registers);
+            Instruction instruction = getNextInstruction(registers, true);
             instruction.execute(memory, registers, this);
             incrementPC();
         } catch (SimulatorException e) {

@@ -73,10 +73,9 @@ public class TrapController {
 
         //Set the next instruction to the trap routine
         int pointTo = (runRoutine) ? HALT_POINTER_ROUTINE : HALT_POINTER_FAULT_LOCATION;
-        BitSet trapMemory = allMemory.fetch(pointTo, runRoutine);
-        int pointer = BitConversion.convert(trapMemory);
-        BitSet nextInstruction = allMemory.fetch(pointer + opCode);
-        pcDecorator.setValue(nextInstruction);
+        BitSet trapMemory = allMemory.fetch(pointTo, false);
+        int pointer = (runRoutine) ? BitConversion.convert(trapMemory) + opCode: BitConversion.convert(trapMemory);
+        pcDecorator.setValue(pointer);
 
         //If the fault occurs while editing, refresh
         if (registerTable != null) {
@@ -89,8 +88,11 @@ public class TrapController {
         }
 
         //LOGGER.info("Excecuting trap routine {} ", opCode);
-        LOGGER.info("Excecuting trap routine {} ", opCode);
-        cpu.execute();
+        String mess = (runRoutine) ? String.format("Excecuting trap routine: %d ", opCode) :
+                String.format("Exception occured, executing fault location: %d", HALT_POINTER_FAULT_LOCATION);
+
+        LOGGER.info(mess);
+        cpu.execute(false);
     }
 
 
