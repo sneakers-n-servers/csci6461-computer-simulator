@@ -72,10 +72,10 @@ public class CPU {
         //Iterate until we get a halt
         while (instruction == null || instruction.getInstructionType() != InstructionType.HLT){
             try{
-                instruction = getNextInstruction(registers, true);
+                instruction = getNextInstruction(registers);
                 instruction.execute(memory, registers,this);
                 incrementPC();
-                instruction = getNextInstruction(registers, true);
+                instruction = getNextInstruction(registers);
             }catch (SimulatorException e){
                 //Load the saved off PC
                 BitSet oldPC = memory.fetch(TrapController.TRAP_PC_LOCATION, false);
@@ -94,9 +94,9 @@ public class CPU {
      * @param allRegisters All Registers
      * @return The next instruction to execute
      */
-    Instruction getNextInstruction(AllRegisters allRegisters, boolean throwReserve) {
+    Instruction getNextInstruction(AllRegisters allRegisters) {
         int nextInstructionIndex = getPCDecorator().toInt();
-        BitSet instructionData = memory.fetch(nextInstructionIndex, throwReserve);
+        BitSet instructionData = memory.fetch(nextInstructionIndex);
         Register IR = allRegisters.getRegister(RegisterType.IR);
         IR.setData(instructionData);
         return decoder.getInstruction(instructionData);
@@ -162,7 +162,7 @@ public class CPU {
      */
     public void step(){
         try{
-            Instruction instruction = getNextInstruction(registers, true);
+            Instruction instruction = getNextInstruction(registers);
             instruction.execute(memory, registers,this);
             incrementPC();
         }catch (SimulatorException e){

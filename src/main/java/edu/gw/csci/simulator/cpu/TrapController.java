@@ -90,14 +90,6 @@ public class TrapController {
         //LOGGER.info("Excecuting trap routine {} ", opCode);
         LOGGER.info("Excecuting trap routine {} ", opCode);
         cpu.execute();
-//        Instruction instruction = null;
-//        while (instruction == null || instruction.getInstructionType() != InstructionType.HLT) {
-//            LOGGER.info("Excecuting trap routine {} ", opCode);
-//            instruction = cpu.getNextInstruction(allRegisters, false);
-//            instruction.execute(allMemory, allRegisters, cpu);
-//            cpu.incrementPC();
-//            instruction = cpu.getNextInstruction(allRegisters, false);
-//        }
     }
 
 
