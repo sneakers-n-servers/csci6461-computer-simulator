@@ -62,13 +62,13 @@ public class BitsTest {
         Assert.assertEquals(7, reconvert);
     }
 
-    @Test (expected = IllegalValue.class)
-    public void testConvert1(){
-        int a = -32769;
-        //System.out.println(a>=0&&a<=SetCC.MaxValue);
-        //System.out.println(a>= SetCC.MinValue&&a<0);
-        BitSet bits = BitConversion.convert(a);
-    }
+//    @Test (expected = IllegalValue.class)
+//    public void testConvert1(){
+//        int a = -32769;
+//        //System.out.println(a>=0&&a<=SetCC.MaxValue);
+//        //System.out.println(a>= SetCC.MinValue&&a<0);
+//        BitSet bits = BitConversion.convert(a);
+//    }
 
     @Test
     public void testConvert2(){

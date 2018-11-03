@@ -49,7 +49,7 @@ public class IO {
                 }
                 else{
                     int PCindex = BitConversion.convert(PC.getData());
-                    PCd.setValue(PCindex-1);
+                    //PCd.setValue(PCindex-1);
                     //registers.PCadder();
                     LOGGER.info("Please input first.");
                 }

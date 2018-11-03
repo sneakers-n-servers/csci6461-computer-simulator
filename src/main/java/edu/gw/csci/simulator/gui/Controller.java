@@ -66,7 +66,7 @@ public class Controller {
     private TextArea programContents;
 
     @FXML
-    private TextArea consoleInput;
+    private TextArea console;
 
     @FXML
     private TextField startIndex;
@@ -99,10 +99,9 @@ public class Controller {
         memory.set(7,BitConversion.convert(20));
         //suppose the table is start from memory[7] and the start of routine in table[1] is 20;
         initializeCPU();
-        initializePrograms();
         programContents.clear();
-        consoleInput.clear();
-
+        console.clear();
+        programNameSelector.setValue("FreeRun");
         initialized = true;
     }
 
@@ -259,7 +258,7 @@ public class Controller {
         PreStoreProgram.SetProgram2(program2);
 
         Program programls = new Program("Programls");
-        this.programs.put("Programls", programls);
+        programs.put("Programls", programls);
         PreStoreProgram.SetProgramLS(programls);
 
         //Set the ComboBox to all of our programs
@@ -356,22 +355,22 @@ public class Controller {
 
     @FXML
     private void input(){
-        String[] lines = consoleInput.textProperty().get().split("\n");
+        String[] lines = console.textProperty().get().split("\n");
         for(String line : lines){
             if(isNumeric(line)) {
                 cpu.consoleInput.add(line.replace(" ", ""));
             }
         }
-        consoleInput.clear();
+        console.clear();
     }
 
     public void SetconsoleOutput()
     {
         if(!cpu.consoleOutput.isEmpty()) {
-            consoleInput.clear();
+            console.clear();
 
             for(String line:cpu.consoleOutput)
-            consoleInput.appendText(line + "\n\r");
+            console.appendText(line + "\n\r");
         }
     }
 

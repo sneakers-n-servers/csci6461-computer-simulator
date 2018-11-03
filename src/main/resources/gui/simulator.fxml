@@ -154,7 +154,7 @@
                 </VBox>
                 <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
                     <Label>Simulator Console</Label>
-                    <TextArea fx:id="consoleInput" VBox.vgrow="ALWAYS"/>
+                    <TextArea fx:id="console" VBox.vgrow="ALWAYS"/>
                 </VBox>
             </HBox>
         </center>
