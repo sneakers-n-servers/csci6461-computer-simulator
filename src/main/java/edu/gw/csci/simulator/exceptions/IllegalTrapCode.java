@@ -12,6 +12,9 @@ public class IllegalTrapCode extends SimulatorException {
     public IllegalTrapCode(String message) {
         super(message);
     }
+    public IllegalTrapCode(String message, boolean runRoutine) {
+        super(message, runRoutine);
+    }
 
     @Override
     public int getOpcode() {

@@ -43,6 +43,9 @@ public class IllegalOpcode extends SimulatorException {
     public IllegalOpcode(String message) {
         super(message);
     }
+    public IllegalOpcode(String message, boolean runRoutine) {
+        super(message, runRoutine);
+    }
 
     @Override
     public int getOpcode() {

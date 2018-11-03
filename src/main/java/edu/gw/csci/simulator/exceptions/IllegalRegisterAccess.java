@@ -11,6 +11,9 @@ public class IllegalRegisterAccess extends SimulatorException {
     public IllegalRegisterAccess(String message) {
         super(message);
     }
+    public IllegalRegisterAccess(String message, boolean runRoutine) {
+        super(message, runRoutine);
+    }
 
     @Override
     public int getOpcode() {

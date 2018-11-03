@@ -12,6 +12,9 @@ public class IllegalMemoryAccess extends SimulatorException {
     public IllegalMemoryAccess(String message) {
         super(message);
     }
+    public IllegalMemoryAccess(String message, boolean runRoutine) {
+        super(message, runRoutine);
+    }
 
     @Override
     public int getOpcode() {

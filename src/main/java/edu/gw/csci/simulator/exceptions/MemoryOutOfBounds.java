@@ -44,6 +44,9 @@ public class MemoryOutOfBounds extends SimulatorException {
     public MemoryOutOfBounds(String message) {
         super(message);
     }
+    public MemoryOutOfBounds(String message, boolean runRoutine) {
+        super(message, runRoutine);
+    }
 
     @Override
     public int getOpcode() {

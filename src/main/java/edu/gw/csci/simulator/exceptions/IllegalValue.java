@@ -13,6 +13,9 @@ public class IllegalValue extends SimulatorException {
     public IllegalValue(String mess) {
         super(mess);
     }
+    public IllegalValue(String message, boolean runRoutine) {
+        super(message, runRoutine);
+    }
 
     @Override
     public int getOpcode() {

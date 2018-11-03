@@ -13,7 +13,6 @@ public abstract class SimulatorException extends RuntimeException {
 
     private static final Logger LOGGER = LogManager.getLogger(SimulatorException.class);
     private static TrapController trapController;
-    private boolean runRoutine = false;
 
     /**
      * This constructor logs the message to the console, and if set, will execute a
@@ -22,19 +21,21 @@ public abstract class SimulatorException extends RuntimeException {
      *
      * @param message The message to log
      */
-    public SimulatorException(String message) {
+    public SimulatorException(String message, boolean runRoutine) {
         LOGGER.error(message);
         if (trapController != null)
             trapController.setFault(getOpcode(), runRoutine);
+    }
+
+    public SimulatorException(String message) {
+        LOGGER.error(message);
+        if (trapController != null)
+            trapController.setFault(getOpcode(), false);
     }
 
     public abstract int getOpcode();
 
     public static void setTrapController(TrapController trapController) {
         SimulatorException.trapController = trapController;
-    }
-
-    public void setRunRoutine(boolean runRoutine){
-        this.runRoutine = runRoutine;
     }
 }

@@ -73,8 +73,13 @@ public class TrapController {
 
         //Set the next instruction to the trap routine
         int pointTo = (runRoutine) ? HALT_POINTER_ROUTINE : HALT_POINTER_FAULT_LOCATION;
+        LOGGER.info("Error routine pointing to {}", pointTo);
+
         BitSet trapMemory = allMemory.fetch(pointTo, false);
         int pointer = (runRoutine) ? BitConversion.convert(trapMemory) + opCode: BitConversion.convert(trapMemory);
+        if(runRoutine){
+            LOGGER.info("Resolved routine at location: {}", pointer);
+        }
         pcDecorator.setValue(pointer);
 
         //If the fault occurs while editing, refresh
@@ -104,26 +109,26 @@ public class TrapController {
      * @param value The error code
      * @return The desired exception
      */
-    public static SimulatorException getException(int value) {
+    public static SimulatorException getRoutineException(int value) {
         SimulatorException ex;
         switch (value) {
             case IllegalMemoryAccess.OP_CODE:
-                ex = new IllegalMemoryAccess("Received trap code: illegal memory access");
+                ex = new IllegalMemoryAccess("Received trap code: illegal memory access", true);
                 break;
             case IllegalOpcode.OP_CODE:
-                ex = new IllegalOpcode("Received trap code: illegal op code");
+                ex = new IllegalOpcode("Received trap code: illegal op code", true);
                 break;
             case IllegalRegisterAccess.OP_CODE:
-                ex = new IllegalRegisterAccess("Received trap code: illegal register access");
+                ex = new IllegalRegisterAccess("Received trap code: illegal register access", true);
                 break;
             case IllegalValue.OP_CODE:
-                ex = new IllegalValue("Received trap code: illegal values");
+                ex = new IllegalValue("Received trap code: illegal values", true);
                 break;
             case MemoryOutOfBounds.OP_CODE:
-                ex = new MemoryOutOfBounds("Received trap code: memory out of bounds");
+                ex = new MemoryOutOfBounds("Received trap code: memory out of bounds", true);
                 break;
             default:
-                ex = new IllegalTrapCode("Received trap code: illegal trap code");
+                ex = new IllegalTrapCode("Received trap code: illegal trap code", true);
         }
         return ex;
     }

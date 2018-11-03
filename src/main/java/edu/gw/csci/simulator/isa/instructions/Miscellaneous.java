@@ -1,6 +1,5 @@
 package edu.gw.csci.simulator.isa.instructions;
 
-import edu.gw.csci.simulator.Simulator;
 import edu.gw.csci.simulator.cpu.CPU;
 import edu.gw.csci.simulator.cpu.TrapController;
 import edu.gw.csci.simulator.exceptions.SimulatorException;
@@ -50,9 +49,7 @@ public class Miscellaneous {
             LOGGER.info("TRAP");
             String trapString = data.substring(data.length() - 4);
             int trapCode = BitConversion.fromBinaryStringToInt(trapString);
-            SimulatorException ex = TrapController.getException(trapCode);
-            ex.setRunRoutine(true);
-            throw ex;
+            throw TrapController.getRoutineException(trapCode);
         }
 
         @Override
