@@ -1,8 +1,9 @@
 package edu.gw.csci.simulator.cpu;
 
-import edu.gw.csci.simulator.Simulator;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.HashMap;
 
 public class SimulatorFileReader {
@@ -13,14 +14,14 @@ public class SimulatorFileReader {
     private static int WordStoreIndex = DEFAULT_WORD_STORE_INDEX;
 
 
-    public static void initializeFileReader(){
+    public static void initializeFileReader() {
         WordMap.clear();
         code = DEFAULT_CODE;
         WordStoreIndex = DEFAULT_WORD_STORE_INDEX;
     }
 
 
-    public static void readSentences(String fileName,CPU cpu) {
+    public static void readSentences(String fileName, CPU cpu) {
         File file = new File(fileName);
         try (Reader reader = new InputStreamReader(new FileInputStream(file))) {
             int tempChar;
@@ -60,18 +61,18 @@ public class SimulatorFileReader {
         }
     }
 
-    public static void encode(String word){
-        if(!WordMap.containsKey(word)){
-            WordMap.put(word,code);
-            code += (int)(Math.random()*8 + 1);
+    public static void encode(String word) {
+        if (!WordMap.containsKey(word)) {
+            WordMap.put(word, code);
+            code += (int) (Math.random() * 8 + 1);
         }
     }
 
-    public static int getCode(String word){
+    public static int getCode(String word) {
         return WordMap.get(word);
     }
-    
-    private static void StoreToMemory(int index,int value,CPU cpu){
-        cpu.StoreValue(index,value);
+
+    private static void StoreToMemory(int index, int value, CPU cpu) {
+        cpu.StoreValue(index, value);
     }
 }

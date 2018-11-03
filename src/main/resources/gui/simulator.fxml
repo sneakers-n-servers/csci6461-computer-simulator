@@ -21,7 +21,8 @@
     </rowConstraints>
 
     <!--Top Header, for IPL, etc-->
-    <BorderPane styleClass="pane" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" prefHeight="50">
+    <BorderPane styleClass="pane" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2"
+                prefHeight="50">
         <center>
             <HBox>
                 <Label styleClass="pane-header" alignment="TOP_LEFT">
@@ -32,9 +33,11 @@
                 <Region prefWidth="5"/>
                 <Button id="Input" text="Input" onAction="#input"/>
                 <Region prefWidth="5"/>
-                <Button id="PreStoreMemoryForProgram1" onAction="#PreStoreMemoryForProgram1" text="PreStoreMemoryForProgram1"/>
+                <Button id="PreStoreMemoryForProgram1" onAction="#PreStoreMemoryForProgram1"
+                        text="PreStoreMemoryForProgram1"/>
                 <Region prefWidth="5"/>
-                <Button id="PreStoreMemoryForProgram2" onAction="#PreStoreMemoryForProgram2" text="PreStoreMemoryForProgram2"/>
+                <Button id="PreStoreMemoryForProgram2" onAction="#PreStoreMemoryForProgram2"
+                        text="PreStoreMemoryForProgram2"/>
                 <Region prefWidth="5"/>
                 <Button id="LoadProgram1" onAction="#LoadProgram1" text="LoadProgram1"/>
                 <Region prefWidth="5"/>

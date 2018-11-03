@@ -1,6 +1,5 @@
 package edu.gw.csci.simulator.gui;
 
-import edu.gw.csci.simulator.Simulator;
 import edu.gw.csci.simulator.cpu.CPU;
 import edu.gw.csci.simulator.cpu.SimulatorFileReader;
 import edu.gw.csci.simulator.cpu.TrapController;
@@ -10,7 +9,6 @@ import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.Register;
 import edu.gw.csci.simulator.registers.RegisterDecorator;
 import edu.gw.csci.simulator.registers.RegisterType;
-import edu.gw.csci.simulator.utils.BitConversion;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -122,7 +120,7 @@ public class Controller {
         trapController.setTables(registerTable, memoryTable);
     }
 
-    private void initializeCPU(){
+    private void initializeCPU() {
         //initialize Input and Output
         cpu.consoleInput.clear();
         cpu.consoleOutput.clear();
@@ -143,7 +141,7 @@ public class Controller {
         registerBinaryColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toBinaryObservableString());
         registerBinaryColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         registerBinaryColumn.setOnEditCommit((TableColumn.CellEditEvent<Register, String> t) -> {
-            if(! initialized){
+            if (!initialized) {
                 LOGGER.error("Initialize the machine before editing");
                 registerTable.refresh();
                 return;
@@ -157,7 +155,7 @@ public class Controller {
         registerDecimalColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toLongObservableString());
         registerDecimalColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         registerDecimalColumn.setOnEditCommit((TableColumn.CellEditEvent<Register, String> t) -> {
-            if(! initialized){
+            if (!initialized) {
                 LOGGER.error("Initialize the machine before editing");
                 registerTable.refresh();
                 return;
@@ -188,13 +186,13 @@ public class Controller {
         memoryBinaryColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toBinaryObservableString());
         memoryBinaryColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         memoryBinaryColumn.setOnEditCommit((TableColumn.CellEditEvent<MemoryChunk, String> t) -> {
-            if(! initialized){
+            if (!initialized) {
                 LOGGER.error("Initialize the machine before editing");
                 memoryTable.refresh();
                 return;
             }
             int tablePosition = t.getTablePosition().getRow();
-            if(tablePosition == TrapController.HALT_LOCATION){
+            if (tablePosition == TrapController.HALT_LOCATION) {
                 LOGGER.warn("Index 6 is reserved for halt during trap codes, this is not recomended");
             }
             MemoryChunk mem = t.getTableView().getItems().get(tablePosition);
@@ -207,13 +205,13 @@ public class Controller {
         memoryDecimalColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toLongObservableString());
         memoryDecimalColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         memoryDecimalColumn.setOnEditCommit((TableColumn.CellEditEvent<MemoryChunk, String> t) -> {
-            if(! initialized){
+            if (!initialized) {
                 LOGGER.error("Initialize the machine before editing");
                 memoryTable.refresh();
                 return;
             }
             int tablePosition = t.getTablePosition().getRow();
-            if(tablePosition == TrapController.HALT_LOCATION){
+            if (tablePosition == TrapController.HALT_LOCATION) {
                 LOGGER.warn("Index 6 is reserved for halt during trap codes, this is not recomended");
             }
             MemoryChunk mem = t.getTableView().getItems().get(tablePosition);
@@ -236,14 +234,14 @@ public class Controller {
         memoryPagination.setPageCount(maxPages);
 
         memorySpinner.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
-            if (! newValue.isEmpty()) {
+            if (!newValue.isEmpty()) {
                 int i;
-                try{
+                try {
                     i = Integer.parseInt(newValue);
-                    if (i >= memory.getSize()){
+                    if (i >= memory.getSize()) {
                         return;
                     }
-                }catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
                     return;
                 }
                 Platform.runLater(() -> {
@@ -261,7 +259,7 @@ public class Controller {
      * user to define. Switching between programs clears the contents of the text area
      * and loads the contents of newly selected program.
      */
-    private void initializePrograms(){
+    private void initializePrograms() {
         //We need to pre-populate Program1, so this code will change
         Program freeRun = new Program("FreeRun");
         programs.put("FreeRun", freeRun);
@@ -294,15 +292,15 @@ public class Controller {
             String programName = programNameSelector.getValue();
             LOGGER.info(String.format("Loading program %s", programName));
             Program selected = programs.get(programName);
-            for(String line : selected.getLines()){
+            for (String line : selected.getLines()) {
                 programContents.appendText(line + "\n");
             }
         });
     }
 
     @FXML
-    private void runProgram(){
-        if(! initialized){
+    private void runProgram() {
+        if (!initialized) {
             LOGGER.error("Initialize the machine before running");
             return;
         }
@@ -315,8 +313,8 @@ public class Controller {
     }
 
     @FXML
-    private void stepProgram(){
-        if(! initialized){
+    private void stepProgram() {
+        if (!initialized) {
             LOGGER.error("Initialize the machine before stepping");
             return;
         }
@@ -325,8 +323,8 @@ public class Controller {
     }
 
     @FXML
-    private void loadProgram(){
-        if(! initialized){
+    private void loadProgram() {
+        if (!initialized) {
             LOGGER.error("Initialize the machine before loading");
             return;
         }
@@ -335,11 +333,10 @@ public class Controller {
         String programName = programNameSelector.getValue();
         Program program = programs.get(programName);
         cpu.setProgram(program);
-        if(!startIndex.getText().isEmpty()) {
+        if (!startIndex.getText().isEmpty()) {
             int start = Integer.parseInt(startIndex.getText());
             cpu.loadProgram(start);
-        }
-        else{
+        } else {
             cpu.loadProgram();
         }
     }
@@ -351,63 +348,64 @@ public class Controller {
      * benefit. Having an explicit save function makes sense, and overcomes this hurdle.
      */
     @FXML
-    private void saveProgram(){
+    private void saveProgram() {
         String name = programNameSelector.getValue();
         LOGGER.info(String.format("Saving the contents of program %s", name));
         String contents = programContents.textProperty().get();
         Program program = programs.get(name);
         program.clearContents();
         String[] lines = contents.split("\n");
-        for(String line : lines){
+        for (String line : lines) {
             program.appendLine(line);
         }
     }
 
     @FXML
-    private void input(){
+    private void input() {
         String[] lines = console.textProperty().get().split("\n");
-        for(String line : lines){
-            if(isNumeric(line)) {
+        for (String line : lines) {
+            if (isNumeric(line)) {
                 cpu.consoleInput.add(line.replace(" ", ""));
             }
         }
         console.clear();
     }
 
-    public void SetconsoleOutput()
-    {
-        if(!cpu.consoleOutput.isEmpty()) {
+    public void SetconsoleOutput() {
+        if (!cpu.consoleOutput.isEmpty()) {
             console.clear();
 
-            for(String line:cpu.consoleOutput)
-            console.appendText(line + "\n\r");
+            for (String line : cpu.consoleOutput)
+                console.appendText(line + "\n\r");
         }
     }
 
     @FXML
-    private void LoadProgram1(){
+    private void LoadProgram1() {
         //only use to load program1
         LOGGER.info("Loading Program1");
         Program program = programs.get("Program1");
         cpu.setProgram(program);
         cpu.loadProgram(126);
     }
+
     @FXML
-    private void LoadProgram2(){
+    private void LoadProgram2() {
         //only use to load program2
         LOGGER.info("Loading Program2");
         Program program = programs.get("Program2");
         cpu.setProgram(program);
         cpu.loadProgram(64);
     }
+
     @FXML
-    private void PreStoreMemoryForProgram1(){
+    private void PreStoreMemoryForProgram1() {
         //only use to store some value to memory to run program1
         PreStoreMemory.PreStoreMemoryForProgram1(cpu);
     }
 
     @FXML
-    private void PreStoreMemoryForProgram2(){
+    private void PreStoreMemoryForProgram2() {
         //only use to store some value to memory to run program2
         PreStoreMemory.PreStoreMemoryForProgram2(cpu);
     }
@@ -419,18 +417,17 @@ public class Controller {
     }
 
     @FXML
-    private void ReadFile(){
+    private void ReadFile() {
         cpu.FileReader();
         SetconsoleOutput();
     }
+
     @FXML
-    private void InputAWord(){
+    private void InputAWord() {
         String word = InputWord.getText().toLowerCase();
-        if(SimulatorFileReader.WordMap.containsKey(word)){
+        if (SimulatorFileReader.WordMap.containsKey(word)) {
             cpu.consoleOutput.add(word);
-        }
-        else
-        {
+        } else {
             SimulatorFileReader.encode(word);
         }
         cpu.consoleInput.add(String.valueOf(SimulatorFileReader.getCode(word)));

@@ -1,7 +1,6 @@
 package edu.gw.csci.simulator.gui;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Program {
@@ -9,7 +8,7 @@ public class Program {
     private List<String> lines;
     private final String name;
 
-    public Program(String name){
+    public Program(String name) {
         this.name = name;
         lines = new ArrayList<>();
     }
@@ -18,20 +17,20 @@ public class Program {
         return name;
     }
 
-    public void appendLine(String line){
+    public void appendLine(String line) {
         lines.add(line);
     }
 
-    public void clearContents(){
+    public void clearContents() {
         lines.clear();
     }
 
-    public List<String> getLines(){
+    public List<String> getLines() {
         List<String> copy = new ArrayList<>(lines);
         return copy;
     }
 
-    public int size(){
+    public int size() {
         return lines.size();
     }
 }

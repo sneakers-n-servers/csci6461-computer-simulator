@@ -1,5 +1,10 @@
 package edu.gw.csci.simulator.exceptions;
 
+
+/**
+ * This exception is raised when a reserved memory location is accessed
+ * by an instruction.
+ */
 public class IllegalMemoryAccess extends SimulatorException {
 
     public static final int OP_CODE = 1;

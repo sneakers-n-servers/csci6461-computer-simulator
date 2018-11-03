@@ -37,7 +37,7 @@ public class CPU {
     public ArrayList<String> consoleOutput;
     private Decoder decoder;
 
-    public CPU(AllMemory allMemory){
+    public CPU(AllMemory allMemory) {
         this.memory = allMemory;
         this.registers = allMemory.getAllRegisters();
         this.decoder = new Decoder();
@@ -45,9 +45,9 @@ public class CPU {
         this.consoleOutput = new ArrayList<>();
     }
 
-    public Optional<String> getNextInput(){
+    public Optional<String> getNextInput() {
 
-        if(!consoleInput.isEmpty()){
+        if (!consoleInput.isEmpty()) {
             String current = consoleInput.get(0);
             consoleInput.remove(0);
             return Optional.of(current);
@@ -55,7 +55,7 @@ public class CPU {
         return Optional.empty();
     }
 
-    public void setProgram(Program program){
+    public void setProgram(Program program) {
         this.program = program;
     }
 
@@ -65,18 +65,18 @@ public class CPU {
      * declare one in the program. The GUI restricts one ability to call this function
      * unless the machine has been initialized, and a program has been set.
      */
-    public void execute(){
+    public void execute() {
         //Set the first instruction to null
         Instruction instruction = null;
 
         //Iterate until we get a halt
-        while (instruction == null || instruction.getInstructionType() != InstructionType.HLT){
-            try{
+        while (instruction == null || instruction.getInstructionType() != InstructionType.HLT) {
+            try {
                 instruction = getNextInstruction(registers);
-                instruction.execute(memory, registers,this);
+                instruction.execute(memory, registers, this);
                 incrementPC();
                 instruction = getNextInstruction(registers);
-            }catch (SimulatorException e){
+            } catch (SimulatorException e) {
                 //Load the saved off PC
                 BitSet oldPC = memory.fetch(TrapController.TRAP_PC_LOCATION, false);
                 Register pc = registers.getRegister(RegisterType.PC);
@@ -94,7 +94,7 @@ public class CPU {
      * @param allRegisters All Registers
      * @return The next instruction to execute
      */
-    Instruction getNextInstruction(AllRegisters allRegisters) {
+    private Instruction getNextInstruction(AllRegisters allRegisters) {
         int nextInstructionIndex = getPCDecorator().toInt();
         BitSet instructionData = memory.fetch(nextInstructionIndex);
         Register IR = allRegisters.getRegister(RegisterType.IR);
@@ -107,7 +107,7 @@ public class CPU {
      *
      * @return The PC register decorator
      */
-    private RegisterDecorator getPCDecorator(){
+    private RegisterDecorator getPCDecorator() {
         Register pc = registers.getRegister(RegisterType.PC);
         return new RegisterDecorator(pc);
     }
@@ -118,7 +118,7 @@ public class CPU {
      * The GUI restricts one to load a program before the machine is initialized,
      * so we know that all memory addresses, and registers have been instantiated.
      */
-    public void loadProgram(){
+    public void loadProgram() {
         int defaultLoadLocation = 32;
         BitSet programCounter = BitConversion.convert(defaultLoadLocation);
         List<String> lines = program.getLines();
@@ -130,13 +130,14 @@ public class CPU {
         }
         registers.setRegister(RegisterType.PC, programCounter);
     }
+
     /**
      * This function receives a program from the GUI, and loads it into memory.
      * The start index of program is set by users.
      * The GUI restricts one to load a program before the machine is initialized,
      * so we know that all memory addresses, and registers have been instantiated.
      */
-    public void loadProgram(int start) throws SimulatorException{
+    public void loadProgram(int start) throws SimulatorException {
         int defaultLoadLocation = start;
         BitSet programCounter = BitConversion.convert(defaultLoadLocation);
         List<String> lines = program.getLines();
@@ -155,17 +156,18 @@ public class CPU {
     }
 
 
-
     /**
      * This function grabs the next instruction, executes it, and
-     * adjusts the program counter.
+     * adjusts the program counter. In the case of a trap, the trap
+     * routine will execute, and then return control back to the step
+     * method in order to resume the next logical instruction.
      */
-    public void step(){
-        try{
+    public void step() {
+        try {
             Instruction instruction = getNextInstruction(registers);
-            instruction.execute(memory, registers,this);
+            instruction.execute(memory, registers, this);
             incrementPC();
-        }catch (SimulatorException e){
+        } catch (SimulatorException e) {
             //Load the old PC
             BitSet oldPC = memory.fetch(TrapController.TRAP_PC_LOCATION, false);
             Register pc = registers.getRegister(RegisterType.PC);
@@ -174,24 +176,27 @@ public class CPU {
         }
     }
 
-    public void incrementPC(){
+    /**
+     * Increments the value of the PC register
+     */
+    private void incrementPC() {
         Register pc = registers.getRegister(RegisterType.PC);
         RegisterDecorator pcDecorator = new RegisterDecorator(pc);
-        int count= pcDecorator.toInt();
-        pcDecorator.setValue(count+1);
+        int count = pcDecorator.toInt();
+        pcDecorator.setValue(count + 1);
     }
 
 
-    public void StoreValue(int index,int value){
+    public void StoreValue(int index, int value) {
         BitSet b = BitConversion.convert(value);
         memory.store(index, b);
     }
 
-    public void FileReader(){
-        SimulatorFileReader.readSentences("program2_paragraph.txt",this);
+    public void FileReader() {
+        SimulatorFileReader.readSentences("program2_paragraph.txt", this);
     }
 
-    public AllMemory getAllMemory(){
+    public AllMemory getAllMemory() {
         return memory;
     }
 }

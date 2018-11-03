@@ -53,12 +53,6 @@ public class AllRegisters {
         return registerMap.get(registerType);
     }
 
-    public void PCadder(){
-        RegisterDecorator PCd = new RegisterDecorator(getRegister(RegisterType.PC));
-        int PC= PCd.toInt();
-        PCd.setValue(PC+1);
-    }
-
     public void OVERFLOW(){
         Register CC = getRegister(RegisterType.CC);
         BitSet bits = CC.getData();

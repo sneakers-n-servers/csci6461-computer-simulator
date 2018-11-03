@@ -2,8 +2,6 @@ package edu.gw.csci.simulator.cpu;
 
 import edu.gw.csci.simulator.Bits;
 import edu.gw.csci.simulator.exceptions.*;
-import edu.gw.csci.simulator.isa.Instruction;
-import edu.gw.csci.simulator.isa.InstructionType;
 import edu.gw.csci.simulator.memory.AllMemory;
 import edu.gw.csci.simulator.memory.Memory;
 import edu.gw.csci.simulator.memory.MemoryChunk;
@@ -35,7 +33,7 @@ public class TrapController {
     private static final int EXCEPTION_TABLE_POINTER = 2000,
             EXCEPTION_TABLE_SIZE = 16;
 
-    public TrapController(CPU cpu){
+    public TrapController(CPU cpu) {
         this.cpu = cpu;
         this.allMemory = cpu.getAllMemory();
         this.allRegisters = allMemory.getAllRegisters();
@@ -47,9 +45,9 @@ public class TrapController {
      * means to do this.
      *
      * @param registerTable The register table when running the GUI
-     * @param memoryTable The memory table when running the GUI
+     * @param memoryTable   The memory table when running the GUI
      */
-    public void setTables(TableView<Register> registerTable, TableView<MemoryChunk> memoryTable){
+    public void setTables(TableView<Register> registerTable, TableView<MemoryChunk> memoryTable) {
         this.registerTable = registerTable;
         this.memoryTable = memoryTable;
     }
@@ -61,7 +59,7 @@ public class TrapController {
      * PC with the contents of memory location {@link TrapController#HALT_POINTER_LOCATION}. This value is defaulted
      * to 6, which if unmodified, instructs the simulator to halt.
      */
-    public void setFault(int opCode){
+    public void setFault(int opCode) {
         Register machineFaultRegister = allRegisters.getRegister(RegisterType.MFR);
         new RegisterDecorator(machineFaultRegister).setValue(opCode);
 
@@ -78,11 +76,11 @@ public class TrapController {
         pcDecorator.setValue(nextInstruction);
 
         //If the fault occurs while editing, refresh
-        if(registerTable != null){
+        if (registerTable != null) {
             registerTable.edit(-1, null);
             registerTable.refresh();
         }
-        if(memoryTable != null){
+        if (memoryTable != null) {
             memoryTable.edit(-1, null);
             memoryTable.refresh();
         }
@@ -93,25 +91,42 @@ public class TrapController {
     }
 
 
-    public static SimulatorException getException(int value){
+    /**
+     * This routine is used by the {@link edu.gw.csci.simulator.isa.instructions.Miscellaneous.TRAP TRAP} instruction
+     * in order to determine what type of exception to raise. This method returns the proper exception, with a
+     * default case of {@link IllegalTrapCode}, in order for another routine to throw.
+     *
+     * @param value The error code
+     * @return The desired exception
+     */
+    public static SimulatorException getException(int value) {
         SimulatorException ex;
-        switch (value){
+        switch (value) {
             case IllegalMemoryAccess.OP_CODE:
-                ex =  new IllegalMemoryAccess("Received trap code: illegal memory access"); break;
+                ex = new IllegalMemoryAccess("Received trap code: illegal memory access");
+                break;
             case IllegalOpcode.OP_CODE:
-                ex = new IllegalOpcode("Received trap code: illegal op code"); break;
+                ex = new IllegalOpcode("Received trap code: illegal op code");
+                break;
             case IllegalRegisterAccess.OP_CODE:
-                ex = new IllegalRegisterAccess("Received trap code: illegal register access"); break;
+                ex = new IllegalRegisterAccess("Received trap code: illegal register access");
+                break;
             case IllegalValue.OP_CODE:
-                ex = new IllegalValue("Received trap code: illegal values"); break;
+                ex = new IllegalValue("Received trap code: illegal values");
+                break;
             case MemoryOutOfBounds.OP_CODE:
-                ex = new MemoryOutOfBounds("Received trap code: memory out of bounds"); break;
+                ex = new MemoryOutOfBounds("Received trap code: memory out of bounds");
+                break;
             default:
                 ex = new IllegalTrapCode("Received trap code: illegal trap code");
         }
         return ex;
     }
 
+    /**
+     * Creates a table in memory consisting of nothing but pointers to the halt location {@link TrapController#HALT_LOCATION}.
+     * The number of entries in the table is dictated by the variable {@link TrapController#EXCEPTION_TABLE_SIZE}.
+     */
     public void setDefaultExceptionTable() {
         LOGGER.info(
                 "Setting default exception table at memory location {} for {} values -> {}",

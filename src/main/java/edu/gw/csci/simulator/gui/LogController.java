@@ -4,9 +4,6 @@ import edu.gw.csci.simulator.utils.ConsoleAppender;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -54,8 +51,8 @@ public class LogController {
     }
 
     @FXML
-    private void clear(){
-       ConsoleAppender.clear();
+    private void clear() {
+        ConsoleAppender.clear();
     }
 
 }

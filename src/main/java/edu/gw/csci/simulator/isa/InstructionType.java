@@ -77,7 +77,7 @@ public enum InstructionType {
 
     public static InstructionType getInstructionType(String binary) throws IllegalOpcode {
         if (!instructionMap.containsKey(binary)){
-            String mess = String.format("Illegal Opcode: {} non supported operation", binary);
+            String mess = String.format("Illegal Opcode: %s non supported operation", binary);
             throw new IllegalOpcode(mess);
         }
         else {

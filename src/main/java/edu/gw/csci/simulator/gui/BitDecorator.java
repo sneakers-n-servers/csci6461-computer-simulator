@@ -67,15 +67,22 @@ public class BitDecorator<B extends Bits> {
      */
     public void setValue(int i) throws IllegalValue {
         BitSet bitSet = BitConversion.convert(i);
-        if(bitSet.length() > bitType.getSize()){
+        if (bitSet.length() > bitType.getSize()) {
             String mess = String.format("Value: %d is greater than max: %d", i, bitType.getSize());
             throw new IllegalValue(mess);
         }
         bitType.setData(bitSet);
     }
 
-    public void setValue(BitSet data) throws IllegalValue{
-        if (data.length() > bitType.getSize()){
+    /**
+     * Ensures that the value to set is of proper size, and sets the data
+     * for either memory or registers.
+     *
+     * @param data The bitset data to set
+     * @throws IllegalValue If the bitset length is higher than what is supported
+     */
+    public void setValue(BitSet data) throws IllegalValue {
+        if (data.length() > bitType.getSize()) {
             String mess = String.format(
                     "Binary value %s is larger than maximum %d",
                     BitConversion.toBinaryString(data, data.length()),
@@ -93,8 +100,8 @@ public class BitDecorator<B extends Bits> {
      * @param data The binary string
      * @throws IllegalValue If the string is not binary
      */
-    public void setBinaryValue(String data) throws IllegalValue{
-        if(data.length() > bitType.getSize()){
+    public void setBinaryValue(String data) throws IllegalValue {
+        if (data.length() > bitType.getSize()) {
             String mess = String.format("Value: %s is greater than max: %d", data, bitType.getSize());
             throw new IllegalValue(mess);
         }
@@ -111,9 +118,9 @@ public class BitDecorator<B extends Bits> {
      */
     public void setIntegerValue(String data) throws IllegalValue {
         int value;
-        try{
+        try {
             value = Integer.parseInt(data);
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             String mess = String.format("%s is not a valid integer", data);
             throw new IllegalValue(mess);
         }
@@ -143,9 +150,10 @@ public class BitDecorator<B extends Bits> {
 
     /**
      * Retrieves the contents of either registers or memory
+     *
      * @return The raw {@link BitSet data}
      */
-    public BitSet getData(){
+    public BitSet getData() {
         return bitType.getData();
     }
 }
