@@ -2,10 +2,8 @@ package edu.gw.csci.simulator.utils;
 
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
-import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -19,7 +17,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -60,7 +57,7 @@ public class ConsoleAppender extends AbstractAppender {
         try {
             Platform.runLater(() -> {
                 try {
-                    if (textFlow != null){
+                    if (textFlow != null) {
                         Text text = new Text(message);
                         text.setFill(getColor(level));
                         textFlow.getChildren().add(text);
@@ -76,7 +73,7 @@ public class ConsoleAppender extends AbstractAppender {
         }
     }
 
-    private Color getColor(Level level){
+    private Color getColor(Level level) {
         return colorMap.getOrDefault(level, Color.BLACK);
     }
 
@@ -112,21 +109,21 @@ public class ConsoleAppender extends AbstractAppender {
      * @param textFlow TextArea to append
      */
     public static void setTextFlow(TextFlow textFlow) {
-        textFlow.getChildren().addListener( (ListChangeListener<Node>) ((change) -> {
+        textFlow.getChildren().addListener((ListChangeListener<Node>) ((change) -> {
             scrollPane.layout();
             scrollPane.setVvalue(1.0f);
         }));
         ConsoleAppender.textFlow = textFlow;
     }
 
-    public static void setScrollPane(ScrollPane scrollPane){
+    public static void setScrollPane(ScrollPane scrollPane) {
         ConsoleAppender.scrollPane = scrollPane;
     }
 
     /**
      * Clears the log
      */
-    public static void clear(){
+    public static void clear() {
         textFlow.getChildren().clear();
     }
 }

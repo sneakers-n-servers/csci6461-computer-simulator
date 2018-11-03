@@ -24,19 +24,19 @@ public class Transfer {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String Rs = data.substring(0,2);
+            String Rs = data.substring(0, 2);
             Register PC = registers.getRegister(RegisterType.PC);
             RegisterDecorator PCd = new RegisterDecorator(PC);
             int EA = memory.EA();
-            Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
-            if(R.getData().isEmpty()){
-                PCd.setValue(EA-1);
+            Register R = registers.getRegister(RegisterType.getGeneralPurpose(Rs));
+            if (R.getData().isEmpty()) {
+                PCd.setValue(EA - 1);
             }
 //            else{
 //                registers.PCadder();
 //            }
 
-            String mess = String.format("JZ Jump to %d when %s =0",EA,R.getName());
+            String mess = String.format("JZ Jump to %d when %s =0", EA, R.getName());
             LOGGER.info(mess);
         }
 
@@ -58,18 +58,18 @@ public class Transfer {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
-            String Rs = data.substring(0,2);
+        public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
+            String Rs = data.substring(0, 2);
             Register PC = registers.getRegister(RegisterType.PC);
             RegisterDecorator PCd = new RegisterDecorator(PC);
             int EA = memory.EA();
-            Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
+            Register R = registers.getRegister(RegisterType.getGeneralPurpose(Rs));
 
-            if(!R.getData().isEmpty()){
-                PCd.setValue(EA-1);
+            if (!R.getData().isEmpty()) {
+                PCd.setValue(EA - 1);
             }
 
-            String mess = String.format("JNE Jump to %d when %s !=0",EA,R.getName());
+            String mess = String.format("JNE Jump to %d when %s !=0", EA, R.getName());
             LOGGER.info(mess);
         }
 
@@ -91,20 +91,20 @@ public class Transfer {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
+        public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
             Register PC = registers.getRegister(RegisterType.PC);
             RegisterDecorator PCd = new RegisterDecorator(PC);
             int EA = memory.EA();
 
             Register CC = registers.getRegister(RegisterType.CC);
             int bit = CC.getData().cardinality();
-            if(bit ==1){
-                PCd.setValue(EA-1);
+            if (bit == 1) {
+                PCd.setValue(EA - 1);
             }
 //            else{
 //                registers.PCadder();
 //            }
-            String mess =String.format("JCC Jump to %d if CC bit =1", EA);
+            String mess = String.format("JCC Jump to %d if CC bit =1", EA);
             LOGGER.info(mess);
         }
 
@@ -126,14 +126,14 @@ public class Transfer {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
+        public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
             Register PC = registers.getRegister(RegisterType.PC);
             RegisterDecorator PCd = new RegisterDecorator(PC);
-            int EA =memory.EA();
+            int EA = memory.EA();
 
-            PCd.setValue(EA-1);
+            PCd.setValue(EA - 1);
 
-            String mess = String.format("JMA Unconditional Jump To Address:%d",EA);
+            String mess = String.format("JMA Unconditional Jump To Address:%d", EA);
             LOGGER.info(mess);
         }
 
@@ -155,19 +155,19 @@ public class Transfer {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
+        public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
             Register PC = registers.getRegister(RegisterType.PC);
             RegisterDecorator PCd = new RegisterDecorator(PC);
             Register R3 = registers.getRegister(RegisterType.R3);
             RegisterDecorator R3d = new RegisterDecorator(R3);
-            int EA= memory.EA();
+            int EA = memory.EA();
 
-            int returnAddress  = BitConversion.convert(PC.getData())+1;
+            int returnAddress = BitConversion.convert(PC.getData()) + 1;
             R3d.setValue(returnAddress);
-            PCd.setValue(EA-1);
+            PCd.setValue(EA - 1);
 
             String mess = String.format("JSR Jump to %d and Save Return Address:%d",
-                    EA,returnAddress);
+                    EA, returnAddress);
             LOGGER.info(mess);
         }
 
@@ -189,22 +189,22 @@ public class Transfer {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
+        public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
             Register PC = registers.getRegister(RegisterType.PC);
             RegisterDecorator PCd = new RegisterDecorator(PC);
             Register R0 = registers.getRegister(RegisterType.R0);
             RegisterDecorator R0d = new RegisterDecorator(R0);
             Register R3 = registers.getRegister(RegisterType.R3);
 
-            int EA= memory.EA();
+            int EA = memory.EA();
 
 
             R0d.setValue(EA);
             int PCindex = BitConversion.convert(R3.getData());
-            PCd.setValue(PCindex-1);
+            PCd.setValue(PCindex - 1);
 
             String mess = String.format("RFS Return from subroutine, R0=%d PC=R3=%d",
-                    EA,BitConversion.convert(R3.getData()));
+                    EA, BitConversion.convert(R3.getData()));
             LOGGER.info(mess);
         }
 
@@ -226,25 +226,25 @@ public class Transfer {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
-            String Rs = data.substring(0,2);
+        public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
+            String Rs = data.substring(0, 2);
             Register PC = registers.getRegister(RegisterType.PC);
             RegisterDecorator PCd = new RegisterDecorator(PC);
             int EA = memory.EA();
-            Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
+            Register R = registers.getRegister(RegisterType.getGeneralPurpose(Rs));
             RegisterDecorator Rd = new RegisterDecorator(R);
 
 
-            Rd.setValue(BitConversion.convert(R.getData())-1);
-            if(BitConversion.convert(R.getData())>0){
-                PCd.setValue(EA-1);
+            Rd.setValue(BitConversion.convert(R.getData()) - 1);
+            if (BitConversion.convert(R.getData()) > 0) {
+                PCd.setValue(EA - 1);
             }
 //            else{
 //                registers.PCadder();
 //            }
 
             String mess = String.format("SOB %s = %s -1 =%d, if %s>0, jump to %d",
-                    R.getName(),R.getName(),BitConversion.convert(R.getData()),R.getName(),EA);
+                    R.getName(), R.getName(), BitConversion.convert(R.getData()), R.getName(), EA);
             LOGGER.info(mess);
         }
 
@@ -266,24 +266,24 @@ public class Transfer {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
-            String Rs = data.substring(0,2);
+        public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
+            String Rs = data.substring(0, 2);
             Register PC = registers.getRegister(RegisterType.PC);
             RegisterDecorator PCd = new RegisterDecorator(PC);
             int EA = memory.EA();
-            Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
+            Register R = registers.getRegister(RegisterType.getGeneralPurpose(Rs));
             RegisterDecorator Rd = new RegisterDecorator(R);
 
 
-            if(BitConversion.convert(R.getData())>=0){
-                PCd.setValue(EA-1);
+            if (BitConversion.convert(R.getData()) >= 0) {
+                PCd.setValue(EA - 1);
             }
 //            else{
 //                registers.PCadder();
 //            }
 
             String mess = String.format("JGE if %s(%d) >=0, jump to %d",
-                    R.getName(),BitConversion.convert(R.getData()),EA);
+                    R.getName(), BitConversion.convert(R.getData()), EA);
             LOGGER.info(mess);
         }
 

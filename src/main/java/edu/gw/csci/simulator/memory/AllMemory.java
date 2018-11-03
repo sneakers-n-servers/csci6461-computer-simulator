@@ -39,13 +39,13 @@ public class AllMemory {
     }
 
     /**
-     * This method overloads the {@link AllMemory#store(int, BitSet,boolean throwReserve)} to check for
+     * This method overloads the {@link AllMemory#store(int, BitSet, boolean throwReserve)} to check for
      * illegal memory access by default. Therefore, this method will reject
      * all requests to save to reserved memory location.
      *
-     * @param index The index of the data to store in memory
+     * @param index  The index of the data to store in memory
      * @param bitSet The data to store
-     * @throws MemoryOutOfBounds When the memory index is out of bounds
+     * @throws MemoryOutOfBounds   When the memory index is out of bounds
      * @throws IllegalMemoryAccess When the memory index is reserved
      */
     public void store(int index, BitSet bitSet) throws MemoryOutOfBounds, IllegalMemoryAccess {
@@ -67,12 +67,12 @@ public class AllMemory {
 
     public void store(int index, BitSet bitSet, boolean throwReserve) throws MemoryOutOfBounds, IllegalMemoryAccess {
         checkIndex(index, throwReserve);
-        if(index == TrapController.HALT_LOCATION){
+        if (index == TrapController.HALT_LOCATION) {
             LOGGER.warn("Index 6 is reserved for halt during trap codes, this is not recommended");
         }
         //We know that this conversion is safe because the data is stored in a BitSet already
         int value = BitConversion.convert(bitSet);
-        String mess = String.format("Storing %d(%s) to memory index %d", value, BitConversion.toBinaryString(bitSet,16), index);
+        String mess = String.format("Storing %d(%s) to memory index %d", value, BitConversion.toBinaryString(bitSet, 16), index);
         LOGGER.debug(mess);
         MemoryChunkDecorator memoryChunkDecorator = new MemoryChunkDecorator(memory.get(index));
         memoryChunkDecorator.setValue(value);
@@ -81,13 +81,13 @@ public class AllMemory {
     }
 
     /**
-     * This method overloads the {@link AllMemory#fetch(int,boolean throwReserve)} to check for
+     * This method overloads the {@link AllMemory#fetch(int, boolean throwReserve)} to check for
      * illegal memory access by default. Therefore,this method will reject
      * all requests to save to reserved memory location.
      *
      * @param index The index to fetch
      * @return The contents of memory, or cache, as appropriate.
-     * @throws MemoryOutOfBounds When the memory index is out of bounds
+     * @throws MemoryOutOfBounds   When the memory index is out of bounds
      * @throws IllegalMemoryAccess When the memory index is reserved
      */
     public BitSet fetch(int index) throws MemoryOutOfBounds, IllegalMemoryAccess {
@@ -114,7 +114,7 @@ public class AllMemory {
         BitSet fetched = bits.orElseGet(() -> memory.getChunkData(index));
         allRegisters.setRegister(RegisterType.MBR, fetched);
         int value = BitConversion.convert(fetched);
-        String mess = String.format("Fetching %d(%s) from memory index %d", value, BitConversion.toBinaryString(value,16), index);
+        String mess = String.format("Fetching %d(%s) from memory index %d", value, BitConversion.toBinaryString(value, 16), index);
         LOGGER.debug(mess);
         return fetched;
     }
@@ -125,21 +125,20 @@ public class AllMemory {
      * the implementation of TRAP codes in part 3, there are circumstances where we need to access
      * the special memory locations. This is why the throwReserve flag exists
      *
-     * @param index An index to check the validity of
+     * @param index        An index to check the validity of
      * @param throwReserve Whether or not to throw an exception if trying to access a reserved location
-     * @throws MemoryOutOfBounds When the memory index is out of bounds
+     * @throws MemoryOutOfBounds   When the memory index is out of bounds
      * @throws IllegalMemoryAccess When the memory index is reserved
      */
     private void checkIndex(int index, boolean throwReserve) throws MemoryOutOfBounds, IllegalMemoryAccess {
-        if(index > maxMemory){
+        if (index > maxMemory) {
             String mess = String.format("MemoryOutOfBounds: Will not store/fetch from index: %d, greater than max memory: %d", index, maxMemory);
             throw new MemoryOutOfBounds(mess);
-        }
-        else if (index < 0){
+        } else if (index < 0) {
             String mess = String.format("MemoryOutOfBounds: Will not store/fetch from negative index: %d", index);
             throw new MemoryOutOfBounds(mess);
         }
-        if(throwReserve && index <= highestReservedMemory){
+        if (throwReserve && index <= highestReservedMemory) {
             String mess = String.format("MemoryOutOfBounds: Will not store/fetch index: %d from reserved memory location 0-5", index);
             throw new IllegalMemoryAccess(mess);
         }
@@ -148,8 +147,6 @@ public class AllMemory {
 
     /**
      * This function will calculate the Effective Address for each instruction
-     *
-     *
      */
     public int EA() {
         int EA;
@@ -163,28 +160,28 @@ public class AllMemory {
 
         if (InstructionType.getInstructionType(Opcode).equals(InstructionType.RFS)) {
             //I,IX is ignored in RFS
-            EA = Integer.parseInt(Address_code,2);
+            EA = Integer.parseInt(Address_code, 2);
             return EA;
         }
         if (InstructionType.getInstructionType(Opcode).equals(InstructionType.AIR) ||
                 InstructionType.getInstructionType(Opcode).equals(InstructionType.SIR)) {
             //I,IX is ignored in AIR,SIR
-            EA = Integer.parseInt(Address_code,2);
+            EA = Integer.parseInt(Address_code, 2);
             return EA;
         }
         if (InstructionType.getInstructionType(Opcode).equals(InstructionType.LDX) ||
                 InstructionType.getInstructionType(Opcode).equals(InstructionType.STX)) {
             //IX is not used in LDX,STX
             if (I_code.equals("0")) {
-                return Integer.parseInt(Address_code,2);
+                return Integer.parseInt(Address_code, 2);
             } else {
-                EA = BitConversion.convert(fetch(Integer.parseInt(Address_code,2)));
+                EA = BitConversion.convert(fetch(Integer.parseInt(Address_code, 2)));
                 return EA;
             }
         }
         if (I_code.equals("0")) {
             if (IX_code.equals("00")) {
-                EA = Integer.parseInt(Address_code,2);
+                EA = Integer.parseInt(Address_code, 2);
                 return EA;
 
             } else {
@@ -192,27 +189,30 @@ public class AllMemory {
                 RegisterType registerType = RegisterType.getIndex(IX_code);
                 Register register = allRegisters.getRegister(registerType);
                 RegisterDecorator Xd = new RegisterDecorator(register);
-                EA = Xd.toInt() + Integer.parseInt(Address_code,2);
+                EA = Xd.toInt() + Integer.parseInt(Address_code, 2);
                 return EA;
             }
         } else {
             if (IX_code.equals("00")) {
-                EA = BitConversion.convert(fetch(Integer.parseInt(Address_code,2)));
+                EA = BitConversion.convert(fetch(Integer.parseInt(Address_code, 2)));
                 return EA;
             } else {
                 //int ixCode = BitConversion.fromBinaryString(IX_code);
                 RegisterType registerType = RegisterType.getIndex(IX_code);
                 Register register = allRegisters.getRegister(registerType);
                 RegisterDecorator Xd = new RegisterDecorator(register);
-                int index = Xd.toInt() + Integer.parseInt(Address_code,2);
+                int index = Xd.toInt() + Integer.parseInt(Address_code, 2);
                 EA = BitConversion.convert(fetch(index));
                 return EA;
             }
         }
     }
 
-    public AllRegisters getAllRegisters(){
+    public AllRegisters getAllRegisters() {
         return this.allRegisters;
     }
-    public Memory getMemory(){ return this.memory;}
+
+    public Memory getMemory() {
+        return this.memory;
+    }
 }

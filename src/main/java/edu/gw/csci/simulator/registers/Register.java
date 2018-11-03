@@ -51,7 +51,7 @@ public class Register implements Bits {
     }
 
     public void setData(BitSet data) {
-        if (data.length() > getSize()){
+        if (data.length() > getSize()) {
             String mess = String.format(
                     "Binary value %s is larger than maximum %d",
                     BitConversion.toBinaryString(data, data.length()),

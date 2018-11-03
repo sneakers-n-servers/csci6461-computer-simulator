@@ -11,7 +11,7 @@ public class Decoder {
 
     private HashMap<InstructionType, InstructionFactory> instructions = new HashMap<>();
 
-    public Decoder(){
+    public Decoder() {
         //Miscellaneous
         instructions.put(InstructionType.HLT, new InstructionFactory<>(Miscellaneous.HLT::new));
         instructions.put(InstructionType.TRAP, new InstructionFactory<>(Miscellaneous.TRAP::new));

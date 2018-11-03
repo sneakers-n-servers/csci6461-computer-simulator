@@ -28,7 +28,8 @@ public class TrapController {
 
     public static final int HALT_LOCATION = 6,
             TRAP_PC_LOCATION = 2,
-            HALT_POINTER_LOCATION = 0;
+            HALT_POINTER_ROUTINE = 0,
+            HALT_POINTER_FAULT_LOCATION = 1;
 
     private static final int EXCEPTION_TABLE_POINTER = 2000,
             EXCEPTION_TABLE_SIZE = 16;
@@ -56,10 +57,11 @@ public class TrapController {
     /**
      * Performs all of the logic associated with a trap, meaning that
      * we save the contents of PC to memory location {@link TrapController#TRAP_PC_LOCATION}, and load the
-     * PC with the contents of memory location {@link TrapController#HALT_POINTER_LOCATION}. This value is defaulted
+     * PC with the contents of memory location {@link TrapController#HALT_POINTER_ROUTINE}. This value is defaulted
      * to 6, which if unmodified, instructs the simulator to halt.
      */
-    public void setFault(int opCode) {
+    public void setFault(int opCode, boolean runRoutine) {
+        //Set the machine fault register
         Register machineFaultRegister = allRegisters.getRegister(RegisterType.MFR);
         new RegisterDecorator(machineFaultRegister).setValue(opCode);
 
@@ -70,7 +72,8 @@ public class TrapController {
         allMemory.store(TRAP_PC_LOCATION, BitConversion.convert(nextValue), false);
 
         //Set the next instruction to the trap routine
-        BitSet trapMemory = allMemory.fetch(HALT_POINTER_LOCATION, false);
+        int pointTo = (runRoutine) ? HALT_POINTER_ROUTINE : HALT_POINTER_FAULT_LOCATION;
+        BitSet trapMemory = allMemory.fetch(pointTo, runRoutine);
         int pointer = BitConversion.convert(trapMemory);
         BitSet nextInstruction = allMemory.fetch(pointer + opCode);
         pcDecorator.setValue(nextInstruction);
@@ -135,10 +138,12 @@ public class TrapController {
                 HALT_LOCATION
         );
         Memory memory = allMemory.getMemory();
-        memory.set(HALT_POINTER_LOCATION, BitConversion.convert(EXCEPTION_TABLE_POINTER));
+        memory.set(HALT_POINTER_ROUTINE, BitConversion.convert(EXCEPTION_TABLE_POINTER));
         BitSet defaultPointer = BitConversion.convert(HALT_LOCATION);
         for (int i = 0; i < EXCEPTION_TABLE_SIZE; i++) {
             memory.set(EXCEPTION_TABLE_POINTER + i, defaultPointer);
         }
+        LOGGER.info("Setting default machine fault pointer to {}", HALT_LOCATION);
+        memory.set(HALT_POINTER_FAULT_LOCATION, BitConversion.convert(HALT_LOCATION));
     }
 }

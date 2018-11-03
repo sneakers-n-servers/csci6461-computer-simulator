@@ -1,21 +1,16 @@
 package edu.gw.csci.simulator.isa.instructions;
 
+import edu.gw.csci.simulator.Simulator;
 import edu.gw.csci.simulator.cpu.CPU;
 import edu.gw.csci.simulator.cpu.TrapController;
-import edu.gw.csci.simulator.exceptions.IllegalTrapCode;
 import edu.gw.csci.simulator.exceptions.SimulatorException;
 import edu.gw.csci.simulator.isa.Instruction;
 import edu.gw.csci.simulator.isa.InstructionType;
 import edu.gw.csci.simulator.memory.AllMemory;
 import edu.gw.csci.simulator.registers.AllRegisters;
-import edu.gw.csci.simulator.registers.Register;
-import edu.gw.csci.simulator.registers.RegisterDecorator;
-import edu.gw.csci.simulator.registers.RegisterType;
 import edu.gw.csci.simulator.utils.BitConversion;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.BitSet;
 
 public class Miscellaneous {
 
@@ -53,9 +48,11 @@ public class Miscellaneous {
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) throws SimulatorException {
             LOGGER.info("TRAP");
-            String trapString = data.substring(data.length() -4);
+            String trapString = data.substring(data.length() - 4);
             int trapCode = BitConversion.fromBinaryStringToInt(trapString);
-            throw TrapController.getException(trapCode);
+            SimulatorException ex = TrapController.getException(trapCode);
+            ex.setRunRoutine(true);
+            throw ex;
         }
 
         @Override

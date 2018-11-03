@@ -53,7 +53,7 @@ public class AllRegisters {
         return registerMap.get(registerType);
     }
 
-    public void OVERFLOW(){
+    public void OVERFLOW() {
         Register CC = getRegister(RegisterType.CC);
         BitSet bits = CC.getData();
         bits.set(3);
@@ -61,7 +61,7 @@ public class AllRegisters {
         LOGGER.warn("OVERFLOW");
     }
 
-    public void UNDERFLOW(){
+    public void UNDERFLOW() {
         Register CC = getRegister(RegisterType.CC);
         BitSet bits = CC.getData();
         bits.set(2);
@@ -69,7 +69,7 @@ public class AllRegisters {
         LOGGER.warn("UNDERFLOW");
     }
 
-    public void DIVZERO(){
+    public void DIVZERO() {
         Register CC = getRegister(RegisterType.CC);
         BitSet bits = CC.getData();
         bits.set(1);
@@ -77,36 +77,33 @@ public class AllRegisters {
         LOGGER.warn("DIVIDE 0");
     }
 
-    public void EQUALORNOT(boolean equal){
+    public void EQUALORNOT(boolean equal) {
         Register CC = getRegister(RegisterType.CC);
         BitSet bits = CC.getData();
-        if(equal){
+        if (equal) {
             bits.set(0);
             LOGGER.info("EQUAL");
-        }
-        else{
+        } else {
             bits.clear(0);
             LOGGER.info("NOTEQUAL");
         }
         CC.setData(bits);
     }
 
-    public boolean checkOverUnderFlow(int value){
-        if(value> SetCC.MaxValue||value<SetCC.MinValue){
+    public boolean checkOverUnderFlow(int value) {
+        if (value > SetCC.MaxValue || value < SetCC.MinValue) {
             OVERFLOW();
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
 
-    public boolean checkExtendOverUnderFlow(int value){
-        if(value>SetCC.ExtendMaxValue||value<SetCC.ExtendMinValue){
+    public boolean checkExtendOverUnderFlow(int value) {
+        if (value > SetCC.ExtendMaxValue || value < SetCC.ExtendMinValue) {
             OVERFLOW();
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }

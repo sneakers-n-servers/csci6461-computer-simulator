@@ -1,10 +1,7 @@
 package edu.gw.csci.simulator.registers;
 
 import edu.gw.csci.simulator.gui.BitDecorator;
-import edu.gw.csci.simulator.utils.BitConversion;
 import javafx.beans.property.SimpleStringProperty;
-
-import java.util.BitSet;
 
 /**
  * Provides abstraction of support operations for interaction between the simulated registers and the GUI framework.
@@ -23,7 +20,7 @@ public class RegisterDecorator extends BitDecorator<Register> {
         return new SimpleStringProperty(register.getName());
     }
 
-    public SimpleStringProperty getRegisterDescription(){
+    public SimpleStringProperty getRegisterDescription() {
         Register register = super.getBitType();
         return new SimpleStringProperty(register.getDescription());
     }

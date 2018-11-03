@@ -1,6 +1,5 @@
 package edu.gw.csci.simulator.memory;
 
-import edu.gw.csci.simulator.utils.BitConversion;
 import javafx.scene.control.TableView;
 
 import java.util.BitSet;
@@ -37,7 +36,7 @@ public class Memory {
     }
 
     public void initialize() {
-        for(MemoryChunk memoryChunk : memory){
+        for (MemoryChunk memoryChunk : memory) {
             memoryChunk.initialize();
         }
     }
@@ -47,7 +46,7 @@ public class Memory {
         return chunk.getData();
     }
 
-    public MemoryChunk get(int index){
+    public MemoryChunk get(int index) {
         return this.memory[index];
     }
 

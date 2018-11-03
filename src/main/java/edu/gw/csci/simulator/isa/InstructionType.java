@@ -65,22 +65,21 @@ public enum InstructionType {
 
     InstructionType(int opCode) {
         //the OpCode above is in Octal, so we transfer them to decimal
-        String decimal = Integer.valueOf(String.valueOf(opCode),8).toString();
+        String decimal = Integer.valueOf(String.valueOf(opCode), 8).toString();
         int decimalOpCode = Integer.valueOf(decimal);
-        this.opCode =  decimalOpCode;
+        this.opCode = decimalOpCode;
         this.binary = toPadded(decimalOpCode);
     }
 
     private static String toPadded(int opCode) {
-        return BitConversion.toBinaryString(opCode,6);
+        return BitConversion.toBinaryString(opCode, 6);
     }
 
     public static InstructionType getInstructionType(String binary) throws IllegalOpcode {
-        if (!instructionMap.containsKey(binary)){
+        if (!instructionMap.containsKey(binary)) {
             String mess = String.format("Illegal Opcode: %s non supported operation", binary);
             throw new IllegalOpcode(mess);
-        }
-        else {
+        } else {
             return instructionMap.get(binary);
         }
     }

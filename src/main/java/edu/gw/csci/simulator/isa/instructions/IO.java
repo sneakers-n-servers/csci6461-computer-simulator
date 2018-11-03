@@ -2,7 +2,6 @@ package edu.gw.csci.simulator.isa.instructions;
 
 import edu.gw.csci.simulator.cpu.CPU;
 import edu.gw.csci.simulator.isa.IOInstruction;
-import edu.gw.csci.simulator.isa.Instruction;
 import edu.gw.csci.simulator.isa.InstructionType;
 import edu.gw.csci.simulator.memory.AllMemory;
 import edu.gw.csci.simulator.registers.AllRegisters;
@@ -28,26 +27,25 @@ public class IO {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
-            String Rs = data.substring(0,2);
-            Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
+        public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
+            String Rs = data.substring(0, 2);
+            Register R = registers.getRegister(RegisterType.getGeneralPurpose(Rs));
             RegisterDecorator Rd = new RegisterDecorator(R);
             String DevID = data.substring(5, 10);
             Register PC = registers.getRegister(RegisterType.PC);
             RegisterDecorator PCd = new RegisterDecorator(PC);
 
-            if(DevID.equals("00000")) {
+            if (DevID.equals("00000")) {
                 //Console Keyboard input
                 Optional<String> NextInput = cpu.getNextInput();
-                if(NextInput.isPresent()) {
+                if (NextInput.isPresent()) {
                     int data = Integer.parseInt(NextInput.get());
                     Rd.setValue(data);
                     String mess = String.format("IN input Int:%d,Binary:%s to Register %s from Console Keyboard",
                             Rd.toInt(), Rd.toBinaryString(), R.getName());
                     LOGGER.info(mess);
                     //registers.PCadder();
-                }
-                else{
+                } else {
                     int PCindex = BitConversion.convert(PC.getData());
                     //PCd.setValue(PCindex-1);
                     //registers.PCadder();
@@ -79,15 +77,15 @@ public class IO {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
-            String Rs = data.substring(0,2);
-            Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
+        public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
+            String Rs = data.substring(0, 2);
+            Register R = registers.getRegister(RegisterType.getGeneralPurpose(Rs));
             RegisterDecorator Rd = new RegisterDecorator(R);
             String DevID = data.substring(5, 10);
             if (DevID.equals("00001")) {
                 //Console Printer output
                 String mess = String.format("OUT output Int :%d,Binary: %s from Register %s to Console Printer",
-                       Rd.toInt(), Rd.toBinaryString(), R.getName());
+                        Rd.toInt(), Rd.toBinaryString(), R.getName());
                 LOGGER.info(mess);
                 cpu.consoleOutput.add(String.valueOf(Rd.toInt()));
                 //registers.PCadder();

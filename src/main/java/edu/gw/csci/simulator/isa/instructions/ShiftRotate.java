@@ -3,11 +3,9 @@ package edu.gw.csci.simulator.isa.instructions;
 import edu.gw.csci.simulator.cpu.CPU;
 import edu.gw.csci.simulator.isa.Instruction;
 import edu.gw.csci.simulator.isa.InstructionType;
-import edu.gw.csci.simulator.isa.SetCC;
 import edu.gw.csci.simulator.memory.AllMemory;
 import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.Register;
-import edu.gw.csci.simulator.registers.RegisterDecorator;
 import edu.gw.csci.simulator.registers.RegisterType;
 import edu.gw.csci.simulator.utils.BinaryCalculate;
 import edu.gw.csci.simulator.utils.BitConversion;
@@ -25,41 +23,39 @@ public class ShiftRotate {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String Rs = data.substring(0,2);
-            Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
-            String AL = data.substring(2,3);
-            String LR = data.substring(3,4);
-            String Counts = data.substring(6,10);
+            String Rs = data.substring(0, 2);
+            Register R = registers.getRegister(RegisterType.getGeneralPurpose(Rs));
+            String AL = data.substring(2, 3);
+            String LR = data.substring(3, 4);
+            String Counts = data.substring(6, 10);
 
             boolean LorR = LR.equals("1");
             boolean AorL = AL.equals("1");
-            int count = Integer.parseInt(Counts,2);
+            int count = Integer.parseInt(Counts, 2);
             String LRflag;
             String ALflag;
 
-            if(LorR) LRflag ="left";
-            else LRflag="right";
+            if (LorR) LRflag = "left";
+            else LRflag = "right";
 
-            if(AorL) ALflag = "logically";
+            if (AorL) ALflag = "logically";
             else ALflag = "arithmetically";
 
-            String mess = String.format("SRC Shift Register:%s %s %s by %d",R.getName(),LRflag,ALflag,count);
+            String mess = String.format("SRC Shift Register:%s %s %s by %d", R.getName(), LRflag, ALflag, count);
             LOGGER.info(mess);
-            if(count != 0){
+            if (count != 0) {
                 //registers.PCadder();
-                String s1 = BitConversion.toBinaryString(R.getData(),R.getSize());
+                String s1 = BitConversion.toBinaryString(R.getData(), R.getSize());
                 int value = BitConversion.convert(R.getData());
-                if(LorR) {
+                if (LorR) {
                     //logically left shift equals to arithmetically left shift
-                    s1 = BinaryCalculate.BinaryLeftShift(s1,count,registers);
-                }
-                else if(AorL){
+                    s1 = BinaryCalculate.BinaryLeftShift(s1, count, registers);
+                } else if (AorL) {
                     //logically right shift
-                    s1 = BinaryCalculate.BinaryLogicRightShift(s1,count);
-                }
-                else{
+                    s1 = BinaryCalculate.BinaryLogicRightShift(s1, count);
+                } else {
                     //arithmetically right shift
-                    s1 = BinaryCalculate.BinaryArithmeticalRightShift(s1,count);
+                    s1 = BinaryCalculate.BinaryArithmeticalRightShift(s1, count);
 
                 }
 
@@ -85,33 +81,32 @@ public class ShiftRotate {
         private String data;
 
         @Override
-        public void execute(AllMemory memory, AllRegisters registers,CPU cpu) {
+        public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
 
-            String Rs = data.substring(0,2);
-            Register R =registers.getRegister(RegisterType.getGeneralPurpose(Rs));
+            String Rs = data.substring(0, 2);
+            Register R = registers.getRegister(RegisterType.getGeneralPurpose(Rs));
 
-            String LR = data.substring(3,4);
+            String LR = data.substring(3, 4);
             boolean LorR = LR.equals("1");
-            String Counts = data.substring(6,10);
-            int count = Integer.parseInt(Counts,2);//Integer.parseInt(Counts,2);
+            String Counts = data.substring(6, 10);
+            int count = Integer.parseInt(Counts, 2);//Integer.parseInt(Counts,2);
             String LRflag;
 
-            if(LorR) LRflag ="left";
-            else LRflag="right";
+            if (LorR) LRflag = "left";
+            else LRflag = "right";
 
-            String mess = String.format("RRC Rotate Register:%s %s by %d",R.getName(),LRflag,count);
+            String mess = String.format("RRC Rotate Register:%s %s by %d", R.getName(), LRflag, count);
             LOGGER.info(mess);
 
-            if(count !=0) {
-                String s1 = BitConversion.toBinaryString(R.getData(),R.getSize());
-                if(LorR)
+            if (count != 0) {
+                String s1 = BitConversion.toBinaryString(R.getData(), R.getSize());
+                if (LorR)
                 //left rotation
                 {
-                    s1 = BinaryCalculate.BinaryLeftRotate(s1,count);
-                }
-                else{
+                    s1 = BinaryCalculate.BinaryLeftRotate(s1, count);
+                } else {
                     //right rotation
-                    s1 = BinaryCalculate.BinaryRightRotate(s1,count);
+                    s1 = BinaryCalculate.BinaryRightRotate(s1, count);
                 }
 
                 R.setData(BitConversion.convert(s1));

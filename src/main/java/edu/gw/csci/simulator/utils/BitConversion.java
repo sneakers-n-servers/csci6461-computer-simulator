@@ -5,7 +5,6 @@ import edu.gw.csci.simulator.exceptions.IllegalValue;
 import edu.gw.csci.simulator.isa.SetCC;
 
 import java.util.BitSet;
-import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 import static java.lang.Math.toIntExact;
@@ -24,24 +23,22 @@ public class BitConversion {
      * @param value The integer to utils
      * @return The converted BitSet
      * @throws IllegalValue we have 16 bits word, so the range is [-32768,32767],
-     * numbers that not in the range will throw IllegalValue Exception
+     *                      numbers that not in the range will throw IllegalValue Exception
      */
-    public static BitSet convert(int value) throws IllegalValue{
-        if(value >= 0 && value <= SetCC.MaxValue) {
+    public static BitSet convert(int value) throws IllegalValue {
+        if (value >= 0 && value <= SetCC.MaxValue) {
             //handle positive number
             return BitSet.valueOf(new long[]{value});
-        }
-        else if(value >= SetCC.MinValue && value < 0){
+        } else if (value >= SetCC.MinValue && value < 0) {
             //handle negative number
             BitSet bits;
-            value = SetCC.MaxValue +1 + value;
+            value = SetCC.MaxValue + 1 + value;
             bits = BitSet.valueOf(new long[]{value});
             bits.set(15);
             return bits;
-        }
-        else{
+        } else {
             //we have 16 bits word, so the range is from -32768-32767
-            String mess = String.format("Value: %d is out of range:[%d,%d]", value,SetCC.MinValue,SetCC.MaxValue);
+            String mess = String.format("Value: %d is out of range:[%d,%d]", value, SetCC.MinValue, SetCC.MaxValue);
             throw new IllegalValue(mess);
         }
     }
@@ -58,28 +55,26 @@ public class BitConversion {
      * @return The converted integer
      */
     public static int convert(BitSet bits) throws IllegalValue {
-        BitSet bitSet = (BitSet)bits.clone();
-        if(bits.length()>16){
-            String mess = String.format("Value is out of range:[%d,%d]",SetCC.MinValue,SetCC.MaxValue);
+        BitSet bitSet = (BitSet) bits.clone();
+        if (bits.length() > 16) {
+            String mess = String.format("Value is out of range:[%d,%d]", SetCC.MinValue, SetCC.MaxValue);
             throw new IllegalValue(mess);
         }
 
         if (bitSet.isEmpty()) {
             return 0;
         }
-        if(bitSet.get(15)){
+        if (bitSet.get(15)) {
             //handle negative number
             bitSet.clear(15);
-            if(bitSet.isEmpty()){
+            if (bitSet.isEmpty()) {
                 //value = -32768
                 return SetCC.MinValue;
-            }
-            else {
+            } else {
                 long l = bitSet.toLongArray()[0];
                 return toIntExact(l) + SetCC.MinValue;
             }
-        }
-        else{
+        } else {
             //handle positive number
             long l = bitSet.toLongArray()[0];
             return toIntExact(l);
@@ -93,24 +88,22 @@ public class BitConversion {
      * @param value The integer to utils
      * @return The converted BitSet
      * @throws IllegalValue we have 32 bits word
-     * numbers that not in the range will throw IllegalValue Exception
+     *                      numbers that not in the range will throw IllegalValue Exception
      */
-    public static BitSet ExtendConvert(int value) throws IllegalValue{
-        if(value >= 0 && value <= SetCC.ExtendMaxValue) {
+    public static BitSet ExtendConvert(int value) throws IllegalValue {
+        if (value >= 0 && value <= SetCC.ExtendMaxValue) {
             //handle positive number
             return BitSet.valueOf(new long[]{value});
-        }
-        else if(value >= SetCC.ExtendMinValue && value < 0){
+        } else if (value >= SetCC.ExtendMinValue && value < 0) {
             //handle negative number
             BitSet bits;
-            value = SetCC.ExtendMaxValue +1 + value;
+            value = SetCC.ExtendMaxValue + 1 + value;
             bits = BitSet.valueOf(new long[]{value});
             bits.set(31);
             return bits;
-        }
-        else{
+        } else {
             //we have 32 bits extend word, so the range is from -2^16-2^16-1
-            String mess = String.format("Value: %d is out of range:[%d,%d]", value,SetCC.ExtendMinValue,SetCC.ExtendMaxValue);
+            String mess = String.format("Value: %d is out of range:[%d,%d]", value, SetCC.ExtendMinValue, SetCC.ExtendMaxValue);
             throw new IllegalValue(mess);
         }
     }
@@ -126,26 +119,24 @@ public class BitConversion {
      * @return The converted integer
      */
     public static int ExtendConvert(BitSet bits) {
-        BitSet bitSet = (BitSet)bits.clone();
-        if(bits.length()>32){
-            String mess = String.format("Value is out of range:[%d,%d]",SetCC.ExtendMinValue,SetCC.ExtendMaxValue);
+        BitSet bitSet = (BitSet) bits.clone();
+        if (bits.length() > 32) {
+            String mess = String.format("Value is out of range:[%d,%d]", SetCC.ExtendMinValue, SetCC.ExtendMaxValue);
             throw new IllegalValue(mess);
         }
         if (bitSet.isEmpty()) {
             return 0;
         }
-        if(bitSet.get(31)){
+        if (bitSet.get(31)) {
             //handle negative number
             bitSet.clear(31);
-            if(bitSet.isEmpty()){
+            if (bitSet.isEmpty()) {
                 return SetCC.ExtendMinValue;
-            }
-            else {
+            } else {
                 long l = bitSet.toLongArray()[0];
-                return toIntExact(l) +SetCC.ExtendMinValue;
+                return toIntExact(l) + SetCC.ExtendMinValue;
             }
-        }
-        else{
+        } else {
             //handle positive number
             long l = bitSet.toLongArray()[0];
             return toIntExact(l);
@@ -174,11 +165,11 @@ public class BitConversion {
      * Converts an integer to a binary string, and 0 pads up to the number
      * of bits. For instance, calling toBinaryString(3, 6) will return 000011.
      *
-     * @param value A decimal number
+     * @param value        A decimal number
      * @param numberOfBits The bit of binary number
      * @return The binary string representation
      */
-    public static String toBinaryString(int value, int numberOfBits){
+    public static String toBinaryString(int value, int numberOfBits) {
         BitSet bits = convert(value);
         return toBinaryString(bits, numberOfBits);
     }
@@ -190,10 +181,10 @@ public class BitConversion {
      * @return The binary string representation
      * @throws IllegalOpcode An instruction must be binary.
      */
-    public static BitSet convert(String binaryString) throws IllegalValue{
-        try{
+    public static BitSet convert(String binaryString) throws IllegalValue {
+        try {
             Integer.parseInt(binaryString, 2);
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             String mess = String.format("%s is not binary", binaryString);
             throw new IllegalValue(mess);
         }
@@ -205,6 +196,7 @@ public class BitConversion {
         }
         return bits;
     }
+
     /**
      * Converts a binary String to Integer
      *

@@ -1,7 +1,7 @@
 package edu.gw.csci.simulator.gui;
 
 public class PreStoreProgram {
-    public static void SetProgramLS(Program program){
+    public static void SetProgramLS(Program program) {
         program.appendLine("0000110000011001");//LDA R0,0,25 0000110000011001 R0=25
         program.appendLine("0000100000010100");//STR R0,0,20 0000100000010100 LOC(20)=25, MBR=25
         program.appendLine("0000110000000011");//LDA R0,0,3 0000110000000011 R0=3
@@ -13,7 +13,8 @@ public class PreStoreProgram {
         program.appendLine("0000101001010001");//STR R2,1,17 0000101001010001 LOC(17+X1)=29, LOC(20)=29, MBR=29
         program.appendLine("1000100001110100");//STX X1,20,1 1000100001110100 LOC(LOC(20))=3, LOC(29)=3, MAR=20, MBR=3
     }
-    public static void SetProgram1(Program program){
+
+    public static void SetProgram1(Program program) {
         program.appendLine("1000010001001000");
         program.appendLine("1000010010001001");
         program.appendLine("1100010000000000");
@@ -76,7 +77,7 @@ public class PreStoreProgram {
         program.appendLine("1100101100000001");
     }
 
-    public static void SetProgram2(Program program){
+    public static void SetProgram2(Program program) {
         program.appendLine("1000010001001101");
         program.appendLine("1000010010001110");
         program.appendLine("1100010000000000");

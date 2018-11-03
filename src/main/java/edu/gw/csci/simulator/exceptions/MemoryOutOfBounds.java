@@ -34,6 +34,7 @@ package edu.gw.csci.simulator.exceptions;
 public class MemoryOutOfBounds extends SimulatorException {
 
     public static final int OP_CODE = 8;
+
     /**
      * Instantiate an error for memory out of bounds.
      *

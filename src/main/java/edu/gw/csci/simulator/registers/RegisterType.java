@@ -1,9 +1,7 @@
 package edu.gw.csci.simulator.registers;
 
-import edu.gw.csci.simulator.exceptions.IllegalOpcode;
 import edu.gw.csci.simulator.exceptions.IllegalRegisterAccess;
 import edu.gw.csci.simulator.exceptions.IllegalValue;
-import edu.gw.csci.simulator.exceptions.SimulatorException;
 
 /**
  * This framework defines the properties for all registers.
@@ -45,9 +43,9 @@ public enum RegisterType {
 
     public static RegisterType getGeneralPurpose(String index) throws IllegalRegisterAccess, IllegalValue {
         int i = 0;
-        try{
+        try {
             i = Integer.parseInt(index, 2);
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             String mess = String.format("General purpose register index: %s is not binary", i);
             throw new IllegalValue(mess);
         }
@@ -55,33 +53,40 @@ public enum RegisterType {
     }
 
     public static RegisterType getGeneralPurpose(int index) throws IllegalRegisterAccess {
-        switch (index){
-            case 0: return R0;
-            case 1: return R1;
-            case 2: return R2;
-            case 3: return R3;
+        switch (index) {
+            case 0:
+                return R0;
+            case 1:
+                return R1;
+            case 2:
+                return R2;
+            case 3:
+                return R3;
             default:
                 String mess = String.format("Index register index: %d out of bounds.", index);
                 throw new IllegalRegisterAccess(mess);
         }
     }
 
-    public static RegisterType getIndex(String index) throws IllegalRegisterAccess, IllegalValue{
+    public static RegisterType getIndex(String index) throws IllegalRegisterAccess, IllegalValue {
         int i = 0;
-        try{
+        try {
             i = Integer.parseInt(index, 2);
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             String mess = String.format("Index register index: %s is not binary", i);
             throw new IllegalValue(mess);
         }
         return getIndex(i);
     }
 
-    public static RegisterType getIndex(int index) throws IllegalRegisterAccess{
-        switch (index){
-            case 1: return X1;
-            case 2: return X2;
-            case 3: return X3;
+    public static RegisterType getIndex(int index) throws IllegalRegisterAccess {
+        switch (index) {
+            case 1:
+                return X1;
+            case 2:
+                return X2;
+            case 3:
+                return X3;
             default:
                 String mess = String.format("Index register index: %d out of bounds.", index);
                 throw new IllegalRegisterAccess(mess);

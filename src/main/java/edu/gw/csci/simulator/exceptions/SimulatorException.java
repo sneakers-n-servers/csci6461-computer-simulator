@@ -13,22 +13,28 @@ public abstract class SimulatorException extends RuntimeException {
 
     private static final Logger LOGGER = LogManager.getLogger(SimulatorException.class);
     private static TrapController trapController;
+    private boolean runRoutine = false;
 
     /**
      * This constructor logs the message to the console, and if set, will execute a
      * trap routine via the {@link TrapController}. If the trap controller is not
      * set the exception will only be raised. This feautre is useful for unit tests.
+     *
      * @param message The message to log
      */
     public SimulatorException(String message) {
         LOGGER.error(message);
         if (trapController != null)
-            trapController.setFault(getOpcode());
+            trapController.setFault(getOpcode(), runRoutine);
     }
 
     public abstract int getOpcode();
 
-    public static void setTrapController(TrapController trapController){
+    public static void setTrapController(TrapController trapController) {
         SimulatorException.trapController = trapController;
+    }
+
+    public void setRunRoutine(boolean runRoutine){
+        this.runRoutine = runRoutine;
     }
 }

@@ -1,20 +1,15 @@
 package edu.gw.csci.simulator.isa;
 
-import edu.gw.csci.simulator.isa.instructions.ArithmeticLogic;
 import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.Register;
 import edu.gw.csci.simulator.registers.RegisterType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.util.BitSet;
 
 public class SetCC {
 
-    public static final int MaxValue = (int)Math.pow(2,15)-1;
-    public static final int MinValue = (int)-Math.pow(2,15);
-    public static final int ExtendMaxValue = (int)Math.pow(2,31)-1;
-    public static final int ExtendMinValue = (int)-Math.pow(2,31);
+    public static final int MaxValue = (int) Math.pow(2, 15) - 1;
+    public static final int MinValue = (int) -Math.pow(2, 15);
+    public static final int ExtendMaxValue = (int) Math.pow(2, 31) - 1;
+    public static final int ExtendMinValue = (int) -Math.pow(2, 31);
     private static AllRegisters registers = new AllRegisters();
     private static Register CC = registers.getRegister(RegisterType.CC);
 

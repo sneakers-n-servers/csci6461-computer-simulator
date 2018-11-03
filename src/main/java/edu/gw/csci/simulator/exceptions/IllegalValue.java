@@ -10,7 +10,7 @@ public class IllegalValue extends SimulatorException {
 
     public static final int OP_CODE = 3;
 
-    public IllegalValue(String mess){
+    public IllegalValue(String mess) {
         super(mess);
     }
 

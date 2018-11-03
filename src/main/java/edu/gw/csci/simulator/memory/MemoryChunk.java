@@ -27,7 +27,7 @@ public class MemoryChunk implements Bits {
 
     @Override
     public void setData(BitSet bitSet) {
-        if (bitSet.length() > getSize()){
+        if (bitSet.length() > getSize()) {
             String mess = String.format(
                     "Binary value %s is larger than maximum %d",
                     BitConversion.toBinaryString(bitSet, bitSet.length()),

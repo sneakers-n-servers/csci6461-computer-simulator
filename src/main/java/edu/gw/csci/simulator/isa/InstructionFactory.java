@@ -6,11 +6,11 @@ public class InstructionFactory<I extends Instruction> {
 
     private Supplier<I> instruction;
 
-    public InstructionFactory(Supplier<I> instruction){
+    public InstructionFactory(Supplier<I> instruction) {
         this.instruction = instruction;
     }
 
-    public I create(String data){
+    public I create(String data) {
         I i = instruction.get();
         i.setData(data);
         return i;

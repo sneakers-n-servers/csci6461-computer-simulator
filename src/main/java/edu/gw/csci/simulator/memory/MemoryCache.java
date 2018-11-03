@@ -10,15 +10,15 @@ public class MemoryCache {
 
     private final static int DEFAULT_CACHE_SIZE = 16;
     private final int maxCacheSize;
-    private long cacheHit = 0, cacheMiss =0, totalRequests = 0;
+    private long cacheHit = 0, cacheMiss = 0, totalRequests = 0;
 
-    public MemoryCache(){
+    public MemoryCache() {
         this.cache = new LinkedList<>();
         this.lookup = new HashMap<>();
         this.maxCacheSize = DEFAULT_CACHE_SIZE;
     }
 
-    public MemoryCache(int cacheSize){
+    public MemoryCache(int cacheSize) {
         this.cache = new LinkedList<>();
         this.lookup = new HashMap<>();
         this.maxCacheSize = cacheSize;
@@ -29,19 +29,19 @@ public class MemoryCache {
      * value inserted will be evicted (FIFO).
      *
      * @param memoryIndex The index of memory cached
-     * @param data The to be stored by the call
+     * @param data        The to be stored by the call
      */
-    public void put(int memoryIndex, BitSet data){
-        if(cache.size() == maxCacheSize){
+    public void put(int memoryIndex, BitSet data) {
+        if (cache.size() == maxCacheSize) {
             //Pop the first off the queue
             cache.removeFirst();
 
             //Remove the entry pointing to zero, and reduce downwards
             Integer removeIndex = null;
-            for(Map.Entry<Integer, Integer> entry: lookup.entrySet()){
-                if(entry.getValue() == 0){
+            for (Map.Entry<Integer, Integer> entry : lookup.entrySet()) {
+                if (entry.getValue() == 0) {
                     removeIndex = entry.getKey();
-                }else{
+                } else {
                     Integer newValue = entry.getValue() - 1;
                     lookup.put(entry.getKey(), newValue);
                 }
@@ -55,12 +55,13 @@ public class MemoryCache {
     /**
      * Gets the memory index from cache, if present, and adjusts counters
      * for hit/miss.
+     *
      * @param memoryIndex The memory index to fetch
      * @return The memory data, if present.
      */
     public Optional<BitSet> get(int memoryIndex) {
         totalRequests++;
-        if(lookup.containsKey(memoryIndex)){
+        if (lookup.containsKey(memoryIndex)) {
             cacheHit++;
             BitSet data = cache.get(lookup.get(memoryIndex));
             return Optional.of(data);
@@ -69,11 +70,11 @@ public class MemoryCache {
         return Optional.empty();
     }
 
-    public long getSize(){
+    public long getSize() {
         return this.cache.size();
     }
 
-    public int getMaxCacheSize(){
+    public int getMaxCacheSize() {
         return this.maxCacheSize;
     }
 
@@ -89,7 +90,7 @@ public class MemoryCache {
         return cacheHit;
     }
 
-    public List<BitSet> getCacheData(){
+    public List<BitSet> getCacheData() {
         List<BitSet> ret = new ArrayList<>();
         ret.addAll(cache);
         return ret;
