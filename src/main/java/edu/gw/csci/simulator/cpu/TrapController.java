@@ -97,7 +97,7 @@ public class TrapController {
                 String.format("Exception occured, executing fault location: %d", HALT_POINTER_FAULT_LOCATION);
 
         LOGGER.info(mess);
-        cpu.execute(false);
+        cpu.execute();
     }
 
 

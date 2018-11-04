@@ -59,9 +59,6 @@ public class CPU {
         this.program = program;
     }
 
-    public void execute(){
-        execute(true);
-    }
 
     /**
      * This method executes instruction in IR register until a HLT instruction is received.
@@ -69,17 +66,17 @@ public class CPU {
      * declare one in the program. The GUI restricts one ability to call this function
      * unless the machine has been initialized, and a program has been set.
      */
-    public void execute(boolean throwReserve) {
+    public void execute() {
         //Set the first instruction to null
         Instruction instruction = null;
 
         //Iterate until we get a halt
         while (instruction == null || instruction.getInstructionType() != InstructionType.HLT) {
             try {
-                instruction = getNextInstruction(registers, throwReserve);
+                instruction = getNextInstruction(registers, true);
                 instruction.execute(memory, registers, this);
                 incrementPC();
-                instruction = getNextInstruction(registers ,throwReserve);
+                instruction = getNextInstruction(registers ,true);
             } catch (SimulatorException e) {
                 //Load the saved off PC
                 BitSet oldPC = memory.fetch(TrapController.TRAP_PC_LOCATION, false);
