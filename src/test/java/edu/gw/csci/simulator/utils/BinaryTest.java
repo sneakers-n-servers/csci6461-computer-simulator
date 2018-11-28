@@ -26,4 +26,10 @@ public class BinaryTest {
         int a = BitConversion.fromBinaryStringToInt(s);
         System.out.println(a);
     }
+    @Test
+    public void test3(){
+        String a ="111";
+        System.out.println(BinaryCalculate.BinaryAddOne(a));
+        System.out.println(BinaryCalculate.BinaryMinusOne(a));
+    }
 }

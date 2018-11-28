@@ -48,6 +48,15 @@ public class Decoder {
         //IO
         instructions.put(InstructionType.IN, new InstructionFactory<>(IO.IN::new));
         instructions.put(InstructionType.OUT, new InstructionFactory<>(IO.OUT::new));
+
+        //FloatingPointVector
+        instructions.put(InstructionType.FADD, new InstructionFactory<>(FloatingPointVector.FADD::new));
+        instructions.put(InstructionType.FSUB, new InstructionFactory<>(FloatingPointVector.FSUB::new));
+        instructions.put(InstructionType.VADD, new InstructionFactory<>(FloatingPointVector.VADD::new));
+        instructions.put(InstructionType.VSUB, new InstructionFactory<>(FloatingPointVector.VSUB::new));
+        instructions.put(InstructionType.CNVRT, new InstructionFactory<>(FloatingPointVector.CNVRT::new));
+        instructions.put(InstructionType.LDFR, new InstructionFactory<>(FloatingPointVector.LDFR::new));
+        instructions.put(InstructionType.STFR, new InstructionFactory<>(FloatingPointVector.STFR::new));
     }
 
     /**

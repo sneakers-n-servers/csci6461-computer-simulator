@@ -10,7 +10,7 @@ import java.util.stream.IntStream;
 import static java.lang.Math.toIntExact;
 
 /**
- * Methods to facilitate access of inidividual bits within a word.
+ * Methods to facilitate access of individual bits within a word.
  *
  * @version 20180918
  */

@@ -139,7 +139,7 @@ public class AllMemory {
             throw new MemoryOutOfBounds(mess);
         }
         if (throwReserve && index <= highestReservedMemory) {
-            String mess = String.format("MemoryOutOfBounds: Will not store/fetch index: %d from reserved memory location 0-5", index);
+            String mess = String.format("IllegalMemoryAccess: Will not store/fetch index: %d from reserved memory location 0-5", index);
             throw new IllegalMemoryAccess(mess);
         }
     }

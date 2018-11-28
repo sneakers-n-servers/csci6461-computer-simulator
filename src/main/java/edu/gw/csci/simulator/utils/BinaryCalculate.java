@@ -30,13 +30,29 @@ public class BinaryCalculate {
         return result.toString();
 
     }
-
+    public static String BinaryAddOne(String a){
+        StringBuilder b = new StringBuilder();
+        b.append("1");
+        while(b.length()<a.length()){
+            b.insert(0,"0");
+        }
+        String add =  add(a,b.toString());
+        return add.substring(add.length()-a.length());
+    }
     private static String minus(String a, String b) {
         int MinusB = -BitConversion.fromBinaryStringToInt(b);
         String NegativeB = BitConversion.toBinaryString(MinusB, b.length());
         return add(a, NegativeB);
     }
-
+    public static String BinaryMinusOne(String a) {
+        StringBuilder b = new StringBuilder();
+        b.append("1");
+        while(b.length()<a.length()){
+            b.insert(0,"0");
+        }
+        String mius =  minus(a,b.toString());
+        return mius.substring(mius.length()-a.length());
+    }
     private static int CharToInt(char c) {
         if (c == '1') {
             return 1;

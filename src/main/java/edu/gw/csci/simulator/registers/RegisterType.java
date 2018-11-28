@@ -22,7 +22,9 @@ public enum RegisterType {
     R3("General Purpose Register", 16),
     X1("Index Register", 16),
     X2("Index Register", 16),
-    X3("Index Register", 16);
+    X3("Index Register", 16),
+    FR0("Floating Point Register",16),
+    FR1("Floating Point Register",16);
 
     private final String description;
     private final int size;
@@ -63,7 +65,7 @@ public enum RegisterType {
             case 3:
                 return R3;
             default:
-                String mess = String.format("Index register index: %d out of bounds.", index);
+                String mess = String.format("General purpose register index: %d out of bounds.", index);
                 throw new IllegalRegisterAccess(mess);
         }
     }
@@ -89,6 +91,28 @@ public enum RegisterType {
                 return X3;
             default:
                 String mess = String.format("Index register index: %d out of bounds.", index);
+                throw new IllegalRegisterAccess(mess);
+        }
+    }
+
+    public static RegisterType getFloatingPoint(String index) throws IllegalRegisterAccess {
+        int i = 0;
+        try {
+            i = Integer.parseInt(index, 2);
+        } catch (NumberFormatException e) {
+            String mess = String.format("Floating Point register index: %s is not binary", i);
+            throw new IllegalValue(mess);
+        }
+        return getFloatingPoint(i);
+    }
+    public static RegisterType getFloatingPoint(int index) throws IllegalRegisterAccess {
+        switch (index) {
+            case 0:
+                return FR0;
+            case 1:
+                return FR1;
+            default:
+                String mess = String.format("Floating Point register index: %d out of bounds.", index);
                 throw new IllegalRegisterAccess(mess);
         }
     }

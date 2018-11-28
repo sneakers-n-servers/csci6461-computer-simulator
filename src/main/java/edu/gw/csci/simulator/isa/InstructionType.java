@@ -50,7 +50,16 @@ public enum InstructionType {
 
     //IO instructions
     IN(61),
-    OUT(62);
+    OUT(62),
+
+    //Floating Point Instructions/Vector Operations:
+    FADD(33),
+    FSUB(34),
+    VADD(43),
+    VSUB(44),
+    CNVRT(37),
+    LDFR(50),
+    STFR(51);
 
     private final int opCode;
     private final String binary;
