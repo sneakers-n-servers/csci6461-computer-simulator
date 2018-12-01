@@ -1,5 +1,6 @@
 package edu.gw.csci.simulator.utils;
 
+import edu.gw.csci.simulator.cpu.PipeLine;
 import org.junit.Test;
 import org.junit.Assert;
 
@@ -71,5 +72,25 @@ public class FloatTest {
         String s = FloatingPointConvert.DecimalRepresentationConvertToString(f);
         System.out.println(s);
         System.out.println(FloatingPointConvert.DecimalRepresentationConvert(s));
+    }
+
+    @Test
+    public void testPipeline(){
+        float f1 = 5.5f;
+        String s1 = FloatingPointConvert.FloatConvertToString(f1);
+        float f2 = -5.25f;
+        String s2 = FloatingPointConvert.FloatConvertToString(f2);
+        float f3 = 1.0f;
+        String s3 = FloatingPointConvert.FloatConvertToString(f3);
+        FloatingPointsCalculate[] floatingPointsCalculates = {
+                new FloatingPointsCalculate(s1,s2,false),
+                new FloatingPointsCalculate(s1,s2,true),
+                new FloatingPointsCalculate(s1,s3,false),
+                new FloatingPointsCalculate(s2,s3,true),
+                new FloatingPointsCalculate(s1,s3,true),
+                new FloatingPointsCalculate(s2,s3,false)
+        };
+        PipeLine pipeLine = new PipeLine(floatingPointsCalculates,10);
+        pipeLine.pipeline();
     }
 }

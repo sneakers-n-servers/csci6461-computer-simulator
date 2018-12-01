@@ -55,6 +55,8 @@ public class FloatingPointConvert {
 
         if(isAllZero(exponentString)){
             mantissa = MantissaConvert(mantissaString);
+//            String mess = String.format("(-1)^%d * %f * 2^%d",S,mantissa,exponent);
+//            System.out.println(mess);
         }
         else if(isAllOne(exponentString)){
             if(isAllZero(mantissaString)){
@@ -71,6 +73,8 @@ public class FloatingPointConvert {
         }
         else{
             mantissa = 1+MantissaConvert(mantissaString);
+//            String mess = String.format("(-1)^%d * %f * 2^%d",S,mantissa,exponent-bias);
+//            System.out.println(mess);
             mantissa = (float)Math.pow(-1,S)*mantissa*(float)Math.pow(2,exponent-bias);
         }
 
@@ -141,5 +145,16 @@ public class FloatingPointConvert {
             }
         }
         return s2.toString();
+    }
+
+    public static BitSet negative(BitSet bits){
+        BitSet temp = (BitSet)bits.clone();
+        if(temp.get(15)){
+            bits.clear(15);
+        }
+        else {
+            temp.set(15);
+        }
+        return temp;
     }
 }

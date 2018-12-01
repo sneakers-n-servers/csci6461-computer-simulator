@@ -72,6 +72,7 @@
                     <TableColumn fx:id="registerDescriptionColumn" text="Description" editable="false"/>
                     <TableColumn fx:id="registerBinaryColumn" text="Binary"/>
                     <TableColumn fx:id="registerDecimalColumn" sortable="false" text="Decimal"/>
+                    <TableColumn fx:id="registerFloatColumn" sortable="false" text="Float"/>
                 </columns>
                 <columnResizePolicy>
                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
@@ -108,6 +109,7 @@
                                 <TableColumn fx:id="memoryIndexColumn" text="Index" editable="false"/>
                                 <TableColumn fx:id="memoryBinaryColumn" sortable="false" text="Binary"/>
                                 <TableColumn fx:id="memoryDecimalColumn" sortable="false" text="Decimal"/>
+                                <TableColumn fx:id="memoryFloatColumn" sortable="false" text="Float"/>
                             </columns>
                             <columnResizePolicy>
                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
@@ -150,6 +152,8 @@
 
                 <!--Steps the program-->
                 <Button id="step-button" text="Step" onAction="#stepProgram"/>
+
+                <Button id="pipeline" text="Pipeline" onAction="#pipelineTest"/>
 
                 <BorderPane.margin>
                     <Insets bottom="15"/>

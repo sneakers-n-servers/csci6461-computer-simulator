@@ -2,6 +2,7 @@ package edu.gw.csci.simulator.registers;
 
 
 import edu.gw.csci.simulator.isa.SetCC;
+import edu.gw.csci.simulator.utils.FloatingPointsCalculate;
 import javafx.scene.control.TableView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -90,6 +91,14 @@ public class AllRegisters {
         CC.setData(bits);
     }
 
+    public void Over_UnderFlow(FloatingPointsCalculate floatingPointsCalculate) {
+        if(floatingPointsCalculate.isOVERFLOW()){
+            OVERFLOW();
+        }
+        else if(floatingPointsCalculate.isUNDERFLOW()){
+            UNDERFLOW();
+        }
+    }
     public boolean checkOverUnderFlow(int value) {
         if (value > SetCC.MaxValue || value < SetCC.MinValue) {
             OVERFLOW();

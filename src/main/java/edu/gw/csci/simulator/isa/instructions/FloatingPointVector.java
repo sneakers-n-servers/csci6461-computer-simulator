@@ -10,6 +10,7 @@ import edu.gw.csci.simulator.registers.RegisterType;
 import edu.gw.csci.simulator.utils.BinaryCalculate;
 import edu.gw.csci.simulator.utils.BitConversion;
 import edu.gw.csci.simulator.utils.FloatingPointConvert;
+import edu.gw.csci.simulator.utils.FloatingPointsCalculate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,6 +33,7 @@ public class FloatingPointVector {
             BitSet RegisterBit = FR.getData();
             BitSet MemoryBit = memory.fetch(EA);
 
+
             float RegisterValue = FloatingPointConvert.FloatConvert(RegisterBit);
             float MemoryValue = FloatingPointConvert.FloatConvert(MemoryBit);
 
@@ -42,9 +44,11 @@ public class FloatingPointVector {
                 FR.setData(RegisterBit);
             }
             else {
-                FR.setData(FloatingPointConvert.FloatConvert(RegisterValue+MemoryValue));
+                FloatingPointsCalculate floatingPointsCalculate = new FloatingPointsCalculate(RegisterBit,MemoryBit,true);
+                FR.setData(floatingPointsCalculate.getResult());
+                registers.Over_UnderFlow(floatingPointsCalculate);
             }
-            String mess = String.format("FADD: %s = %f + %f = %f",FR.getName(),RegisterValue,MemoryValue,RegisterValue+MemoryValue);
+            String mess = String.format("FADD: %s = %f + %f = %f",FR.getName(),RegisterValue,MemoryValue,FloatingPointConvert.FloatConvert(FR.getData()));
             LOGGER.info(mess);
         }
 
@@ -76,15 +80,17 @@ public class FloatingPointVector {
             float MemoryValue = FloatingPointConvert.FloatConvert(MemoryBit);
 
             if(RegisterValue==0){
-                FR.setData(FloatingPointConvert.FloatConvert(-MemoryValue));
+                FR.setData(FloatingPointConvert.negative(MemoryBit));
             }
             else if(MemoryValue==0){
                 FR.setData(RegisterBit);
             }
             else {
-                FR.setData(FloatingPointConvert.FloatConvert(RegisterValue-MemoryValue));
+                FloatingPointsCalculate floatingPointsCalculate = new FloatingPointsCalculate(RegisterBit,MemoryBit,false);
+                FR.setData(floatingPointsCalculate.getResult());
+                registers.Over_UnderFlow(floatingPointsCalculate);
             }
-            String mess = String.format("FSUB: %s = %f - %f = %f",FR.getName(),RegisterValue,MemoryValue,RegisterValue-MemoryValue);
+            String mess = String.format("FSUB: %s = %f - %f = %f",FR.getName(),RegisterValue,MemoryValue,FloatingPointConvert.FloatConvert(FR.getData()));
             LOGGER.info(mess);
         }
 

@@ -30,6 +30,10 @@ public class BinaryCalculate {
         return result.toString();
 
     }
+    public static String BinaryAdd(String a, String b){
+        String add = add(a,b);
+        return add.substring(add.length()-a.length());
+    }
     public static String BinaryAddOne(String a){
         StringBuilder b = new StringBuilder();
         b.append("1");
@@ -43,6 +47,10 @@ public class BinaryCalculate {
         int MinusB = -BitConversion.fromBinaryStringToInt(b);
         String NegativeB = BitConversion.toBinaryString(MinusB, b.length());
         return add(a, NegativeB);
+    }
+    public static String BinaryMinus(String a, String b){
+        String mius =  minus(a,b);
+        return mius.substring(mius.length()-a.length());
     }
     public static String BinaryMinusOne(String a) {
         StringBuilder b = new StringBuilder();
@@ -90,12 +98,23 @@ public class BinaryCalculate {
         return BitConversion.convert(minus);
     }
 
+
+    public static String BinaryLeftShift(String s) {
+        s = s.substring(1) + "0";
+        return s;
+    }
+    public static String BinaryLeftShift(String s,int count){
+        for (int i = 0; i < count; i++) {
+            s = BinaryLeftShift(s);
+        }
+        return s;
+    }
+
     public static String BinaryLeftShift(String s, AllRegisters registers) {
         if (!s.substring(0, 1).equals(s.substring(1, 2))) {
             registers.OVERFLOW();
         }
-        s = s.substring(1) + "0";
-        return s;
+        return BinaryLeftShift(s);
     }
 
     public static String BinaryLeftShift(String s, int count, AllRegisters registers) {
@@ -151,5 +170,18 @@ public class BinaryCalculate {
             s = BinaryRightRotate(s);
         }
         return s;
+    }
+
+    public static String flip(String s){
+        StringBuilder s2 = new StringBuilder();
+        for (int i = 0; i < s.length(); i++) {
+            if(s.charAt(i)=='1'){
+                s2.append("0");
+            }
+            else {
+                s2.append("1");
+            }
+        }
+        return s2.toString();
     }
 }

@@ -3,6 +3,7 @@ package edu.gw.csci.simulator.gui;
 import edu.gw.csci.simulator.Bits;
 import edu.gw.csci.simulator.exceptions.IllegalValue;
 import edu.gw.csci.simulator.utils.BitConversion;
+import edu.gw.csci.simulator.utils.FloatingPointConvert;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.util.BitSet;
@@ -48,6 +49,12 @@ public class BitDecorator<B extends Bits> {
         BitSet bitSet = bitType.getData();
         String str = (bitSet == null) ? NULL_STRING : Integer.toString(BitConversion.convert(bitSet));
         //String str = (bitSet == null) ? NULL_STRING : Integer.toString(BitConversion.convert(bitSet));
+        return new SimpleStringProperty(str);
+    }
+
+    public SimpleStringProperty toFloatObservableString() {
+        BitSet bitSet = bitType.getData();
+        String str = (bitSet == null) ? NULL_STRING : Float.toString(FloatingPointConvert.FloatConvert(bitSet));
         return new SimpleStringProperty(str);
     }
 

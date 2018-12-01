@@ -1,6 +1,7 @@
 package edu.gw.csci.simulator.gui;
 
 import edu.gw.csci.simulator.cpu.CPU;
+import edu.gw.csci.simulator.cpu.PipeLine;
 import edu.gw.csci.simulator.cpu.SimulatorFileReader;
 import edu.gw.csci.simulator.cpu.TrapController;
 import edu.gw.csci.simulator.exceptions.SimulatorException;
@@ -9,6 +10,8 @@ import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.Register;
 import edu.gw.csci.simulator.registers.RegisterDecorator;
 import edu.gw.csci.simulator.registers.RegisterType;
+import edu.gw.csci.simulator.utils.FloatingPointConvert;
+import edu.gw.csci.simulator.utils.FloatingPointsCalculate;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -39,7 +42,8 @@ public class Controller {
     private TableColumn<Register, String> registerNameColumn,
             registerDescriptionColumn,
             registerBinaryColumn,
-            registerDecimalColumn;
+            registerDecimalColumn,
+            registerFloatColumn;
 
     @FXML
     private Pagination memoryPagination;
@@ -50,7 +54,8 @@ public class Controller {
     @FXML
     private TableColumn<MemoryChunk, String> memoryIndexColumn,
             memoryBinaryColumn,
-            memoryDecimalColumn;
+            memoryDecimalColumn,
+            memoryFloatColumn;
 
     @FXML
     private ComboBox<String> programNameSelector;
@@ -166,6 +171,21 @@ public class Controller {
             LOGGER.info("Setting register {} to {}", register.getName(), rd.toInt());
         });
 
+        registerFloatColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toFloatObservableString());
+        registerFloatColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        registerFloatColumn.setOnEditCommit((TableColumn.CellEditEvent<Register, String> t) -> {
+            if (!initialized) {
+                LOGGER.error("Initialize the machine before editing");
+                registerTable.refresh();
+                return;
+            }
+            Register register = t.getTableView().getItems().get(t.getTablePosition().getRow());
+            //RegisterDecorator rd = new RegisterDecorator(register);
+            //rd.setIntegerValue(t.getNewValue());
+            register.setData(FloatingPointConvert.FloatConvert(Float.valueOf(t.getNewValue())));
+            LOGGER.info("Setting register {} to {}", register.getName(), FloatingPointConvert.FloatConvert(register.getData()));
+        });
+
         ObservableList<Register> registerList = FXCollections.observableArrayList();
         for (Map.Entry<RegisterType, Register> registerEntry : allRegisters.getRegisters()) {
             registerList.add(registerEntry.getValue());
@@ -193,7 +213,7 @@ public class Controller {
             }
             int tablePosition = t.getTablePosition().getRow();
             if (tablePosition == TrapController.HALT_LOCATION) {
-                LOGGER.warn("Index 6 is reserved for halt during trap codes, this is not recomended");
+                LOGGER.warn("Index 6 is reserved for halt during trap codes, this is not recommended");
             }
             MemoryChunk mem = t.getTableView().getItems().get(tablePosition);
             MemoryChunkDecorator md = new MemoryChunkDecorator(mem);
@@ -212,12 +232,31 @@ public class Controller {
             }
             int tablePosition = t.getTablePosition().getRow();
             if (tablePosition == TrapController.HALT_LOCATION) {
-                LOGGER.warn("Index 6 is reserved for halt during trap codes, this is not recomended");
+                LOGGER.warn("Index 6 is reserved for halt during trap codes, this is not recommended");
             }
             MemoryChunk mem = t.getTableView().getItems().get(tablePosition);
             MemoryChunkDecorator md = new MemoryChunkDecorator(mem);
             md.setIntegerValue(t.getNewValue());
             LOGGER.debug("Setting memory location {} to {}", md.getIndex().toString(), md.toInt());
+        });
+
+        memoryFloatColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toFloatObservableString());
+        memoryFloatColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        memoryFloatColumn.setOnEditCommit((TableColumn.CellEditEvent<MemoryChunk, String> t) -> {
+            if (!initialized) {
+                LOGGER.error("Initialize the machine before editing");
+                memoryTable.refresh();
+                return;
+            }
+            int tablePosition = t.getTablePosition().getRow();
+            if (tablePosition == TrapController.HALT_LOCATION) {
+                LOGGER.warn("Index 6 is reserved for halt during trap codes, this is not recommended");
+            }
+            MemoryChunk mem = t.getTableView().getItems().get(tablePosition);
+            MemoryChunkDecorator md = new MemoryChunkDecorator(mem);
+            md.setValue(FloatingPointConvert.FloatConvert(Float.valueOf(t.getNewValue())));
+            //md.setIntegerValue(t.getNewValue());
+            LOGGER.debug("Setting memory location {} to {}", md.getIndex().toString(), FloatingPointConvert.FloatConvert(md.getData()));
         });
 
         ObservableList<MemoryChunk> memoryList = FXCollections.observableArrayList();
@@ -432,4 +471,23 @@ public class Controller {
         }
         cpu.consoleInput.add(String.valueOf(SimulatorFileReader.getCode(word)));
     }
+    @FXML
+    private void pipelineTest(){
+        float f1 = 5.5f;
+        String s1 = FloatingPointConvert.FloatConvertToString(f1);
+        float f2 = -5.25f;
+        String s2 = FloatingPointConvert.FloatConvertToString(f2);
+        float f3 = 1.0f;
+        String s3 = FloatingPointConvert.FloatConvertToString(f3);
+        FloatingPointsCalculate[] floatingPointsCalculates = {
+                new FloatingPointsCalculate(s1,s2,false), //5.5 - (-5.25)
+                new FloatingPointsCalculate(s1,s2,true),  //5.5 + (-5.25)
+                new FloatingPointsCalculate(s1,s3,false), //5.5 - 1.0
+                new FloatingPointsCalculate(s2,s3,true),  //-5.25 + 1.0
+                new FloatingPointsCalculate(s1,s3,true),  //5.5 + 1.0
+                new FloatingPointsCalculate(s2,s3,false)  //-5.25 - 1.0
+        };
+        PipeLine pipeLine = new PipeLine(floatingPointsCalculates,10);
+        pipeLine.pipeline();
+        }
 }

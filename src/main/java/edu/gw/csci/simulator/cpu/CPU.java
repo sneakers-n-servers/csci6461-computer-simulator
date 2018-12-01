@@ -167,7 +167,8 @@ public class CPU {
         try {
             Instruction instruction = getNextInstruction(registers, true);
             instruction.execute(memory, registers, this);
-            incrementPC();
+            if(!instruction.getInstructionType().equals(InstructionType.HLT))
+                incrementPC();
         } catch (SimulatorException e) {
             //Load the old PC
             BitSet oldPC = memory.fetch(TrapController.TRAP_PC_LOCATION, false);
