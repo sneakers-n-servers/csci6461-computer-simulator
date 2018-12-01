@@ -116,6 +116,7 @@ public class PreStoreProgram {
         program.appendLine("0000010100010000");
         program.appendLine("1100100100000001");
     }
+
     public static void SetProgram3(Program program) {
         program.appendLine("0001100000000000");    // AIR r = 0, x = 0, address = 0, [I = 0];    NOP
         program.appendLine("0001100000000000");    // AIR r = 0, x = 0, address = 0, [I = 0];    NOP
