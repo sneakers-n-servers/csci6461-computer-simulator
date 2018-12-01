@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  * This class "connects" the GUI to the simulated computer.
  * It translates user events to machine operations and vice-versa.
  *
- * @version 20180918
+ * @version 20181201
  */
 public class Controller {
 
@@ -446,6 +446,15 @@ public class Controller {
         Program program = programs.get("Program2");
         cpu.setProgram(program);
         cpu.loadProgram(64);
+    }
+
+    @FXML
+    private void LoadProgram3() {
+      //only use to load program3
+      LOGGER.info("Loading Program3");
+      Program program = programs.get("Program3");
+      cpu.setProgram(program);
+      cpu.loadProgram(64);
     }
 
     @FXML
