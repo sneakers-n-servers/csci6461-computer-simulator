@@ -116,4 +116,70 @@ public class PreStoreProgram {
         program.appendLine("0000010100010000");
         program.appendLine("1100100100000001");
     }
+    public static void SetProgram3(Program program) {
+        program.appendLine("0001100000000000");    // AIR r = 0, x = 0, address = 0, [I = 0];    NOP
+        program.appendLine("0001100000000000");    // AIR r = 0, x = 0, address = 0, [I = 0];    NOP
+        program.appendLine("0001100000000000");    // AIR r = 0, x = 0, address = 0, [I = 0];    NOP
+        program.appendLine("0001100000000000");    // AIR r = 0, x = 0, address = 0, [I = 0];    NOP
+        program.appendLine("0001100000000000");    // AIR r = 0, x = 0, address = 0, [I = 0];    NOP
+        program.appendLine("0001100000000000");    // AIR r = 0, x = 0, address = 0, [I = 0];    NOP
+        program.appendLine("0001100000000000");    // AIR r = 0, x = 0, address = 0, [I = 0];    NOP
+        program.appendLine("1000010011110111");    // LDX r = 0, x = 3, address = 55, [I = 0];    program ix <-- memory location of program's first instruction (:START)
+        program.appendLine("0000110000000001");    // LDA r = 0, x = 0, address = 1, [I = 0];    prepare toFloat conversion flag
+        program.appendLine("0111110000111001");    // CNVRT r = 0, x = 0, address = 57, [I = 0];    toFloat( *(vectors length) )
+        program.appendLine("1000110000111010");    // VADD r = 0, x = 0, address = 58, [I = 0];    add vectors
+        program.appendLine("1001000000111010");    // VSUB r = 0, x = 0, address = 58, [I = 0];    subtract vectors; ie, back to original
+        program.appendLine("1000010001111000");    // LDX r = 0, x = 1, address = 56, [I = 0];    data ix <-- memory location of first int
+        program.appendLine("0000110000000001");    // LDA r = 0, x = 0, address = 1, [I = 0];    prepare toFloat conversion flag
+        program.appendLine("0111110001000000");    // CNVRT r = 0, x = 1, address = 0, [I = 0];    toFloat( *(ints for float) )
+        program.appendLine("1010010000110110");    // STFR r = 0, x = 0, address = 54, [I = 0];    float --> scratch
+        program.appendLine("0111110001000001");    // CNVRT r = 0, x = 1, address = 1, [I = 0];    toFloat( *(ints for float + 1) )
+        program.appendLine("0110110000110110");    // FADD r = 0, x = 0, address = 54, [I = 0];    += scratch
+        program.appendLine("0111000000110110");    // FSUB r = 0, x = 0, address = 54, [I = 0];    -= scratch; ie, back to second float
+        program.appendLine("0010110011000111");    // JMA r = 0, x = 3, address = 7, [I = 0];    goto :START
+        program.appendLine("0000000000000000");    //
+        program.appendLine("0000000000000000");    //
+        program.appendLine("0000000000000000");    //
+        program.appendLine("0000000000000000");    //
+        program.appendLine("0000000000000000");    //
+        program.appendLine("0000000000000011");    // int for float
+        program.appendLine("0000000000000100");    // int for float
+        program.appendLine("0000000000000000");    //
+        program.appendLine("0000000000000000");    //
+        program.appendLine("0000000000001010");    // vectors length
+        program.appendLine("0000000000000101");    // vector 1 [0]
+        program.appendLine("0000000000000101");    //
+        program.appendLine("0000000000000101");    //
+        program.appendLine("0000000000000101");    //
+        program.appendLine("0000000000000101");    //
+        program.appendLine("0000000000000101");    //
+        program.appendLine("0000000000000101");    //
+        program.appendLine("0000000000000101");    //
+        program.appendLine("0000000000000101");    //
+        program.appendLine("0000000000000101");    //
+        program.appendLine("0000000000001010");    // vector 2 [0]
+        program.appendLine("0000000000001010");    //
+        program.appendLine("0000000000001010");    //
+        program.appendLine("0000000000001010");    //
+        program.appendLine("0000000000001010");    //
+        program.appendLine("0000000000001010");    //
+        program.appendLine("0000000000001010");    //
+        program.appendLine("0000000000001010");    //
+        program.appendLine("0000000000001010");    //
+        program.appendLine("0000000000001010");    //
+        program.appendLine("0000000000000000");    //
+        program.appendLine("0000000000000000");    //
+        program.appendLine("0000000000000000");    //
+        program.appendLine("0000000000000000");    //
+        program.appendLine("0000000000000000");    // temp
+        program.appendLine("0000000000000000");    // *(program) - change only on fractional shift
+        program.appendLine("0000000000011001");    // *(ints for float)
+        program.appendLine("0000000000011101");    // *(vectors length)
+        program.appendLine("0000000000011110");    // vector 1 address
+        program.appendLine("0000000000101000");    // vector 2 address
+        program.appendLine("0000000000000000");    //
+        program.appendLine("0000000000000000");    //
+        program.appendLine("0000000000000000");    //
+        program.appendLine("0000000000000000");    //
+    }
 }
