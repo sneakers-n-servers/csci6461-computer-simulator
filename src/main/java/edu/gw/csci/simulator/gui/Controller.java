@@ -318,6 +318,10 @@ public class Controller {
         programs.put("Program2", program2);
         PreStoreProgram.SetProgram2(program2);
 
+        Program program3 = new Program("Program3");
+        programs.put("Program3", program3);
+        PreStoreProgram.SetProgram3(program3);
+
         Program programls = new Program("Programls");
         programs.put("Programls", programls);
         PreStoreProgram.SetProgramLS(programls);
