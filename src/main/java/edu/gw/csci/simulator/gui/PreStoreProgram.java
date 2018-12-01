@@ -146,50 +146,6 @@ public class PreStoreProgram {
         program.appendLine("0110110000110110");    // FADD r = 0, x = 0, address = 54, [I = 0];    += scratch
         program.appendLine("0111000000110110");    // FSUB r = 0, x = 0, address = 54, [I = 0];    -= scratch; ie, back to second float
         program.appendLine("0010110011000111");    // JMA r = 0, x = 3, address = 7, [I = 0];    goto :START
-        program.appendLine("0000000000000000");    //
-        program.appendLine("0000000000000000");    //
-        program.appendLine("0000000000000000");    //
-        program.appendLine("0000000000000000");    //
-        program.appendLine("0000000000000000");    //
-        program.appendLine("0000000000000011");    // int for float
-        program.appendLine("0000000000000100");    // int for float
-        program.appendLine("0000000000000000");    //
-        program.appendLine("0000000000000000");    //
-        program.appendLine("0000000000001010");    // vectors length
-        program.appendLine("0000000000000101");    // vector 1 [0]
-        program.appendLine("0000000000000101");    //
-        program.appendLine("0000000000000101");    //
-        program.appendLine("0000000000000101");    //
-        program.appendLine("0000000000000101");    //
-        program.appendLine("0000000000000101");    //
-        program.appendLine("0000000000000101");    //
-        program.appendLine("0000000000000101");    //
-        program.appendLine("0000000000000101");    //
-        program.appendLine("0000000000000101");    //
-        program.appendLine("0000000000001010");    // vector 2 [0]
-        program.appendLine("0000000000001010");    //
-        program.appendLine("0000000000001010");    //
-        program.appendLine("0000000000001010");    //
-        program.appendLine("0000000000001010");    //
-        program.appendLine("0000000000001010");    //
-        program.appendLine("0000000000001010");    //
-        program.appendLine("0000000000001010");    //
-        program.appendLine("0000000000001010");    //
-        program.appendLine("0000000000001010");    //
-        program.appendLine("0000000000000000");    //
-        program.appendLine("0000000000000000");    //
-        program.appendLine("0000000000000000");    //
-        program.appendLine("0000000000000000");    //
-        program.appendLine("0000000000000000");    // temp
-        program.appendLine("0000000000000000");    // *(program) - change only on fractional shift
-        program.appendLine("0000000000011001");    // *(ints for float)
-        program.appendLine("0000000000011101");    // *(vectors length)
-        program.appendLine("0000000000011110");    // vector 1 address
-        program.appendLine("0000000000101000");    // vector 2 address
-        program.appendLine("0000000000000000");    //
-        program.appendLine("0000000000000000");    //
-        program.appendLine("0000000000000000");    //
-        program.appendLine("0000000000000000");    //
     }
 
 }
