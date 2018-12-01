@@ -27,6 +27,7 @@ public class PreStoreMemory {
      * @param cpu
      */
     public static void PreStoreMemoryForProgram3(CPU cpu) {
+      // this currently assumes memory location 7 for the first instruction - see  SetProgram3
         cpu.StoreValue(25, 3);    // int for float
         cpu.StoreValue(26, 4);    // int for float
         cpu.StoreValue(29, 10);    // vectors length
@@ -51,7 +52,7 @@ public class PreStoreMemory {
         cpu.StoreValue(48, 10);    //
         cpu.StoreValue(49, 10);    //
         cpu.StoreValue(54, 0);    // temp
-        cpu.StoreValue(55, 0);    // *(program) - change only on fractional shift
+        cpu.StoreValue(55, 7);    // *(program) - change only on fractional shift
         cpu.StoreValue(56, 25);    // *(ints for float)
         cpu.StoreValue(57, 29);    // *(vectors length)
         cpu.StoreValue(58, 30);    // vector 1 address
