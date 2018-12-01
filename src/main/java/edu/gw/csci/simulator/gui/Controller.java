@@ -152,7 +152,7 @@ public class Controller {
             LOGGER.info("Setting register {} to {}", register.getName(), rd.toBinaryString());
         });
 
-        registerDecimalColumn.setCellValueFactory(cellData -> new BitDecorator<>(cellData.getValue()).toLongObservableString());
+        registerDecimalColumn.setCellValueFactory(cellData -> new RegisterDecorator(cellData.getValue()).toFloatOrIntObservableString());
         registerDecimalColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         registerDecimalColumn.setOnEditCommit((TableColumn.CellEditEvent<Register, String> t) -> {
             if (!initialized) {
@@ -162,7 +162,14 @@ public class Controller {
             }
             Register register = t.getTableView().getItems().get(t.getTablePosition().getRow());
             RegisterDecorator rd = new RegisterDecorator(register);
-            rd.setIntegerValue(t.getNewValue());
+
+            //Handle setting floats and ints
+            if(RegisterType.getFloatingPointTypes().contains(register.getRegisterType())){
+                rd.setFloatValue(t.getNewValue());
+            }else{
+                rd.setIntegerValue(t.getNewValue());
+            }
+
             LOGGER.info("Setting register {} to {}", register.getName(), rd.toInt());
         });
 

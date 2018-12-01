@@ -16,17 +16,14 @@ import org.apache.logging.log4j.Logger;
 import java.util.BitSet;
 
 public class FloatingPointVector {
+
     private static final Logger LOGGER = LogManager.getLogger(FloatingPointVector.class);
 
-    public static class FADD implements Instruction {
-
-        private InstructionType instructionType = InstructionType.FADD;
-
-        private String data;
+    public static class FADD extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String FRs = data.substring(0, 2);
+            String FRs = getData().substring(0, 2);
             Register FR = registers.getRegister(RegisterType.getFloatingPoint(FRs));
             int EA = memory.EA();
             BitSet RegisterBit = FR.getData();
@@ -47,26 +44,13 @@ public class FloatingPointVector {
             String mess = String.format("FADD: %s = %f + %f = %f",FR.getName(),RegisterValue,MemoryValue,RegisterValue+MemoryValue);
             LOGGER.info(mess);
         }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
-        }
     }
-    public static class FSUB implements Instruction {
 
-        private InstructionType instructionType = InstructionType.FSUB;
-
-        private String data;
+    public static class FSUB extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String FRs = data.substring(0, 2);
+            String FRs = getData().substring(0, 2);
             Register FR = registers.getRegister(RegisterType.getFloatingPoint(FRs));
             int EA = memory.EA();
             BitSet RegisterBit = FR.getData();
@@ -87,26 +71,13 @@ public class FloatingPointVector {
             String mess = String.format("FSUB: %s = %f - %f = %f",FR.getName(),RegisterValue,MemoryValue,RegisterValue-MemoryValue);
             LOGGER.info(mess);
         }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
-        }
     }
-    public static class VADD implements Instruction {
 
-        private InstructionType instructionType = InstructionType.VADD;
-
-        private String data;
+    public static class VADD extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String FRs = data.substring(0, 2);
+            String FRs = getData().substring(0, 2);
             Register FR = registers.getRegister(RegisterType.getFloatingPoint(FRs));
             int EA = memory.EA();
             int size = (int) FloatingPointConvert.FloatConvert(FR.getData());
@@ -123,26 +94,13 @@ public class FloatingPointVector {
                     size,Vector1,Vector2);
             LOGGER.info(mess);
         }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
-        }
     }
-    public static class VSUB implements Instruction {
 
-        private InstructionType instructionType = InstructionType.VSUB;
-
-        private String data;
+    public static class VSUB extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String FRs = data.substring(0, 2);
+            String FRs = getData().substring(0, 2);
             Register FR = registers.getRegister(RegisterType.getFloatingPoint(FRs));
             int EA = memory.EA();
             int size = (int) FloatingPointConvert.FloatConvert(FR.getData());
@@ -159,26 +117,13 @@ public class FloatingPointVector {
                     size,Vector1,Vector2);
             LOGGER.info(mess);
         }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
-        }
     }
-    public static class CNVRT implements Instruction {
 
-        private InstructionType instructionType = InstructionType.CNVRT;
-
-        private String data;
+    public static class CNVRT extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String Rs = data.substring(0, 2);
+            String Rs = getData().substring(0, 2);
             Register R = registers.getRegister(RegisterType.getGeneralPurpose(Rs));
             Register FR0 = registers.getRegister(RegisterType.FR0);
             int RegisterValue = BitConversion.convert(R.getData());
@@ -203,26 +148,13 @@ public class FloatingPointVector {
             }
             LOGGER.info(mess);
         }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
-        }
     }
-    public static class LDFR implements Instruction {
 
-        private InstructionType instructionType = InstructionType.LDFR;
-
-        private String data;
+    public static class LDFR extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String FRs = data.substring(0, 2);
+            String FRs = getData().substring(0, 2);
             Register FR = registers.getRegister(RegisterType.getFloatingPoint(FRs));
             int EA = memory.EA();
             int MemoryValue1 = BitConversion.convert(memory.fetch(EA));
@@ -233,26 +165,13 @@ public class FloatingPointVector {
             String mess = String.format("LDFR: Load %f from memory to %s",f,FR.getName());
             LOGGER.info(mess);
         }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
-        }
     }
-    public static class STFR implements Instruction {
 
-        private InstructionType instructionType = InstructionType.STFR;
-
-        private String data;
+    public static class STFR extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String FRs = data.substring(0, 2);
+            String FRs = getData().substring(0, 2);
             Register FR = registers.getRegister(RegisterType.getFloatingPoint(FRs));
             int EA = memory.EA();
             float f = FloatingPointConvert.FloatConvert(FR.getData());
@@ -264,16 +183,6 @@ public class FloatingPointVector {
 
             String mess = String.format("STFR: Store %f to memory from %s",f,FR.getName());
             LOGGER.info(mess);
-        }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
         }
     }
 }

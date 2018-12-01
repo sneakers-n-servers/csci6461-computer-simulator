@@ -3,6 +3,10 @@ package edu.gw.csci.simulator.registers;
 import edu.gw.csci.simulator.exceptions.IllegalRegisterAccess;
 import edu.gw.csci.simulator.exceptions.IllegalValue;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * This framework defines the properties for all registers.
  *
@@ -42,6 +46,10 @@ public enum RegisterType {
         return this.size;
     }
 
+    private static final Set<RegisterType> floatingPointTypes = new HashSet<>(Arrays.asList(FR0, FR1));
+    public static Set<RegisterType> getFloatingPointTypes(){
+        return floatingPointTypes;
+    }
 
     public static RegisterType getGeneralPurpose(String index) throws IllegalRegisterAccess, IllegalValue {
         int i = 0;

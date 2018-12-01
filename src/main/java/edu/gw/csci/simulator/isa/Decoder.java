@@ -66,12 +66,11 @@ public class Decoder {
      * @param data The BitSet from Memory, deemed to be an instruction
      * @return A new instance of the Instruction
      */
-
     public Instruction getInstruction(BitSet data) throws IllegalOpcode {
         String binary = BitConversion.toBinaryString(data, 16);
         String typeString = binary.substring(0, 6);
         String instructionData = binary.substring(6);
         InstructionType instructionType = InstructionType.getInstructionType(typeString);
-        return instructions.get(instructionType).create(instructionData);
+        return instructions.get(instructionType).create(instructionType, instructionData);
     }
 }

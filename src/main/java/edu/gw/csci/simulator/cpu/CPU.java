@@ -184,7 +184,7 @@ public class CPU {
         Register pc = registers.getRegister(RegisterType.PC);
         RegisterDecorator pcDecorator = new RegisterDecorator(pc);
         int count = pcDecorator.toInt();
-        pcDecorator.setValue(count + 1);
+        pcDecorator.setIntegerValue(count + 1);
     }
 
 

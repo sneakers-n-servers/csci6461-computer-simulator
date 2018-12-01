@@ -15,51 +15,22 @@ public class Miscellaneous {
 
     private static final Logger LOGGER = LogManager.getLogger(Miscellaneous.class);
 
-    public static class HLT implements Instruction {
-
-        private InstructionType instructionType = InstructionType.HLT;
-
-        private String data;
+    public static class HLT extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
             LOGGER.info("HLT");
-            //Thats it
-        }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
         }
     }
 
-    public static class TRAP implements Instruction {
-
-        private InstructionType instructionType = InstructionType.TRAP;
-
-        private String data;
+    public static class TRAP extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) throws SimulatorException {
             LOGGER.info("TRAP");
-            String trapString = data.substring(data.length() - 4);
+            String trapString = getData().substring(getData().length() - 4);
             int trapCode = BitConversion.fromBinaryStringToInt(trapString);
             throw TrapController.getRoutineException(trapCode);
-        }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
         }
     }
 }

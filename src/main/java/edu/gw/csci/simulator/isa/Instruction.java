@@ -5,11 +5,26 @@ import edu.gw.csci.simulator.memory.AllMemory;
 import edu.gw.csci.simulator.registers.AllRegisters;
 
 
-public interface Instruction {
+public abstract class Instruction {
 
-    void execute(AllMemory memory, AllRegisters registers, CPU cpu);
+    private InstructionType instructionType;
+    private String data;
 
-    void setData(String data);
+    public abstract void execute(AllMemory memory, AllRegisters registers, CPU cpu);
 
-    InstructionType getInstructionType();
+    public InstructionType getInstructionType() {
+        return instructionType;
+    }
+
+    public void setInstructionType(InstructionType instructionType) {
+        this.instructionType = instructionType;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
 }

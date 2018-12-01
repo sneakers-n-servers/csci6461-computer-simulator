@@ -2,7 +2,6 @@ package edu.gw.csci.simulator.isa.instructions;
 
 import edu.gw.csci.simulator.cpu.CPU;
 import edu.gw.csci.simulator.isa.Instruction;
-import edu.gw.csci.simulator.isa.InstructionType;
 import edu.gw.csci.simulator.memory.AllMemory;
 import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.Register;
@@ -15,149 +14,79 @@ public class LoadStore {
 
     private static final Logger LOGGER = LogManager.getLogger(LoadStore.class);
 
-    public static class LDR implements Instruction {
-
-        private InstructionType instructionType = InstructionType.LDR;
-
-        private String data;
+    public static class LDR extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String Rs = data.substring(0, 2);
+            String Rs = getData().substring(0, 2);
             Register R = registers.getRegister(RegisterType.getGeneralPurpose(Rs));
 
             R.setData(memory.fetch(memory.EA()));
             //registers.PCadder();
 
             LOGGER.info("LDR");
-            logger(data, registers);
-        }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
+            logger(getData(), registers);
         }
     }
 
-    public static class STR implements Instruction {
-
-        private InstructionType instructionType = InstructionType.STR;
-
-        private String data;
+    public static class STR extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String Rs = data.substring(0, 2);
+            String Rs = getData().substring(0, 2);
             Register R = registers.getRegister(RegisterType.getGeneralPurpose(Rs));
 
             memory.store(memory.EA(), R.getData());
             //registers.PCadder();
 
             LOGGER.info("STR");
-            logger(data, registers);
-        }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
+            logger(getData(), registers);
         }
     }
 
-    public static class LDA implements Instruction {
-
-        private InstructionType instructionType = InstructionType.LDA;
-
-        private String data;
+    public static class LDA extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
             LOGGER.info("LDA");
-            logger(data, registers);
+            logger(getData(), registers);
 
-            String Rs = data.substring(0, 2);
+            String Rs = getData().substring(0, 2);
             Register R = registers.getRegister(RegisterType.getGeneralPurpose(Rs));
             RegisterDecorator Rd = new RegisterDecorator(R);
 
-            Rd.setValue(memory.EA());
+            Rd.setIntegerValue(memory.EA());
             //registers.PCadder();
-        }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
         }
     }
 
-    public static class LDX implements Instruction {
-
-        private InstructionType instructionType = InstructionType.LDX;
-
-        private String data;
+    public static class LDX extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String Xs = data.substring(2, 4);
+            String Xs = getData().substring(2, 4);
             Register X = registers.getRegister(RegisterType.getIndex(Xs));
 
             X.setData(memory.fetch(memory.EA()));
             //registers.PCadder();
 
             LOGGER.info("LDX");
-            logger(data, registers);
-        }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
+            logger(getData(), registers);
         }
     }
 
-    public static class STX implements Instruction {
-
-        private InstructionType instructionType = InstructionType.STX;
-
-        private String data;
+    public static class STX extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String Xs = data.substring(2, 4);
+            String Xs = getData().substring(2, 4);
             Register X = registers.getRegister(RegisterType.getIndex(Xs));
 
             memory.store(memory.EA(), X.getData());
             //registers.PCadder();
 
             LOGGER.info("STX");
-            logger(data, registers);
-        }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
+            logger(getData(), registers);
         }
     }
 

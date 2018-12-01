@@ -50,6 +50,10 @@ public class Register implements Bits {
         return registerType.getDescription();
     }
 
+    public RegisterType getRegisterType(){
+        return this.registerType;
+    }
+
     public void setData(BitSet data) {
         if (data.length() > getSize()) {
             String mess = String.format(

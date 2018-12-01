@@ -20,15 +20,11 @@ public class ArithmeticLogic {
 
     private static final Logger LOGGER = LogManager.getLogger(ArithmeticLogic.class);
 
-    public static class AMR implements Instruction {
-
-        private InstructionType instructionType = InstructionType.AMR;
-
-        private String data;
+    public static class AMR extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String Rs = data.substring(0, 2);
+            String Rs = getData().substring(0, 2);
             Register R = registers.getRegister(RegisterType.getGeneralPurpose(Rs));
             RegisterDecorator Rd = new RegisterDecorator(R);
 
@@ -45,29 +41,14 @@ public class ArithmeticLogic {
             String mess = String.format("AMR R:%s EA:%d, %s = %d + %d",
                     R.getName(), EA, R.getName(), RValue, MemoryValue);
             LOGGER.info(mess);
-
-        }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
         }
     }
 
-    public static class SMR implements Instruction {
-
-        private InstructionType instructionType = InstructionType.SMR;
-
-        private String data;
+    public static class SMR extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String Rs = data.substring(0, 2);
+            String Rs = getData().substring(0, 2);
             Register R = registers.getRegister(RegisterType.getGeneralPurpose(Rs));
             RegisterDecorator Rd = new RegisterDecorator(R);
 
@@ -84,27 +65,13 @@ public class ArithmeticLogic {
                     R.getName(), EA, R.getName(), RValue, MemoryValue);
             LOGGER.info(mess);
         }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
-        }
     }
 
-    public static class AIR implements Instruction {
-
-        private InstructionType instructionType = InstructionType.AIR;
-
-        private String data;
+    public static class AIR extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String Rs = data.substring(0, 2);
+            String Rs = getData().substring(0, 2);
             Register R = registers.getRegister(RegisterType.getGeneralPurpose(Rs));
             RegisterDecorator Rd = new RegisterDecorator(R);
 
@@ -114,7 +81,7 @@ public class ArithmeticLogic {
             if (EA == 0) {
                 R.setData(R.getData());
             } else if (RValue == 0) {
-                Rd.setValue(EA);
+                Rd.setIntegerValue(EA);
             } else {
                 registers.checkOverUnderFlow(RValue + EA);
                 R.setData(BinaryCalculate.BitAdd(R.getData(), EA));
@@ -124,27 +91,13 @@ public class ArithmeticLogic {
                     R.getName(), EA, R.getName(), RValue, EA);
             LOGGER.info(mess);
         }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
-        }
     }
 
-    public static class SIR implements Instruction {
-
-        private InstructionType instructionType = InstructionType.SIR;
-
-        private String data;
+    public static class SIR extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String Rs = data.substring(0, 2);
+            String Rs = getData().substring(0, 2);
             Register R = registers.getRegister(RegisterType.getGeneralPurpose(Rs));
             RegisterDecorator Rd = new RegisterDecorator(R);
 
@@ -154,7 +107,7 @@ public class ArithmeticLogic {
             if (EA == 0) {
                 R.setData(R.getData());
             } else if (RValue == 0) {
-                Rd.setValue(-EA);
+                Rd.setIntegerValue(-EA);
             } else {
                 registers.checkOverUnderFlow(RValue - EA);
                 R.setData(BinaryCalculate.BitMinus(R.getData(), EA));
@@ -164,28 +117,14 @@ public class ArithmeticLogic {
                     R.getName(), EA, R.getName(), RValue, EA);
             LOGGER.info(mess);
         }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
-        }
     }
 
-    public static class MLT implements Instruction {
-
-        private InstructionType instructionType = InstructionType.MLT;
-
-        private String data;
+    public static class MLT extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String Rxs = data.substring(0, 2);
-            String Rys = data.substring(2, 4);
+            String Rxs = getData().substring(0, 2);
+            String Rys = getData().substring(2, 4);
             Register Rx = registers.getRegister(RegisterType.getGeneralPurpose(Rxs));
             Register Ry = registers.getRegister(RegisterType.getGeneralPurpose(Rys));
             Register Rx_1;
@@ -216,28 +155,14 @@ public class ArithmeticLogic {
             }
 
         }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
-        }
     }
 
-    public static class DVD implements Instruction {
-
-        private InstructionType instructionType = InstructionType.DVD;
-
-        private String data;
+    public static class DVD extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String Rxs = data.substring(0, 2);
-            String Rys = data.substring(2, 4);
+            String Rxs = getData().substring(0, 2);
+            String Rys = getData().substring(2, 4);
             Register Rx = registers.getRegister(RegisterType.getGeneralPurpose(Rxs));
             Register Ry = registers.getRegister(RegisterType.getGeneralPurpose(Rys));
             Register Rx_1;
@@ -259,8 +184,8 @@ public class ArithmeticLogic {
                     Rx_1d = new RegisterDecorator(Rx_1);
                     int RxValue = BitConversion.convert(Rx.getData());
                     int RyValue = BitConversion.convert(Ry.getData());
-                    Rxd.setValue(RxValue / RyValue);
-                    Rx_1d.setValue(RxValue % RyValue);
+                    Rxd.setIntegerValue(RxValue / RyValue);
+                    Rx_1d.setIntegerValue(RxValue % RyValue);
 
                     String mess = String.format("DVD Rx:%s Ry:%s",
                             Rx.getName(), Ry.getName());
@@ -271,30 +196,15 @@ public class ArithmeticLogic {
                 }
             }
             //registers.PCadder();
-
-        }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
         }
     }
 
-    public static class TRR implements Instruction {
-
-        private InstructionType instructionType = InstructionType.TRR;
-
-        private String data;
+    public static class TRR extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String Rxs = data.substring(0, 2);
-            String Rys = data.substring(2, 4);
+            String Rxs = getData().substring(0, 2);
+            String Rys = getData().substring(2, 4);
             Register Rx = registers.getRegister(RegisterType.getGeneralPurpose(Rxs));
             Register Ry = registers.getRegister(RegisterType.getGeneralPurpose(Rys));
 
@@ -310,28 +220,14 @@ public class ArithmeticLogic {
                     Rx.getName(), Ry.getName());
             LOGGER.info(mess);
         }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
-        }
     }
 
-    public static class AND implements Instruction {
-
-        private InstructionType instructionType = InstructionType.AND;
-
-        private String data;
+    public static class AND extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String Rxs = data.substring(0, 2);
-            String Rys = data.substring(2, 4);
+            String Rxs = getData().substring(0, 2);
+            String Rys = getData().substring(2, 4);
             Register Rx = registers.getRegister(RegisterType.getGeneralPurpose(Rxs));
             Register Ry = registers.getRegister(RegisterType.getGeneralPurpose(Rys));
 
@@ -339,32 +235,17 @@ public class ArithmeticLogic {
             bits.and(Ry.getData());
             Rx.setData(bits);
 
-            String mess = String.format("AND Rx:%s Ry:%s",
-                    Rx.getName(), Ry.getName());
+            String mess = String.format("AND Rx:%s Ry:%s", Rx.getName(), Ry.getName());
             LOGGER.info(mess);
-        }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
         }
     }
 
-    public static class ORR implements Instruction {
-
-        private InstructionType instructionType = InstructionType.ORR;
-
-        private String data;
+    public static class ORR extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String Rxs = data.substring(0, 2);
-            String Rys = data.substring(2, 4);
+            String Rxs = getData().substring(0, 2);
+            String Rys = getData().substring(2, 4);
             Register Rx = registers.getRegister(RegisterType.getGeneralPurpose(Rxs));
             Register Ry = registers.getRegister(RegisterType.getGeneralPurpose(Rys));
 
@@ -372,23 +253,12 @@ public class ArithmeticLogic {
             bits.or(Ry.getData());
             Rx.setData(bits);
 
-            String mess = String.format("ORR Rx:%s Ry:%s",
-                    Rx.getName(), Ry.getName());
+            String mess = String.format("ORR Rx:%s Ry:%s", Rx.getName(), Ry.getName());
             LOGGER.info(mess);
-        }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
         }
     }
 
-    public static class NOT implements Instruction {
+    public static class NOT extends Instruction {
 
         private InstructionType instructionType = InstructionType.NOT;
 
@@ -396,27 +266,15 @@ public class ArithmeticLogic {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String Rs = data.substring(0, 2);
+            String Rs = getData().substring(0, 2);
             Register R = registers.getRegister(RegisterType.getGeneralPurpose(Rs));
-
 
             BitSet bits = R.getData();
             bits.flip(0, 16);
             R.setData(bits);
 
-            String mess = String.format("NOT R:%s",
-                    R.getName());
+            String mess = String.format("NOT R:%s", R.getName());
             LOGGER.info(mess);
-        }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
         }
     }
 }

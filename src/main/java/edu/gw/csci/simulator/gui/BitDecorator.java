@@ -3,6 +3,7 @@ package edu.gw.csci.simulator.gui;
 import edu.gw.csci.simulator.Bits;
 import edu.gw.csci.simulator.exceptions.IllegalValue;
 import edu.gw.csci.simulator.utils.BitConversion;
+import edu.gw.csci.simulator.utils.FloatingPointConvert;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.util.BitSet;
@@ -19,7 +20,7 @@ import java.util.BitSet;
 public class BitDecorator<B extends Bits> {
 
     private B bitType;
-    private final static String NULL_STRING = "NULL";
+    public final static String NULL_STRING = "NULL";
 
     public BitDecorator(B bitType) {
         this.bitType = bitType;
@@ -47,7 +48,6 @@ public class BitDecorator<B extends Bits> {
     public SimpleStringProperty toLongObservableString() {
         BitSet bitSet = bitType.getData();
         String str = (bitSet == null) ? NULL_STRING : Integer.toString(BitConversion.convert(bitSet));
-        //String str = (bitSet == null) ? NULL_STRING : Integer.toString(BitConversion.convert(bitSet));
         return new SimpleStringProperty(str);
     }
 
@@ -65,10 +65,19 @@ public class BitDecorator<B extends Bits> {
      *
      * @param i The integer to set
      */
-    public void setValue(int i) throws IllegalValue {
+    public void setIntegerValue(int i) throws IllegalValue {
         BitSet bitSet = BitConversion.convert(i);
         if (bitSet.length() > bitType.getSize()) {
             String mess = String.format("Value: %d is greater than max: %d", i, bitType.getSize());
+            throw new IllegalValue(mess);
+        }
+        bitType.setData(bitSet);
+    }
+
+    public void setFloatValue(float f) throws IllegalValue {
+        BitSet bitSet = FloatingPointConvert.FloatConvert(f);
+        if (bitSet.length() > bitType.getSize()) {
+            String mess = String.format("Value: %.5f is greater than max: %d", f, bitType.getSize());
             throw new IllegalValue(mess);
         }
         bitType.setData(bitSet);
@@ -81,7 +90,7 @@ public class BitDecorator<B extends Bits> {
      * @param data The bitset data to set
      * @throws IllegalValue If the bitset length is higher than what is supported
      */
-    public void setValue(BitSet data) throws IllegalValue {
+    public void setIntegerValue(BitSet data) throws IllegalValue {
         if (data.length() > bitType.getSize()) {
             String mess = String.format(
                     "Binary value %s is larger than maximum %d",
@@ -124,7 +133,19 @@ public class BitDecorator<B extends Bits> {
             String mess = String.format("%s is not a valid integer", data);
             throw new IllegalValue(mess);
         }
-        setValue(value);
+        setIntegerValue(value);
+    }
+
+    public void setFloatValue(String data){
+        float value;
+        try {
+            value = Float.parseFloat(data);
+            System.out.println(String.format("Received value: %.2f", value));
+        } catch (NumberFormatException e) {
+            String mess = String.format("%s is not a valid integer", data);
+            throw new IllegalValue(mess);
+        }
+        setFloatValue(value);
     }
 
     /**
