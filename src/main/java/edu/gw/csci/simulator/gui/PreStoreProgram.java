@@ -117,7 +117,15 @@ public class PreStoreProgram {
         program.appendLine("1100100100000001");
     }
 
-    public static void SetProgram3(Program program) {
+  /**
+   * This program satisfies the requirements for part IV by testing the new floating point and vector features.
+   * It loads integers from memory, converts them to floating point, stores floating point, then  adds/subtracts.
+   * It also loads a vector length/address from memory and adds/subtracts its values.
+   *
+   * @param program
+   * @version 20181201
+   */
+  public static void SetProgram3(Program program) {
         program.appendLine("0001100000000000");    // AIR r = 0, x = 0, address = 0, [I = 0];    NOP
         program.appendLine("0001100000000000");    // AIR r = 0, x = 0, address = 0, [I = 0];    NOP
         program.appendLine("0001100000000000");    // AIR r = 0, x = 0, address = 0, [I = 0];    NOP
@@ -183,4 +191,5 @@ public class PreStoreProgram {
         program.appendLine("0000000000000000");    //
         program.appendLine("0000000000000000");    //
     }
+
 }
