@@ -19,19 +19,31 @@ public class RegisterDecorator extends BitDecorator<Register> {
         super(register);
     }
 
+    /**
+     * This method converts the register name to a {@link SimpleStringProperty}
+     * for display in the console
+     * @return The converted name
+     */
     public SimpleStringProperty getRegisterName() {
         Register register = super.getBitType();
         return new SimpleStringProperty(register.getName());
     }
 
+    /**
+     * This method converts the register description to a {@link SimpleStringProperty}
+     * for display in the console
+     * @return The converted description
+     */
     public SimpleStringProperty getRegisterDescription() {
         Register register = super.getBitType();
         return new SimpleStringProperty(register.getDescription());
     }
 
     /**
+     * This method converts either to decimal, or to float depending on the register
+     * being displayed. Floating point values are fixed to 5 decimal places for readability only.
      *
-     * @return
+     * @return The converted value
      */
     public SimpleStringProperty toFloatOrIntObservableString(){
         Register register = super.getBitType();
