@@ -139,7 +139,7 @@ public class PreStoreProgram {
         program.appendLine("0111110001000001");    // CNVRT r = 0, x = 1, address = 1, [I = 0];    toFloat( *(ints for float + 1) )
         program.appendLine("0110110000110110");    // FADD r = 0, x = 0, address = 54, [I = 0];    += scratch
         program.appendLine("0111000000110110");    // FSUB r = 0, x = 0, address = 54, [I = 0];    -= scratch; ie, back to second float
-        program.appendLine("0010110011000111");    // JMA r = 0, x = 3, address = 7, [I = 0];    goto :START
+        program.appendLine("0010110011000000");    // JMA r = 0, x = 3, address = 0, [I = 0];    goto :START
     }
 
 }
