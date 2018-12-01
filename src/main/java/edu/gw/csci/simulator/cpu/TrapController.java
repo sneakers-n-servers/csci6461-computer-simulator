@@ -63,7 +63,7 @@ public class TrapController {
     public void setFault(int opCode, boolean runRoutine) {
         //Set the machine fault register
         Register machineFaultRegister = allRegisters.getRegister(RegisterType.MFR);
-        new RegisterDecorator(machineFaultRegister).setValue(opCode);
+        new RegisterDecorator(machineFaultRegister).setIntegerValue(opCode);
 
         //Save off the current PC, plus 1
         Register pcRegister = allRegisters.getRegister(RegisterType.PC);
@@ -80,7 +80,7 @@ public class TrapController {
         if(runRoutine){
             LOGGER.info("Resolved routine at location: {}", pointer);
         }
-        pcDecorator.setValue(pointer);
+        pcDecorator.setIntegerValue(pointer);
 
         //If the fault occurs while editing, refresh
         if (registerTable != null) {

@@ -5,6 +5,7 @@ import edu.gw.csci.simulator.registers.AllRegisters;
 import java.util.BitSet;
 
 public class BinaryCalculate {
+
     private static String add(String a, String b) {
         int carry = 0;
         StringBuilder result = new StringBuilder();
@@ -30,10 +31,13 @@ public class BinaryCalculate {
         return result.toString();
 
     }
+
     public static String BinaryAdd(String a, String b){
         String add = add(a,b);
         return add.substring(add.length()-a.length());
     }
+
+
     public static String BinaryAddOne(String a){
         StringBuilder b = new StringBuilder();
         b.append("1");
@@ -43,15 +47,18 @@ public class BinaryCalculate {
         String add =  add(a,b.toString());
         return add.substring(add.length()-a.length());
     }
+
     private static String minus(String a, String b) {
         int MinusB = -BitConversion.fromBinaryStringToInt(b);
         String NegativeB = BitConversion.toBinaryString(MinusB, b.length());
         return add(a, NegativeB);
     }
+
     public static String BinaryMinus(String a, String b){
         String mius =  minus(a,b);
         return mius.substring(mius.length()-a.length());
     }
+
     public static String BinaryMinusOne(String a) {
         StringBuilder b = new StringBuilder();
         b.append("1");
@@ -61,6 +68,7 @@ public class BinaryCalculate {
         String mius =  minus(a,b.toString());
         return mius.substring(mius.length()-a.length());
     }
+
     private static int CharToInt(char c) {
         if (c == '1') {
             return 1;

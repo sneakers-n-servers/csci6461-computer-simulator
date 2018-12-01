@@ -10,9 +10,10 @@ public class InstructionFactory<I extends Instruction> {
         this.instruction = instruction;
     }
 
-    public I create(String data) {
+    public I create(InstructionType instructionType, String data) {
         I i = instruction.get();
         i.setData(data);
+        i.setInstructionType(instructionType);
         return i;
     }
 }

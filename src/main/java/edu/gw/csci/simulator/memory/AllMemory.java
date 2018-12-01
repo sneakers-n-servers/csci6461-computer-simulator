@@ -75,7 +75,7 @@ public class AllMemory {
         String mess = String.format("Storing %d(%s) to memory index %d", value, BitConversion.toBinaryString(bitSet, 16), index);
         LOGGER.debug(mess);
         MemoryChunkDecorator memoryChunkDecorator = new MemoryChunkDecorator(memory.get(index));
-        memoryChunkDecorator.setValue(value);
+        memoryChunkDecorator.setIntegerValue(value);
         allRegisters.setRegister(RegisterType.MBR, bitSet);
         memoryCache.put(index, bitSet);
     }

@@ -12,7 +12,6 @@ import java.util.HashMap;
  */
 public enum InstructionType {
 
-
     //Miscellaneous
     HLT(0),
     TRAP(36),

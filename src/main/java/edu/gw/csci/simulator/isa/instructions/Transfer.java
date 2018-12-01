@@ -2,7 +2,6 @@ package edu.gw.csci.simulator.isa.instructions;
 
 import edu.gw.csci.simulator.cpu.CPU;
 import edu.gw.csci.simulator.isa.Instruction;
-import edu.gw.csci.simulator.isa.InstructionType;
 import edu.gw.csci.simulator.memory.AllMemory;
 import edu.gw.csci.simulator.registers.AllRegisters;
 import edu.gw.csci.simulator.registers.Register;
@@ -16,21 +15,18 @@ public class Transfer {
 
     private static final Logger LOGGER = LogManager.getLogger(Transfer.class);
 
-    public static class JZ implements Instruction {
+    public static class JZ extends Instruction {
 
-        private InstructionType instructionType = InstructionType.JZ;
-
-        private String data;
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String Rs = data.substring(0, 2);
+            String Rs = getData().substring(0, 2);
             Register PC = registers.getRegister(RegisterType.PC);
             RegisterDecorator PCd = new RegisterDecorator(PC);
             int EA = memory.EA();
             Register R = registers.getRegister(RegisterType.getGeneralPurpose(Rs));
             if (R.getData().isEmpty()) {
-                PCd.setValue(EA - 1);
+                PCd.setIntegerValue(EA - 1);
             }
 //            else{
 //                registers.PCadder();
@@ -39,56 +35,28 @@ public class Transfer {
             String mess = String.format("JZ Jump to %d when %s =0", EA, R.getName());
             LOGGER.info(mess);
         }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
-        }
     }
 
-    public static class JNE implements Instruction {
-
-        private InstructionType instructionType = InstructionType.JNE;
-
-        private String data;
+    public static class JNE extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String Rs = data.substring(0, 2);
+            String Rs = getData().substring(0, 2);
             Register PC = registers.getRegister(RegisterType.PC);
             RegisterDecorator PCd = new RegisterDecorator(PC);
             int EA = memory.EA();
             Register R = registers.getRegister(RegisterType.getGeneralPurpose(Rs));
 
             if (!R.getData().isEmpty()) {
-                PCd.setValue(EA - 1);
+                PCd.setIntegerValue(EA - 1);
             }
 
             String mess = String.format("JNE Jump to %d when %s !=0", EA, R.getName());
             LOGGER.info(mess);
         }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
-        }
     }
 
-    public static class JCC implements Instruction {
-
-        private InstructionType instructionType = InstructionType.JCC;
-
-        private String data;
+    public static class JCC extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
@@ -99,7 +67,7 @@ public class Transfer {
             Register CC = registers.getRegister(RegisterType.CC);
             int bit = CC.getData().cardinality();
             if (bit == 1) {
-                PCd.setValue(EA - 1);
+                PCd.setIntegerValue(EA - 1);
             }
 //            else{
 //                registers.PCadder();
@@ -107,23 +75,9 @@ public class Transfer {
             String mess = String.format("JCC Jump to %d if CC bit =1", EA);
             LOGGER.info(mess);
         }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
-        }
     }
 
-    public static class JMA implements Instruction {
-
-        private InstructionType instructionType = InstructionType.JMA;
-
-        private String data;
+    public static class JMA extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
@@ -131,28 +85,14 @@ public class Transfer {
             RegisterDecorator PCd = new RegisterDecorator(PC);
             int EA = memory.EA();
 
-            PCd.setValue(EA - 1);
+            PCd.setIntegerValue(EA - 1);
 
             String mess = String.format("JMA Unconditional Jump To Address:%d", EA);
             LOGGER.info(mess);
         }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
-        }
     }
 
-    public static class JSR implements Instruction {
-
-        private InstructionType instructionType = InstructionType.JSR;
-
-        private String data;
+    public static class JSR extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
@@ -163,30 +103,16 @@ public class Transfer {
             int EA = memory.EA();
 
             int returnAddress = BitConversion.convert(PC.getData()) + 1;
-            R3d.setValue(returnAddress);
-            PCd.setValue(EA - 1);
+            R3d.setIntegerValue(returnAddress);
+            PCd.setIntegerValue(EA - 1);
 
             String mess = String.format("JSR Jump to %d and Save Return Address:%d",
                     EA, returnAddress);
             LOGGER.info(mess);
         }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
-        }
     }
 
-    public static class RFS implements Instruction {
-
-        private InstructionType instructionType = InstructionType.RFS;
-
-        private String data;
+    public static class RFS extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
@@ -199,35 +125,21 @@ public class Transfer {
             int EA = memory.EA();
 
 
-            R0d.setValue(EA);
+            R0d.setIntegerValue(EA);
             int PCindex = BitConversion.convert(R3.getData());
-            PCd.setValue(PCindex - 1);
+            PCd.setIntegerValue(PCindex - 1);
 
             String mess = String.format("RFS Return from subroutine, R0=%d PC=R3=%d",
                     EA, BitConversion.convert(R3.getData()));
             LOGGER.info(mess);
         }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
-        }
     }
 
-    public static class SOB implements Instruction {
-
-        private InstructionType instructionType = InstructionType.SOB;
-
-        private String data;
+    public static class SOB extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String Rs = data.substring(0, 2);
+            String Rs = getData().substring(0, 2);
             Register PC = registers.getRegister(RegisterType.PC);
             RegisterDecorator PCd = new RegisterDecorator(PC);
             int EA = memory.EA();
@@ -235,9 +147,9 @@ public class Transfer {
             RegisterDecorator Rd = new RegisterDecorator(R);
 
 
-            Rd.setValue(BitConversion.convert(R.getData()) - 1);
+            Rd.setIntegerValue(BitConversion.convert(R.getData()) - 1);
             if (BitConversion.convert(R.getData()) > 0) {
-                PCd.setValue(EA - 1);
+                PCd.setIntegerValue(EA - 1);
             }
 //            else{
 //                registers.PCadder();
@@ -247,27 +159,13 @@ public class Transfer {
                     R.getName(), R.getName(), BitConversion.convert(R.getData()), R.getName(), EA);
             LOGGER.info(mess);
         }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
-        }
     }
 
-    public static class JGE implements Instruction {
-
-        private InstructionType instructionType = InstructionType.JGE;
-
-        private String data;
+    public static class JGE extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String Rs = data.substring(0, 2);
+            String Rs = getData().substring(0, 2);
             Register PC = registers.getRegister(RegisterType.PC);
             RegisterDecorator PCd = new RegisterDecorator(PC);
             int EA = memory.EA();
@@ -276,7 +174,7 @@ public class Transfer {
 
 
             if (BitConversion.convert(R.getData()) >= 0) {
-                PCd.setValue(EA - 1);
+                PCd.setIntegerValue(EA - 1);
             }
 //            else{
 //                registers.PCadder();
@@ -285,16 +183,6 @@ public class Transfer {
             String mess = String.format("JGE if %s(%d) >=0, jump to %d",
                     R.getName(), BitConversion.convert(R.getData()), EA);
             LOGGER.info(mess);
-        }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
         }
     }
 }

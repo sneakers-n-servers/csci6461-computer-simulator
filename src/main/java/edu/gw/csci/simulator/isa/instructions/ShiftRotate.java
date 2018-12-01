@@ -15,19 +15,15 @@ import org.apache.logging.log4j.Logger;
 public class ShiftRotate {
     private static final Logger LOGGER = LogManager.getLogger(ShiftRotate.class);
 
-    public static class SRC implements Instruction {
-
-        private InstructionType instructionType = InstructionType.SRC;
-
-        private String data;
+    public static class SRC extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
-            String Rs = data.substring(0, 2);
+            String Rs = getData().substring(0, 2);
             Register R = registers.getRegister(RegisterType.getGeneralPurpose(Rs));
-            String AL = data.substring(2, 3);
-            String LR = data.substring(3, 4);
-            String Counts = data.substring(6, 10);
+            String AL = getData().substring(2, 3);
+            String LR = getData().substring(3, 4);
+            String Counts = getData().substring(6, 10);
 
             boolean LorR = LR.equals("1");
             boolean AorL = AL.equals("1");
@@ -62,33 +58,19 @@ public class ShiftRotate {
                 R.setData(BitConversion.convert(s1));
             }
         }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
-        }
     }
 
-    public static class RRC implements Instruction {
-
-        private InstructionType instructionType = InstructionType.RRC;
-
-        private String data;
+    public static class RRC extends Instruction {
 
         @Override
         public void execute(AllMemory memory, AllRegisters registers, CPU cpu) {
 
-            String Rs = data.substring(0, 2);
+            String Rs = getData().substring(0, 2);
             Register R = registers.getRegister(RegisterType.getGeneralPurpose(Rs));
 
-            String LR = data.substring(3, 4);
+            String LR = getData().substring(3, 4);
             boolean LorR = LR.equals("1");
-            String Counts = data.substring(6, 10);
+            String Counts = getData().substring(6, 10);
             int count = Integer.parseInt(Counts, 2);//Integer.parseInt(Counts,2);
             String LRflag;
 
@@ -111,16 +93,6 @@ public class ShiftRotate {
 
                 R.setData(BitConversion.convert(s1));
             }
-        }
-
-        @Override
-        public void setData(String data) {
-            this.data = data;
-        }
-
-        @Override
-        public InstructionType getInstructionType() {
-            return instructionType;
         }
     }
 }
