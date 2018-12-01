@@ -1,5 +1,8 @@
 package edu.gw.csci.simulator.cpu;
 
+import edu.gw.csci.simulator.exceptions.IllegalMemoryAccess;
+import edu.gw.csci.simulator.exceptions.IllegalOpcode;
+import edu.gw.csci.simulator.exceptions.MemoryOutOfBounds;
 import edu.gw.csci.simulator.exceptions.SimulatorException;
 import edu.gw.csci.simulator.gui.Program;
 import edu.gw.csci.simulator.isa.Decoder;
@@ -73,10 +76,9 @@ public class CPU {
         //Iterate until we get a halt
         while (instruction == null || instruction.getInstructionType() != InstructionType.HLT) {
             try {
-                instruction = getNextInstruction(registers, true);
+                instruction = getNextInstruction(registers);
                 instruction.execute(memory, registers, this);
                 incrementPC();
-                instruction = getNextInstruction(registers ,true);
             } catch (SimulatorException e) {
                 //Load the saved off PC
                 BitSet oldPC = memory.fetch(TrapController.TRAP_PC_LOCATION, false);
@@ -95,9 +97,9 @@ public class CPU {
      * @param allRegisters All Registers
      * @return The next instruction to execute
      */
-    private Instruction getNextInstruction(AllRegisters allRegisters, Boolean throwReserve) {
+    private Instruction getNextInstruction(AllRegisters allRegisters) throws MemoryOutOfBounds, IllegalMemoryAccess, IllegalOpcode {
         int nextInstructionIndex = getPCDecorator().toInt();
-        BitSet instructionData = memory.fetch(nextInstructionIndex, throwReserve);
+        BitSet instructionData = memory.fetch(nextInstructionIndex, true);
         Register IR = allRegisters.getRegister(RegisterType.IR);
         IR.setData(instructionData);
         return decoder.getInstruction(instructionData);
@@ -165,7 +167,7 @@ public class CPU {
      */
     public void step() {
         try {
-            Instruction instruction = getNextInstruction(registers, true);
+            Instruction instruction = getNextInstruction(registers);
             instruction.execute(memory, registers, this);
             incrementPC();
         } catch (SimulatorException e) {
