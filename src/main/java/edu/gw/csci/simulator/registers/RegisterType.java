@@ -113,6 +113,7 @@ public enum RegisterType {
         }
         return getFloatingPoint(i);
     }
+
     public static RegisterType getFloatingPoint(int index) throws IllegalRegisterAccess {
         switch (index) {
             case 0:
