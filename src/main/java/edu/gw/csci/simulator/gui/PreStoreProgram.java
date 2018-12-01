@@ -126,13 +126,7 @@ public class PreStoreProgram {
    * @version 20181201
    */
   public static void SetProgram3(Program program) {
-        program.appendLine("0001100000000000");    // AIR r = 0, x = 0, address = 0, [I = 0];    NOP
-        program.appendLine("0001100000000000");    // AIR r = 0, x = 0, address = 0, [I = 0];    NOP
-        program.appendLine("0001100000000000");    // AIR r = 0, x = 0, address = 0, [I = 0];    NOP
-        program.appendLine("0001100000000000");    // AIR r = 0, x = 0, address = 0, [I = 0];    NOP
-        program.appendLine("0001100000000000");    // AIR r = 0, x = 0, address = 0, [I = 0];    NOP
-        program.appendLine("0001100000000000");    // AIR r = 0, x = 0, address = 0, [I = 0];    NOP
-        program.appendLine("0001100000000000");    // AIR r = 0, x = 0, address = 0, [I = 0];    NOP
+        // this currently assumes memory location 7 for the first instruction - see PreStoreMemoryForProgram3
         program.appendLine("1000010011110111");    // LDX r = 0, x = 3, address = 55, [I = 0];    program ix <-- memory location of program's first instruction (:START)
         program.appendLine("0000110000000001");    // LDA r = 0, x = 0, address = 1, [I = 0];    prepare toFloat conversion flag
         program.appendLine("0111110000111001");    // CNVRT r = 0, x = 0, address = 57, [I = 0];    toFloat( *(vectors length) )
