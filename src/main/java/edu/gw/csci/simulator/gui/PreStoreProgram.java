@@ -126,20 +126,20 @@ public class PreStoreProgram {
    * @version 20181201
    */
   public static void SetProgram3(Program program) {
-        // this currently assumes memory location 7 for the first instruction - see PreStoreMemoryForProgram3
-        program.appendLine("1000010011110111");    // LDX r = 0, x = 3, address = 55, [I = 0];    program ix <-- memory location of program's first instruction (:START)
-        program.appendLine("0000110000000001");    // LDA r = 0, x = 0, address = 1, [I = 0];    prepare toFloat conversion flag
-        program.appendLine("0111110000111001");    // CNVRT r = 0, x = 0, address = 57, [I = 0];    toFloat( *(vectors length) )
-        program.appendLine("1000110000111010");    // VADD r = 0, x = 0, address = 58, [I = 0];    add vectors
-        program.appendLine("1001000000111010");    // VSUB r = 0, x = 0, address = 58, [I = 0];    subtract vectors; ie, back to original
-        program.appendLine("1000010001111000");    // LDX r = 0, x = 1, address = 56, [I = 0];    data ix <-- memory location of first int
-        program.appendLine("0000110000000001");    // LDA r = 0, x = 0, address = 1, [I = 0];    prepare toFloat conversion flag
-        program.appendLine("0111110001000000");    // CNVRT r = 0, x = 1, address = 0, [I = 0];    toFloat( *(ints for float) )
-        program.appendLine("1010010000110110");    // STFR r = 0, x = 0, address = 54, [I = 0];    float --> scratch
-        program.appendLine("0111110001000001");    // CNVRT r = 0, x = 1, address = 1, [I = 0];    toFloat( *(ints for float + 1) )
-        program.appendLine("0110110000110110");    // FADD r = 0, x = 0, address = 54, [I = 0];    += scratch
-        program.appendLine("0111000000110110");    // FSUB r = 0, x = 0, address = 54, [I = 0];    -= scratch; ie, back to second float
-        program.appendLine("0010110011000000");    // JMA r = 0, x = 3, address = 0, [I = 0];    goto :START
-    }
+    // this currently assumes memory location 7 for the first instruction - see PreStoreMemoryForProgram3
+    program.appendLine("1000010011010110");    // LDX r = 0, x = 3, address = 22, [I = 0];    program ix <-- memory location of program's first instruction (:START)
+    program.appendLine("0000110000000001");    // LDA r = 0, x = 0, address = 1, [I = 0];    prepare toFloat conversion flag
+    program.appendLine("0111110000111001");    // CNVRT r = 0, x = 0, address = 24, [I = 1];    toFloat( *(vectors length) )
+    program.appendLine("1000110000011001");    // VADD r = 0, x = 0, address = 25, [I = 0];    add vectors
+    program.appendLine("1001000000011001");    // VSUB r = 0, x = 0, address = 25, [I = 0];    subtract vectors; ie, back to original
+    program.appendLine("1000010001010111");    // LDX r = 0, x = 1, address = 23, [I = 0];    data ix <-- memory location of first int
+    program.appendLine("0000110000000001");    // LDA r = 0, x = 0, address = 1, [I = 0];    prepare toFloat conversion flag
+    program.appendLine("0111110001000000");    // CNVRT r = 0, x = 1, address = 0, [I = 0];    toFloat( *(ints for float) )
+    program.appendLine("1010010000010101");    // STFR r = 0, x = 0, address = 21, [I = 0];    float --> scratch
+    program.appendLine("0111110001000001");    // CNVRT r = 0, x = 1, address = 1, [I = 0];    toFloat( *(ints for float + 1) )
+    program.appendLine("0110110000010101");    // FADD r = 0, x = 0, address = 21, [I = 0];    += scratch
+    program.appendLine("0111000000010101");    // FSUB r = 0, x = 0, address = 21, [I = 0];    -= scratch; ie, back to second float
+    program.appendLine("0010110011000000");    // JMA r = 0, x = 3, address = 0, [I = 0];    goto :START
+  }
 
 }
